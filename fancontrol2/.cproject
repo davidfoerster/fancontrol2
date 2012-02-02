@@ -29,9 +29,7 @@
 								<option id="gnu.cpp.compiler.exe.debug.option.debugging.level.1144064494" name="Debug Level" superClass="gnu.cpp.compiler.exe.debug.option.debugging.level" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.include.paths.162881392" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/fancontrol2}&quot;"/>
-									<listOptionValue builtIn="false" value="/usr/lib/gcc/x86_64-linux-gnu/4.6/include"/>
 									<listOptionValue builtIn="false" value="/usr/local/include"/>
-									<listOptionValue builtIn="false" value="/usr/lib/gcc/x86_64-linux-gnu/4.6/include-fixed"/>
 									<listOptionValue builtIn="false" value="/usr/include/x86_64-linux-gnu"/>
 									<listOptionValue builtIn="false" value="/usr/include"/>
 									<listOptionValue builtIn="false" value="/usr/include/c++/4.6"/>
@@ -40,8 +38,9 @@
 								</option>
 								<option id="gnu.cpp.compiler.option.preprocessor.def.703272659" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="_GLIBCXX_HOSTED=1"/>
+									<listOptionValue builtIn="false" value="BOOST_SP_DISABLE_THREADS"/>
 								</option>
-								<option id="gnu.cpp.compiler.option.other.other.2018141592" name="Other flags" superClass="gnu.cpp.compiler.option.other.other" value="-c -fmessage-length=0 -pipe -Wconversion" valueType="string"/>
+								<option id="gnu.cpp.compiler.option.other.other.2018141592" name="Other flags" superClass="gnu.cpp.compiler.option.other.other" value="-c -fmessage-length=0 -pipe -Wconversion -fmax-errors=10" valueType="string"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1497414375" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.c.compiler.exe.debug.1414495351" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.exe.debug">
@@ -54,8 +53,6 @@
 									<listOptionValue builtIn="false" value="/usr/lib/gcc/x86_64-linux-gnu/4.6.1/include-fixed"/>
 									<listOptionValue builtIn="false" value="/usr/include/x86_64-linux-gnu"/>
 									<listOptionValue builtIn="false" value="/usr/include"/>
-									<listOptionValue builtIn="false" value="/usr/include/c++/4.6"/>
-									<listOptionValue builtIn="false" value="/usr/include/c++/4.6/x86_64-linux-gnu"/>
 								</option>
 								<option id="gnu.c.compiler.option.misc.other.1621508850" name="Other flags" superClass="gnu.c.compiler.option.misc.other" value="-c -fmessage-length=0 -pipe -Wconversion" valueType="string"/>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.198348148" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
@@ -89,8 +86,6 @@
 									<listOptionValue builtIn="false" value="/usr/lib/gcc/x86_64-linux-gnu/4.6.1/include-fixed"/>
 									<listOptionValue builtIn="false" value="/usr/include/x86_64-linux-gnu"/>
 									<listOptionValue builtIn="false" value="/usr/include"/>
-									<listOptionValue builtIn="false" value="/usr/include/c++/4.6"/>
-									<listOptionValue builtIn="false" value="/usr/include/c++/4.6/x86_64-linux-gnu"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.1045239098" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>
@@ -120,41 +115,45 @@
 							<builder arguments="-n 10 -- make" buildPath="${workspace_loc:/fancontrol2/Release}" command="nice" id="cdt.managedbuild.target.gnu.builder.exe.release.2026169947" keepEnvironmentInBuildfile="false" name="Gnu Make Builder" parallelBuildOn="true" parallelizationNumber="2" superClass="cdt.managedbuild.target.gnu.builder.exe.release"/>
 							<tool id="cdt.managedbuild.tool.gnu.archiver.base.1740497734" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.base"/>
 							<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.exe.release.1576096646" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.exe.release">
-								<option id="gnu.cpp.compiler.exe.release.option.optimization.level.2029816532" name="Optimization Level" superClass="gnu.cpp.compiler.exe.release.option.optimization.level" value="gnu.cpp.compiler.optimization.level.most" valueType="enumerated"/>
+								<option id="gnu.cpp.compiler.exe.release.option.optimization.level.2029816532" name="Optimization Level" superClass="gnu.cpp.compiler.exe.release.option.optimization.level" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.exe.release.option.debugging.level.731440607" name="Debug Level" superClass="gnu.cpp.compiler.exe.release.option.debugging.level" value="gnu.cpp.compiler.debugging.level.none" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.include.paths.1381782564" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
-									<listOptionValue builtIn="false" value="/usr/include/c++/4.6/x86_64-linux-gnu"/>
-									<listOptionValue builtIn="false" value="/usr/include/c++"/>
-									<listOptionValue builtIn="false" value="/usr/include/c++/4.6"/>
-									<listOptionValue builtIn="false" value="/usr/include/linux"/>
-									<listOptionValue builtIn="false" value="/usr/include/x86_64-linux-gnu"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/fancontrol2}&quot;"/>
-									<listOptionValue builtIn="false" value="/usr/lib/gcc/x86_64-linux-gnu/4.6.1/include"/>
 									<listOptionValue builtIn="false" value="/usr/local/include"/>
 									<listOptionValue builtIn="false" value="/usr/lib/gcc/x86_64-linux-gnu/4.6.1/include-fixed"/>
+									<listOptionValue builtIn="false" value="/usr/lib/gcc/x86_64-linux-gnu/4.6.1/include"/>
+									<listOptionValue builtIn="false" value="/usr/include/x86_64-linux-gnu"/>
 									<listOptionValue builtIn="false" value="/usr/include"/>
+									<listOptionValue builtIn="false" value="/usr/include/c++/4.6"/>
+									<listOptionValue builtIn="false" value="/usr/include/c++/4.6/x86_64-linux-gnu"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/chromium base library}&quot;"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.preprocessor.def.499138513" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="_GLIBCXX_HOSTED=1"/>
+									<listOptionValue builtIn="false" value="BOOST_SP_DISABLE_THREADS"/>
+									<listOptionValue builtIn="false" value="BOOST_DISABLE_ASSERTS"/>
+									<listOptionValue builtIn="false" value="NDEBUG"/>
 								</option>
-								<option id="gnu.cpp.compiler.option.other.other.171634695" name="Other flags" superClass="gnu.cpp.compiler.option.other.other" value="-c -fmessage-length=0 -pipe -Wconversion" valueType="string"/>
+								<option id="gnu.cpp.compiler.option.other.other.171634695" name="Other flags" superClass="gnu.cpp.compiler.option.other.other" value="-c -fmessage-length=0 -pipe -Wconversion -fmax-errors=10" valueType="string"/>
+								<option id="gnu.cpp.compiler.option.optimization.flags.657956493" superClass="gnu.cpp.compiler.option.optimization.flags" value="-flto" valueType="string"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.161587028" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.c.compiler.exe.release.1469583875" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.exe.release">
-								<option defaultValue="gnu.c.optimization.level.most" id="gnu.c.compiler.exe.release.option.optimization.level.1330129718" name="Optimization Level" superClass="gnu.c.compiler.exe.release.option.optimization.level" valueType="enumerated"/>
+								<option defaultValue="gnu.c.optimization.level.most" id="gnu.c.compiler.exe.release.option.optimization.level.1330129718" name="Optimization Level" superClass="gnu.c.compiler.exe.release.option.optimization.level" value="gnu.c.optimization.level.none" valueType="enumerated"/>
 								<option id="gnu.c.compiler.exe.release.option.debugging.level.535368408" name="Debug Level" superClass="gnu.c.compiler.exe.release.option.debugging.level" value="gnu.c.debugging.level.none" valueType="enumerated"/>
 								<option id="gnu.c.compiler.option.misc.other.1658735530" name="Other flags" superClass="gnu.c.compiler.option.misc.other" value="-c -fmessage-length=0 -pipe -Wconversion" valueType="string"/>
 								<option id="gnu.c.compiler.option.include.paths.1492666915" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/fancontrol2}&quot;"/>
 									<listOptionValue builtIn="false" value="/usr/lib/gcc/x86_64-linux-gnu/4.6.1/include"/>
 									<listOptionValue builtIn="false" value="/usr/local/include"/>
 									<listOptionValue builtIn="false" value="/usr/lib/gcc/x86_64-linux-gnu/4.6.1/include-fixed"/>
 									<listOptionValue builtIn="false" value="/usr/include/x86_64-linux-gnu"/>
 									<listOptionValue builtIn="false" value="/usr/include"/>
-									<listOptionValue builtIn="false" value="/usr/include/c++/4.6"/>
-									<listOptionValue builtIn="false" value="/usr/include/c++/4.6/x86_64-linux-gnu"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/fancontrol2}&quot;"/>
 								</option>
+								<option id="gnu.c.compiler.option.preprocessor.def.symbols.406484455" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" valueType="definedSymbols">
+									<listOptionValue builtIn="false" value="NDEBUG"/>
+								</option>
+								<option id="gnu.c.compiler.option.optimization.flags.1249986001" superClass="gnu.c.compiler.option.optimization.flags" value="-flto" valueType="string"/>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.435507910" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.c.linker.exe.release.654118890" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.exe.release"/>
@@ -163,15 +162,17 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/chromium base library/Release}&quot;"/>
 								</option>
 								<option id="gnu.cpp.link.option.libs.254425452" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
+									<listOptionValue builtIn="false" value="sensors"/>
+									<listOptionValue builtIn="false" value="chromium_base"/>
 									<listOptionValue builtIn="false" value="boost_filesystem"/>
 									<listOptionValue builtIn="false" value="boost_system"/>
-									<listOptionValue builtIn="false" value="chromium_base"/>
 									<listOptionValue builtIn="false" value="yaml-cpp"/>
 									<listOptionValue builtIn="false" value="m"/>
 								</option>
 								<option id="gnu.cpp.link.option.other.612412341" name="Other options (-Xlinker [option])" superClass="gnu.cpp.link.option.other" valueType="stringList">
 									<listOptionValue builtIn="false" value="--as-needed"/>
 								</option>
+								<option id="gnu.cpp.link.option.flags.477459270" superClass="gnu.cpp.link.option.flags" value="-flto -O2" valueType="string"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.224621346" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
@@ -179,14 +180,12 @@
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.assembler.exe.release.452887717" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.exe.release">
 								<option id="gnu.both.asm.option.include.paths.919278972" name="Include paths (-I)" superClass="gnu.both.asm.option.include.paths" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/fancontrol2}&quot;"/>
 									<listOptionValue builtIn="false" value="/usr/lib/gcc/x86_64-linux-gnu/4.6.1/include"/>
 									<listOptionValue builtIn="false" value="/usr/local/include"/>
 									<listOptionValue builtIn="false" value="/usr/lib/gcc/x86_64-linux-gnu/4.6.1/include-fixed"/>
 									<listOptionValue builtIn="false" value="/usr/include/x86_64-linux-gnu"/>
 									<listOptionValue builtIn="false" value="/usr/include"/>
-									<listOptionValue builtIn="false" value="/usr/include/c++/4.6"/>
-									<listOptionValue builtIn="false" value="/usr/include/c++/4.6/x86_64-linux-gnu"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/fancontrol2}&quot;"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.1332187012" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>

@@ -1,5 +1,5 @@
 ---
-interval: 0.5
+interval: 5
 
 chips:
     hwmon2: &hwmon2
@@ -41,5 +41,6 @@ fans:
         valve: *pwm2
         start: 90
         stop:  80
+        reset: 0.75
         dependencies: [*core0, *core1, *cpu]
 

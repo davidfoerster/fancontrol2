@@ -1,0 +1,56 @@
+/*
+ * utils.hpp
+ *
+ *  Created on: 31.01.2012
+ *      Author: malte
+ */
+
+#pragma once
+#ifndef FANCONTROL_UTILS_HPP_
+#define FANCONTROL_UTILS_HPP_
+
+#include "config.hpp"
+#include <exception>
+
+#include <memory>
+#include <ctime>
+#include <cstdio>
+
+namespace fancontrol {
+
+using sensors::sensor_error;
+
+
+void strerror_wrapper(const char *msg = 0, error_t e = 0);
+
+
+int handle_exception(std::exception &e, bool cfg_ok);
+
+
+int handle_exception(meta::exception_base &e, bool cfg_ok);
+
+
+void register_signal_handlers();
+
+
+int sleep(const struct timespec *duration);
+
+
+class data {
+public:
+	data(std::ifstream &config_file, const boost::shared_ptr<sensors::sensor_container> &sensors, bool do_check)
+		throw(meta::runtime_error, YAML::ParserException, std::ios::failure);
+
+	static std::auto_ptr<data> make_config(int argc, char *argv[])
+		throw(meta::runtime_error, YAML::ParserException);
+
+	config cfg;
+
+	struct timespec interval;
+
+	const bool do_check;
+};
+
+}
+
+#endif /* FANCONTROL_UTILS_HPP_ */

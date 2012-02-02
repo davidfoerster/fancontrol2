@@ -5,106 +5,46 @@
  *      Author: malte
  */
 
-#include "sensors++/sensors.hpp"
-#include "Config.hpp"
-#include <fstream>
-#include <ctime>
-#include <cerrno>
-#include <cstring>
+#include "utils.hpp"
+#include "fan.hpp"
+#include "meta/utility.hpp"
 
+#include <cstdlib>
 
 namespace fancontrol {
-
-using namespace sensors;
-
-using std::cout;
-using std::cerr;
-using std::endl;
-
-
-void strerror(const char *msg = NULL, error_t e = 0)
-{
-	if (msg) {
-		cerr << msg << ':' << ' ';
-	}
-
-	if (!e) e = errno;
-	const char *msg2 = std::strerror(e);
-	if (msg2 && *msg) {
-		cerr << msg2;
-	} else {
-		cerr << "Unknown error " << e;
-	}
-
-}
-
-
-void handleException(std::exception &e, bool cfg_ok, int &r) throw(std::exception)
-{
-	if (cfg_ok) {
-		r = 1;
-	} else {
-		r = 2;
-		cerr << "Error while parsing the configuration file.\n";
-	}
-
-	cerr << "  what(): " << e.what();
-	strerror("");
-	cerr << endl;
-	//throw e;
-}
-
-
-void handleException(SensorError &e, bool cfg_ok, int &r) throw(SensorError)
-{
-	if (cfg_ok) {
-		r = 1;
-	} else {
-		r = 2;
-		cerr << "Error while parsing the configuration file.\n";
-	}
-
-	cerr << "  what(): " << e.what() << endl;
-	//throw e;
-}
 
 
 int main(int argc, char *argv[])
 {
-	int r = 0;
+	int r = EXIT_SUCCESS;
+	std::auto_ptr<fancontrol::data> data;
 
-	std::ifstream cfg_file;
-	cfg_file.exceptions(std::ios::badbit);
-
-	bool cfg_ok = false;
 	try {
-		cfg_file.open("fancontrol2.yaml");
+		data = fancontrol::data::make_config(argc, argv);
+		config::fans_container &fans = META_CHECK_POINTER(data)->cfg.fans;
 
-		Sensors sens;
-		Config cfg(cfg_file, sens);
-		if (cfg.fans.size() == 0)
-			throw SensorError("No fans selected");
+		if (!data->do_check) {
+			register_signal_handlers();
 
-		struct timespec interval; cfg.getInterval(&interval);
-		cfg_ok = true;
+			do {
+				for (config::fans_container::iterator it = fans.begin(); it != fans.end(); ++it) {
+					META_CHECK_POINTER(*it)->update_valve();
+				}
+			} while ((r = sleep(&data->interval)) == EXIT_SUCCESS);
 
-		do {
-			for (std::vector<Fan>::iterator it = cfg.fans.begin(); it != cfg.fans.end(); ++it) {
-				it->updateValve();
-			}
-		} while (nanosleep(&interval, NULL) == 0);
+			if (r < 0)
+				r = EXIT_SUCCESS;
 
-		if (errno != EINTR) {
-			r = 1;
-			strerror("`nanosleep' error");
+		} else {
+			r = !fans.empty() ? EXIT_SUCCESS : EXIT_FAILURE;
 		}
-	} catch (SensorError &e) {
-		handleException(e, cfg_ok, r);
-	} catch (std::exception &e) {
-		handleException(e, cfg_ok, r);
-	}
 
-	cfg_file.close();
+		data.reset();
+	} catch (meta::exception_base &e) {
+		r = handle_exception(e, !!data);
+	} catch (std::runtime_error &e) {
+		r = handle_exception(e, !!data);
+	}
 
 	return r;
 }
@@ -116,3 +56,4 @@ int main(int argc, char *argv[])
 {
 	return fancontrol::main(argc, argv);
 }
+
