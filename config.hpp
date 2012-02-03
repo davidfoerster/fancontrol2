@@ -74,9 +74,9 @@ public:
 
 	~config();
 
-	bool auto_reset;
-
 	void reset();
+
+	bool auto_reset;
 
 	double m_interval;
 
@@ -115,6 +115,8 @@ private:
 
 	fans_container::size_type parse_fans(const Node &node)
 			throw(sensor_error, ParserException, ios_failure);
+
+	void reset_nothrow();
 
 	std::auto_ptr<meta::pidfile> m_pidfile;
 };

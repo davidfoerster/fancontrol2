@@ -225,11 +225,19 @@ config::config(istream &source, const shared_ptr<sensor_container> &sensors, boo
 config::~config()
 {
 	if (auto_reset)
-		reset();
+		reset_nothrow();
 }
 
 
 void config::reset()
+{
+	for (fans_container::iterator it(fans.begin()); it != fans.end(); ++it) {
+		(*it)->reset();
+	}
+}
+
+
+void config::reset_nothrow()
 {
 	for (fans_container::iterator it(fans.begin()); it != fans.end(); ++it) {
 		if (*it) try {
