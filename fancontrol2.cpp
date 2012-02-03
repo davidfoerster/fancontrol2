@@ -17,33 +17,30 @@ namespace fancontrol {
 int main(int argc, char *argv[])
 {
 	int r = EXIT_SUCCESS;
-	std::auto_ptr<fancontrol::data> data;
+	std::auto_ptr<fancontrol::config_wrapper> cfg_wrap;
 
 	try {
-		data = fancontrol::data::make_config(argc, argv);
-		config::fans_container &fans = META_CHECK_POINTER(data)->cfg.fans;
+		cfg_wrap = fancontrol::config_wrapper::make_config(argc, argv);
+		config::fans_container &fans = META_CHECK_POINTER(cfg_wrap)->cfg.fans;
 
-		if (!data->do_check) {
+		if (!cfg_wrap->do_check) {
 			register_signal_handlers();
 
 			do {
 				for (config::fans_container::iterator it = fans.begin(); it != fans.end(); ++it) {
 					META_CHECK_POINTER(*it)->update_valve();
 				}
-			} while ((r = sleep(&data->interval)) == EXIT_SUCCESS);
+			} while ((r = sleep(&cfg_wrap->interval)) < 0);
 
-			if (r < 0)
-				r = EXIT_SUCCESS;
+			cfg_wrap.reset();
 
 		} else {
 			r = !fans.empty() ? EXIT_SUCCESS : EXIT_FAILURE;
 		}
-
-		data.reset();
 	} catch (meta::exception_base &e) {
-		r = handle_exception(e, !!data);
+		r = handle_exception(e, !!cfg_wrap);
 	} catch (std::runtime_error &e) {
-		r = handle_exception(e, !!data);
+		r = handle_exception(e, !!cfg_wrap);
 	}
 
 	return r;

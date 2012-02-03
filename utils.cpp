@@ -31,6 +31,15 @@ using std::cerr;
 using std::endl;
 
 
+#ifndef FANCONTROL_CONFIGFILE
+#	ifdef NDEBUG
+#		define FANCONTROL_CONFIGFILE /etc/fancontrol2.yaml
+#	else
+#		define FANCONTROL_CONFIGFILE fancontrol2.yaml
+#	endif
+#endif
+
+
 void strerror_wrapper(const char *msg, error_t errnum)
 {
 	if (msg) {
@@ -112,19 +121,20 @@ int sleep(const struct timespec *duration)
 					case SIGINT:
 					case SIGQUIT:
 					case SIGTERM:
-						return -1;
-
-					case SIGCONT:
-						last_signal = -1;
-						errno = 0;
+						// no error, but request reset and leave
 						return EXIT_SUCCESS;
 
-					default:
-	#ifndef NDEBUG
-						std::cerr << "Interrupted by signal " << last_signal << '.' << std::endl;
-	#endif
+					case SIGCONT:
+						// request to poll now (instead of waiting a whole interval)
+						last_signal = -1;
+						errno = 0;
+						return -1;
+
+					default:  // i.e. SIGPIPE
+						META_DEBUG(std::cerr << "Interrupted by signal " << last_signal << std::endl);
 						break;
 				}
+				// reset and leave with non-zero return value
 				return 2;
 
 			default:
@@ -132,11 +142,13 @@ int sleep(const struct timespec *duration)
 				return EXIT_FAILURE;
 		}
 	}
-	return EXIT_SUCCESS;
+	// continue normally
+	return -1;
 }
 
 
-data::data(std::ifstream &config_file, const boost::shared_ptr<sensor_container> &sens, bool do_check)
+config_wrapper::config_wrapper(
+	std::ifstream &config_file, const boost::shared_ptr<sensor_container> &sens, bool do_check)
 		throw(meta::runtime_error, YAML::ParserException, std::ios::failure)
 	: cfg(config_file, sens, do_check)
 	, do_check(do_check)
@@ -145,16 +157,10 @@ data::data(std::ifstream &config_file, const boost::shared_ptr<sensor_container>
 }
 
 
-std::auto_ptr<data> data::make_config(int argc, char *argv[])
+std::auto_ptr<config_wrapper> config_wrapper::make_config(int argc, char *argv[])
 		throw(meta::runtime_error, YAML::ParserException)
 {
-	static const char *default_cfg_filename =
-#ifdef NDEBUG
-				"/etc/fancontrol2.yaml"
-#else
-				"fancontrol2.yaml"
-#endif
-			;
+	static const char *default_cfg_filename = META_STRING(FANCONTROL_CONFIGFILE);
 	int argp = 1;
 	const char *cfg_filename = default_cfg_filename;
 	bool do_check = false;
@@ -168,13 +174,21 @@ std::auto_ptr<data> data::make_config(int argc, char *argv[])
 		cfg_filename = argv[argp++];
 	}
 
+	if (argp < argc) {
+		std::cerr << "Ignoring " << (argc - argp) << " superflous command line arguments:";
+		do {
+			std::cerr << ' ' << argv[argp];
+		} while (++argp < argc);
+		std::cerr << std::endl;
+	}
+
 
 	try {
 		std::ifstream cfg_file;
 		cfg_file.exceptions(std::ios::badbit);
 		cfg_file.open(cfg_filename);
 
-		return std::auto_ptr<data>(new data(cfg_file, boost::make_shared<sensor_container>(), do_check));
+		return std::auto_ptr<config_wrapper>(new config_wrapper(cfg_file, boost::make_shared<sensor_container>(), do_check));
 	} catch (std::ios::failure &e) {
 		throw meta::io_error()
 			<< meta::io_error::what_t(e.what())

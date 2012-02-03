@@ -36,13 +36,16 @@ void register_signal_handlers();
 int sleep(const struct timespec *duration);
 
 
-class data {
+class config_wrapper {
 public:
-	data(std::ifstream &config_file, const boost::shared_ptr<sensors::sensor_container> &sensors, bool do_check)
-		throw(meta::runtime_error, YAML::ParserException, std::ios::failure);
+	config_wrapper(
+		std::ifstream &config_file,
+		const boost::shared_ptr<sensors::sensor_container> &sensors,
+		bool do_check)
+			throw(meta::runtime_error, YAML::ParserException, std::ios::failure);
 
-	static std::auto_ptr<data> make_config(int argc, char *argv[])
-		throw(meta::runtime_error, YAML::ParserException);
+	static std::auto_ptr<config_wrapper> make_config(int argc, char *argv[])
+			throw(meta::runtime_error, YAML::ParserException);
 
 	config cfg;
 
