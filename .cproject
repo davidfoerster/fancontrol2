@@ -135,13 +135,13 @@
 									<listOptionValue builtIn="false" value="NDEBUG"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.other.other.171634695" name="Other flags" superClass="gnu.cpp.compiler.option.other.other" value="-c -fmessage-length=0 -pipe -Wconversion -fmax-errors=10" valueType="string"/>
-								<option id="gnu.cpp.compiler.option.optimization.flags.657956493" superClass="gnu.cpp.compiler.option.optimization.flags" value="-flto" valueType="string"/>
+								<option id="gnu.cpp.compiler.option.optimization.flags.657956493" name="Other optimization flags" superClass="gnu.cpp.compiler.option.optimization.flags" value="-flto" valueType="string"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.161587028" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.c.compiler.exe.release.1469583875" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.exe.release">
 								<option defaultValue="gnu.c.optimization.level.most" id="gnu.c.compiler.exe.release.option.optimization.level.1330129718" name="Optimization Level" superClass="gnu.c.compiler.exe.release.option.optimization.level" value="gnu.c.optimization.level.none" valueType="enumerated"/>
 								<option id="gnu.c.compiler.exe.release.option.debugging.level.535368408" name="Debug Level" superClass="gnu.c.compiler.exe.release.option.debugging.level" value="gnu.c.debugging.level.none" valueType="enumerated"/>
-								<option id="gnu.c.compiler.option.misc.other.1658735530" name="Other flags" superClass="gnu.c.compiler.option.misc.other" value="-c -fmessage-length=0 -pipe -Wconversion" valueType="string"/>
+								<option id="gnu.c.compiler.option.misc.other.1658735530" name="Other flags" superClass="gnu.c.compiler.option.misc.other" value="-c -fmessage-length=0 -pipe -Wconversion -fmax-errors=10" valueType="string"/>
 								<option id="gnu.c.compiler.option.include.paths.1492666915" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/fancontrol2}&quot;"/>
 									<listOptionValue builtIn="false" value="/usr/lib/gcc/x86_64-linux-gnu/4.6.1/include"/>
@@ -153,7 +153,7 @@
 								<option id="gnu.c.compiler.option.preprocessor.def.symbols.406484455" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="NDEBUG"/>
 								</option>
-								<option id="gnu.c.compiler.option.optimization.flags.1249986001" superClass="gnu.c.compiler.option.optimization.flags" value="-flto" valueType="string"/>
+								<option id="gnu.c.compiler.option.optimization.flags.1249986001" name="Other optimization flags" superClass="gnu.c.compiler.option.optimization.flags" value="-flto" valueType="string"/>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.435507910" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.c.linker.exe.release.654118890" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.exe.release"/>
@@ -172,7 +172,7 @@
 								<option id="gnu.cpp.link.option.other.612412341" name="Other options (-Xlinker [option])" superClass="gnu.cpp.link.option.other" valueType="stringList">
 									<listOptionValue builtIn="false" value="--as-needed"/>
 								</option>
-								<option id="gnu.cpp.link.option.flags.477459270" superClass="gnu.cpp.link.option.flags" value="-flto -O2" valueType="string"/>
+								<option id="gnu.cpp.link.option.flags.477459270" name="Linker flags" superClass="gnu.cpp.link.option.flags" value="-flto -O2 -march=native" valueType="string"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.224621346" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
