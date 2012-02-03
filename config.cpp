@@ -17,6 +17,7 @@
 
 #include "meta/strcat.hpp"
 #include "meta/algorithm.hpp"
+#include "meta/utility.hpp"
 
 #include <boost/make_shared.hpp>
 #include <boost/format.hpp>
@@ -24,13 +25,20 @@
 
 #include <string>
 #include <istream>
-#include <sstream>
 #include <iostream>
 
 #include <boost/assert.hpp>
 #include <cmath>
 #include <ctime>
 #include <cerrno>
+
+#ifndef FANCONTROL_PIDFILE
+#	define FANCONTROL_PIDFILE /var/run/fancontrol.pid
+#endif
+
+#ifndef FANCONTROL_PIDFILE_ROOTONLY
+#	define FANCONTROL_PIDFILE_ROOTONLY true
+#endif
 
 
 namespace fancontrol {
@@ -203,8 +211,11 @@ config::config(istream &source, const shared_ptr<sensor_container> &sensors, boo
 	: auto_reset(true)
 	, sensors(sensors)
 {
-	if (!do_check)
-		m_pidfile.reset(new meta::pidfile());
+	if (!do_check) {
+		m_pidfile.reset(new meta::pidfile(
+				string_ref::make_const(META_STRING(FANCONTROL_PIDFILE)),
+				FANCONTROL_PIDFILE_ROOTONLY, false));
+	}
 
 	YAML::Parser parser(source);
 	Node doc;
