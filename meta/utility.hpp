@@ -21,6 +21,15 @@ namespace meta {
 
 #define META_UNUSED(u) ((void)(u))
 
+#define _META_STRING2(x) #x
+#define META_STRING(x) _META_STRING2(x)
+
+#ifdef NDEBUG
+#	define META_DEBUG(x) static_cast<void>(0)
+#else
+#	define META_DEBUG(x) (x)
+#endif
+
 
 template <typename T, size_t Size>
 size_t elementsof(const T (&)[Size]);
