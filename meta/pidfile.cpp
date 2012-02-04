@@ -53,7 +53,7 @@ pidfile::pidfile(const string_ref &filename, bool root_only, bool copy_filename)
 		m_file = std::fopen(m_filename.data(), "r");
 		if (m_file) {
 			perrno = EEXIST;
-		} else if (errnum == ENOENT) {
+		} else if (perrno == ENOENT) {
 			// the file does not exist; this is good
 			perrno = 0;
 			return;
