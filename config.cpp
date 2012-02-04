@@ -33,7 +33,11 @@
 #include <cerrno>
 
 #ifndef FANCONTROL_PIDFILE
-#	define FANCONTROL_PIDFILE /var/run/fancontrol.pid
+#	define FANCONTROL_PIDFILE true
+#endif
+
+#ifndef FANCONTROL_PIDFILE_PATH
+#	define FANCONTROL_PIDFILE_PATH /var/run/fancontrol.pid
 #endif
 
 #ifndef FANCONTROL_PIDFILE_ROOTONLY
@@ -211,9 +215,9 @@ config::config(istream &source, const shared_ptr<sensor_container> &sensors, boo
 	: auto_reset(true)
 	, sensors(sensors)
 {
-	if (!do_check) {
+	if (FANCONTROL_PIDFILE && !do_check) {
 		m_pidfile.reset(new meta::pidfile(
-				string_ref::make_const(META_STRING(FANCONTROL_PIDFILE)),
+				string_ref::make_const(META_STRING(FANCONTROL_PIDFILE_PATH)),
 				FANCONTROL_PIDFILE_ROOTONLY, false));
 	}
 
