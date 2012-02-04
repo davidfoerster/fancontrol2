@@ -28,6 +28,8 @@ namespace sensors {
 using boost::shared_ptr;
 using boost::weak_ptr;
 
+using meta::io_error;
+
 struct sensors_chip_name;
 class feature;
 class pwm;
@@ -49,6 +51,7 @@ public:
 	struct Quirks {
 		enum value {
 			pwm_read_before_write,
+			pwm2_alters_pwm1,
 			_length
 		};
 

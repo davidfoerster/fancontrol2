@@ -220,8 +220,10 @@ int chip::mixed_comparator::compare(const basic_type *a, const basic_type *b)
 void chip::guess_quirks()
 {
 	if (!!*this) {
-		m_quirks.set(Quirks::pwm_read_before_write,
-				prefix() == string_ref::make_const("w83667hg"));
+		if (prefix() == string_ref::make_const("w83667hg")) {
+			m_quirks.set(Quirks::pwm_read_before_write);
+			m_quirks.set(Quirks::pwm2_alters_pwm1);
+		}
 	}
 }
 

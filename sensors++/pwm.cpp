@@ -24,6 +24,7 @@
 namespace sensors {
 
 using boost::shared_ptr;
+using meta::io_error;
 
 
 pwm::Item::names_type &pwm::Item::make_names(names_type &names)
@@ -60,7 +61,7 @@ string_ref pwm::Item::prefix()
 }
 
 
-pwm::pwm(const std::string &path, int number, const shared_ptr<const chip_t> &chip)
+pwm::pwm(const std::string &path, int number, const shared_ptr<chip_t> &chip)
 	: selfreference_type(false)
 	, m_chip(chip)
 	, m_basepath(!path.empty() ? path : make_basepath(*chip, number))
@@ -73,6 +74,10 @@ pwm::pwm(const std::string &path, int number, const shared_ptr<const chip_t> &ch
 void pwm::init()
 {
 	m_expeption_mask = std::ios::badbit;
+
+	if (m_number == 2 && m_chip && m_chip->quirks()[chip::Quirks::pwm2_alters_pwm1]) {
+		m_associated = m_chip->pwm(1);
+	}
 }
 
 
@@ -91,7 +96,10 @@ std::string pwm::make_basepath(const chip_t &chip, int number)
 
 pwm::value_t pwm::raw_value() const throw (io_error)
 {
-	return value_read(Item::name(Item::pwm));
+	const pwm *p = (m_number == 2 && m_chip && m_chip->quirks()[chip::Quirks::pwm2_alters_pwm1]) ?
+			META_CHECK_POINTER(m_associated) : this;
+
+	return p->value_read(Item::name(Item::pwm));
 }
 
 

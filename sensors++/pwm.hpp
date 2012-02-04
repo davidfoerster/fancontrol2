@@ -104,7 +104,7 @@ public:
 	pwm(const string_ref &path, Tag);
 
 	template <class Tag>
-	pwm(int number, const shared_ptr<const chip_t> &chip, Tag);
+	pwm(int number, const shared_ptr<chip_t> &chip, Tag);
 
 	bool exists(item_enum item = Item::pwm) const;
 
@@ -132,7 +132,7 @@ public:
 
 	int number() const;
 
-	const boost::shared_ptr<const chip_t> &chip() const;
+	shared_ptr<const chip_t> chip() const;
 
 	bool operator==(const pwm &other) const;
 
@@ -141,14 +141,16 @@ public:
 protected:
 	void init();
 
-	shared_ptr<const chip_t> m_chip;
+	shared_ptr<chip_t> m_chip;
+
+	shared_ptr<pwm> m_associated;
 
 	std::string m_basepath;
 
 	int m_number;
 
 private:
-	pwm(const std::string &pwm_path, int number, const shared_ptr<const chip_t> &chip);
+	pwm(const std::string &pwm_path, int number, const shared_ptr<chip_t> &chip);
 
 	value_t value_read(const string_ref &item, bool ignore_value = false) const throw (io_error);
 
@@ -178,7 +180,7 @@ pwm::pwm(const string_ref &path, Tag tag)
 
 
 template <class Tag>
-pwm::pwm(int number, const shared_ptr<const chip_t> &chip, Tag tag)
+pwm::pwm(int number, const shared_ptr<chip_t> &chip, Tag tag)
 	: selfreference_type(tag)
 	, m_chip(chip)
 	, m_basepath(make_basepath(*chip, number))
@@ -235,8 +237,9 @@ int pwm::number() const
 	return m_number;
 }
 
+
 inline
-const shared_ptr<const chip> &pwm::chip() const
+shared_ptr<const chip> pwm::chip() const
 {
 	return m_chip;
 }
