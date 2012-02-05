@@ -9,7 +9,14 @@
 #ifndef FANCONTROL_CONFIG_HPP_
 #define FANCONTROL_CONFIG_HPP_
 
-#include "meta/pidfile.hpp"
+
+#ifndef FANCONTROL_PIDFILE
+#	define FANCONTROL_PIDFILE (1)
+#endif
+
+#if FANCONTROL_PIDFILE
+#	include "meta/pidfile.hpp"
+#endif
 
 #include "sensors++/exceptions.hpp"
 #include <yaml-cpp/exceptions.h>
@@ -118,7 +125,9 @@ private:
 
 	void reset_nothrow();
 
+#if FANCONTROL_PIDFILE
 	std::auto_ptr<meta::pidfile> m_pidfile;
+#endif
 };
 
 } /* namespace fancontrol */

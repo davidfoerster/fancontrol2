@@ -78,7 +78,11 @@ int handle_exception(meta::exception_base &e, bool cfg_ok)
 {
 	return handle_exception(
 			static_cast<std::exception&>(e),
-			cfg_ok || !!dynamic_cast<meta::pidfile_exception*>(&e));
+			cfg_ok
+#if FANCONTROL_PIDFILE
+			|| !!dynamic_cast<meta::pidfile_exception*>(&e)
+#endif
+		);
 }
 
 

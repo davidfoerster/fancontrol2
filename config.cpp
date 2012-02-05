@@ -32,16 +32,14 @@
 #include <ctime>
 #include <cerrno>
 
-#ifndef FANCONTROL_PIDFILE
-#	define FANCONTROL_PIDFILE true
-#endif
 
-#ifndef FANCONTROL_PIDFILE_PATH
-#	define FANCONTROL_PIDFILE_PATH /var/run/fancontrol.pid
-#endif
-
-#ifndef FANCONTROL_PIDFILE_ROOTONLY
-#	define FANCONTROL_PIDFILE_ROOTONLY true
+#if FANCONTROL_PIDFILE
+#	ifndef FANCONTROL_PIDFILE_PATH
+#		define FANCONTROL_PIDFILE_PATH /var/run/fancontrol.pid
+#	endif
+#	ifndef FANCONTROL_PIDFILE_ROOTONLY
+#		define FANCONTROL_PIDFILE_ROOTONLY (1)
+#	endif
 #endif
 
 
@@ -215,11 +213,13 @@ config::config(istream &source, const shared_ptr<sensor_container> &sensors, boo
 	: auto_reset(true)
 	, sensors(sensors)
 {
-	if (FANCONTROL_PIDFILE && !do_check) {
+#if FANCONTROL_PIDFILE
+	if (!do_check) {
 		m_pidfile.reset(new meta::pidfile(
 				string_ref::make_const(META_STRING(FANCONTROL_PIDFILE_PATH)),
 				FANCONTROL_PIDFILE_ROOTONLY, false));
 	}
+#endif
 
 	YAML::Parser parser(source);
 	Node doc;
