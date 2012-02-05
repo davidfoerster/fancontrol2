@@ -110,7 +110,7 @@ sensor_error::type_enum sensor_error::to_enum(int errnum)
 	using meta::in_range;
 
 	if (errnum < 0) errnum = -errnum;
-	if (BOOST_VERIFY_R(in_range<int>(errnum, 0, _end))) {
+	if (in_range<int>(errnum, 0, _end)) {
 		errnum = invalid_error;
 	}
 	return static_cast<type_enum>(errnum);
