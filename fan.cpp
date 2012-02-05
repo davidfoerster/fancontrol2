@@ -11,6 +11,8 @@
 #include "sensors++/pwm.hpp"
 
 #include <boost/assert.hpp>
+#include <limits>
+#include <cmath>
 
 namespace fancontrol {
 
@@ -28,7 +30,7 @@ fan::fan()
 	: m_min_start(0.6f)
 	, m_max_stop(0.5f)
 	, m_reset_rate(1.0f)
-	, m_last_update(0.0f)
+	, m_last_update(-std::numeric_limits<value_t>::quiet_NaN())
 {
 }
 
@@ -79,8 +81,10 @@ value_t fan::effective_value(value_t value) const
 
 void fan::update_valve(value_t value)
 {
-	m_valve.write(value);
-	m_last_update = value;
+	if (!(std::abs(value - m_last_update) < (2.f / static_cast<value_t>(pwm::pwm_max())))) {
+		m_valve.write(value);
+		m_last_update = value;
+	}
 }
 
 
