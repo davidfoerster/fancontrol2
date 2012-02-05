@@ -6,8 +6,7 @@
  */
 
 #include "exception.hpp"
-#include <boost/lexical_cast.hpp>
-
+#include "strcat.hpp"
 
 namespace meta {
 
@@ -37,7 +36,7 @@ const char *io_error::what() const throw()
 
 		{
 			const std::string *what = get_info<what_t>::get(*this);
-			if (what) {
+			if (what && !what->empty()) {
 				msg = *what;
 			} else {
 				msg = "I/O error";
@@ -46,12 +45,11 @@ const char *io_error::what() const throw()
 
 		{
 			const int *errnum = get_info<errno_code>::get(*this);
-			const char *errmsg = errnum ? std::strerror(*errnum) : 0;
-			if (errmsg && *errmsg) {
-				((msg += ':') += ' ') += errmsg;
-			}
 			if (errnum) {
-				((msg += " (errno=") += boost::lexical_cast<std::string>(*errnum)) += ')';
+				const char *errmsg = std::strerror(*errnum);
+				BOOST_ASSERT(errmsg && *errmsg);
+				((msg += ':') += ' ') += errmsg;
+				((msg += " [errno=") << *errnum) += ']';
 			}
 		}
 

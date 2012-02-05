@@ -7,8 +7,8 @@
 
 #include "exceptions.hpp"
 #include "meta/algorithm.hpp"
-
 #include "meta/assert.hpp"
+#include <cstring>
 
 namespace sensors {
 #include <sensors/error.h>
@@ -54,8 +54,6 @@ sensor_error::sensor_error(const std::string &message) throw()
 
 const char* sensor_error::what() const throw()
 {
-	using boost::exception_detail::get_info;
-
 	if (msg.empty()) {
 		exception_base::what();
 		std::string &msg = const_cast<sensor_error*>(this)->msg;
@@ -66,24 +64,44 @@ const char* sensor_error::what() const throw()
 			msg += sensors_strerror(type);
 		}
 
-		const std::string *chip_name = get_info<sensor_error::chip_name>::get(*this);
-		if (chip_name) {
-			if (!msg.empty()) msg += ' ';
-			(msg += "(on ") += *chip_name;
-
-			const std::string *feature_name = get_info<sensor_error::feature_name>::get(*this);
-			if (feature_name) {
-				(msg += '/') += *feature_name;
-
-				const std::string *subfeature_name = get_info<sensor_error::subfeature_name>::get(*this);
-				if (subfeature_name) {
-					(msg += '/') += *subfeature_name;
-				}
-			}
-			msg += ')';
-		}
+		resource_spec(msg, '(', ')');
 	}
 	return msg.c_str();
+}
+
+
+std::string::size_type sensor_error::resource_spec(std::string &s,
+		std::string::traits_type::int_type left,
+		std::string::traits_type::int_type right)
+	const
+{
+	using boost::exception_detail::get_info;
+	std::string::size_type old_length = s.length();
+
+	const std::string *chip_name = get_info<sensor_error::chip_name>::get(*this);
+	if (chip_name) {
+		if (!s.empty())
+			s += ' ';
+		if (left != std::string::traits_type::eof())
+			s += std::string::traits_type::to_char_type(left);
+
+		(s += "on ") += *chip_name;
+
+		const std::string *feature_name = get_info<sensor_error::feature_name>::get(*this);
+		if (feature_name) {
+			(s += '/') += *feature_name;
+
+			const std::string *subfeature_name = get_info<sensor_error::subfeature_name>::get(*this);
+			if (subfeature_name) {
+				(s += '/') += *subfeature_name;
+			}
+		}
+
+		if (right != std::string::traits_type::eof())
+			s += std::string::traits_type::to_char_type(right);
+	}
+
+	return s.length() - old_length;
 }
 
 
@@ -114,6 +132,18 @@ pwm_error::pwm_error(const string_ref &message) throw()
 pwm_error::pwm_error(const std::string &message) throw()
 	: sensor_error(message)
 {
+}
+
+
+const char* pwm_error::what() const throw()
+{
+	using boost::exception_detail::get_info;
+
+	if (msg.empty()) {
+		io_error::what();
+		resource_spec(const_cast<pwm_error*>(this)->msg, '(', ')');
+	}
+	return msg.c_str();
 }
 
 } /* namespace sensors */

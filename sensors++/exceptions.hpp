@@ -56,6 +56,10 @@ public:
 
 	const char* what() const throw();
 
+	std::string::size_type resource_spec(std::string &s,
+			std::string::traits_type::int_type left = std::string::traits_type::eof(),
+			std::string::traits_type::int_type right = std::string::traits_type::eof()) const;
+
 	int errnum() const;
 
 	type_enum type() const;
@@ -75,7 +79,7 @@ public:
 
 	//virtual ~pwm_error() throw();
 
-	virtual const char* what() const throw() { return sensor_error::what(); }
+	virtual const char* what() const throw();
 };
 
 
