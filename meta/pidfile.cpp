@@ -65,13 +65,13 @@ pidfile::pidfile(const string_ref &filename, bool root_only, bool copy_filename)
 	if (errnum == EEXIST) {
 		pidfile_exception ex(*this);
 		cleanup();
-		throw ex;
+		BOOST_THROW_EXCEPTION(ex);
 	} else {
 		cleanup();
-		throw io_error()
+		BOOST_THROW_EXCEPTION(io_error()
 				<< io_error::what_t("Could not access the PID file")
 				<< io_error::errno_code(errnum)
-				<< io_error::filename(m_filename.as_string());
+				<< io_error::filename(m_filename.as_string()));
 	}
 }
 
@@ -154,13 +154,13 @@ void pidfile::cleanup()
 
 pidfile::pidfile(const pidfile &o) throw()
 {
-	throw std::logic_error("Invalid operation");
+	BOOST_THROW_EXCEPTION(std::logic_error("Invalid operation"));
 }
 
 
 pidfile &pidfile::operator=(const pidfile &o) throw()
 {
-	throw std::logic_error("Invalid operation");
+	BOOST_THROW_EXCEPTION(std::logic_error("Invalid operation"));
 }
 
 
@@ -178,7 +178,7 @@ pidfile_exception::pidfile_exception(pidfile &src) throw()
 		}
 		// we rely on it being closed by pidfile
 	} else {
-		throw io_error() << io_error::errno_code(errno);
+		BOOST_THROW_EXCEPTION(io_error() << io_error::errno_code(errno));
 	}
 }
 

@@ -81,7 +81,7 @@ public:
 
 	class valve_wrapper: public meta::property_wrapper<shared_ptr<pwm>, valve_type_guard> {
 	public:
-		value_t read() const throw(io_error);
+		value_t read() throw(io_error);
 		void write(value_t value) throw(io_error);
 		friend class config;
 	}

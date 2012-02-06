@@ -10,6 +10,7 @@
 #define PROPERTYWRAPPER_HPP_
 
 #include <stdexcept>
+#include <boost/exception/all.hpp>
 
 namespace meta {
 
@@ -195,7 +196,7 @@ template <typename T, class G>
 property_wrapper<T, G> &property_wrapper<T,G>::operator=(const T &new_value) throw(std::invalid_argument)
 {
 	if (!set(new_value))
-		throw std::invalid_argument("new_value");
+		BOOST_THROW_EXCEPTION(std::invalid_argument("new_value"));
 	return *this;
 }
 

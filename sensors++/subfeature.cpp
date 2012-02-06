@@ -32,7 +32,7 @@ double subfeature::value() const throw(sensor_error)
 	double v;
 	int errnum;
 	if ((errnum = sensors_get_value(parent()->parent()->get(), get()->number, &v)) != 0)
-		throw sensor_error(errnum);
+		BOOST_THROW_EXCEPTION(sensor_error(errnum));
 	return v;
 }
 
@@ -45,7 +45,7 @@ void subfeature::value(double v) const
 			META_CHECK_POINTER(*this)->number,
 			v);
 	if (errnum != sensor_error::no_error)
-		throw sensor_error(errnum);
+		BOOST_THROW_EXCEPTION(sensor_error(errnum));
 }
 
 

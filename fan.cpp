@@ -53,7 +53,7 @@ bool fan::valve_type_guard::check(const pwm *valve)
 }
 
 
-value_t fan::valve_wrapper::read() const throw(io_error)
+value_t fan::valve_wrapper::read() throw(io_error)
 {
 	return m_value->value();
 }

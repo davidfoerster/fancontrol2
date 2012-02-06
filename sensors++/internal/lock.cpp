@@ -15,6 +15,7 @@
 
 namespace sensors {
 
+using meta::io_error;
 using boost::weak_ptr;
 using boost::shared_ptr;
 
@@ -38,7 +39,7 @@ lock::lock(bool auto_init) throw (sensor_error, io_error)
 	if (auto_init) {
 		sensor_error::type_enum r = init();
 		if (r != sensor_error::no_error)
-			throw sensor_error(r);
+			BOOST_THROW_EXCEPTION(sensor_error(r));
 	}
 }
 
@@ -59,7 +60,7 @@ sensor_error::type_enum lock::init(std::FILE *config) throw (std::logic_error, i
 	if (same_config_file(config))
 		return sensor_error::no_error;
 
-	throw std::logic_error("You cannot reinitialise libsensors with a different configuration file whithout releasing it first.");
+	BOOST_THROW_EXCEPTION(std::logic_error("You cannot reinitialise libsensors with a different configuration file whithout releasing it first."));
 }
 
 

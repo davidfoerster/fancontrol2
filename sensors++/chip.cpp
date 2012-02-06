@@ -240,7 +240,7 @@ bool chip::is_wildcard(const basic_type &chip)
 void chip::check_wildcard() const throw (sensor_error)
 {
 	if (!!*this && is_wildcard(*get()))
-		throw sensor_error(sensor_error::misplaced_wildcard);
+		BOOST_THROW_EXCEPTION(sensor_error(sensor_error::misplaced_wildcard));
 }
 
 

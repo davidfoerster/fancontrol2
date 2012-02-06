@@ -194,10 +194,10 @@ std::auto_ptr<config_wrapper> config_wrapper::make_config(int argc, char *argv[]
 
 		return std::auto_ptr<config_wrapper>(new config_wrapper(cfg_file, boost::make_shared<sensor_container>(), do_check));
 	} catch (std::ios::failure &e) {
-		throw meta::io_error()
+		BOOST_THROW_EXCEPTION(meta::io_error()
 			<< meta::io_error::what_t(e.what())
 			<< meta::io_error::errno_code(errno)
-			<< meta::io_error::filename(cfg_filename);
+			<< meta::io_error::filename(cfg_filename));
 	}
 }
 

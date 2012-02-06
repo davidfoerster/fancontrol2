@@ -38,7 +38,7 @@ simple_bounded_control::check_source_type(const shared_ptr<const SF> &gauge)
 	throw(std::invalid_argument)
 {
 	if (gauge && !gauge->test_flag(SF::flags::readable))
-		throw std::invalid_argument("Unreadable source type");
+		BOOST_THROW_EXCEPTION(std::invalid_argument("Unreadable source type"));
 	return gauge;
 }
 

@@ -84,7 +84,7 @@ void pwm::init()
 std::string pwm::make_basepath(const chip_t &chip, int number)
 {
 	if (number <= 0)
-		throw std::logic_error("'number' must be positive");
+		BOOST_THROW_EXCEPTION(std::logic_error("'number' must be positive"));
 
 	std::ostringstream str;
 	str << chip.path();
@@ -229,7 +229,8 @@ bool pwm::exists(const string_ref &item, std::ios::open_mode mode_) const
 			break;
 
 		default:
-			throw std::ios::failure("Invalid open mode");
+			BOOST_THROW_EXCEPTION(std::ios::failure("Invalid open mode"));
+			break;
 	}
 
 	return exists_internal(item, mode);

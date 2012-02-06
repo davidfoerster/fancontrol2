@@ -22,6 +22,7 @@ namespace sensors {
 using boost::weak_ptr;
 using boost::shared_ptr;
 using meta::self_referenced;
+using meta::io_error;
 
 
 sensor_container::sensor_container(std::FILE *config) throw (sensor_error, io_error, std::logic_error)
@@ -66,7 +67,7 @@ shared_ptr<chip> &sensor_container::chip_internal(
 		const chip_t::basic_type *chip_basic = sensors_get_detected_chips(chip_basic, &nr);
 		if (chip_basic) {
 			if (!ignore_duplicate_matches && !!sensors_get_detected_chips(chip_basic, &nr))
-				throw sensor_error(sensor_error::misplaced_wildcard);
+				BOOST_THROW_EXCEPTION(sensor_error(sensor_error::misplaced_wildcard));
 
 			chip = self_referenced<chip_t>::make(chip_basic);
 		}
@@ -128,7 +129,7 @@ shared_ptr<chip> sensor_container::chip(
 		(m_chips[*basic_chip] = self_referenced<chip_t>::make(basic_chip));
 
 	if (!ignore_duplicate_matches && !!sensors_get_detected_chips(&match, &nr))
-		throw sensor_error(sensor_error::misplaced_wildcard);
+		BOOST_THROW_EXCEPTION(sensor_error(sensor_error::misplaced_wildcard));
 
 	return chip;
 }
@@ -146,7 +147,7 @@ shared_ptr<chip> sensor_container::parse_name(const string_ref &name)
 		return chip;
 	} else {
 		if (sensor_error::to_enum(errnum) != sensor_error::unparsable_chip_name)
-			throw sensor_error(errnum);
+			BOOST_THROW_EXCEPTION(sensor_error(errnum));
 		return shared_ptr<chip_t>();
 	}
 }

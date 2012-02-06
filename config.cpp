@@ -70,8 +70,7 @@ config::parse_chip(const Node &node)
 	if (chip)
 		return chip;
 
-	throw sensor_error(sensor_error::unparsable_chip_name)
-			<< sensor_error::chip_name(name);
+	BOOST_THROW_EXCEPTION(sensor_error(sensor_error::unparsable_chip_name) << sensor_error::chip_name(name));
 }
 
 
@@ -96,7 +95,7 @@ config::parse_subfeature(const Node &node)
 	e << sensor_error::chip_name(chip->prefix().as_string());
 	e << sensor_error::feature_name(name_buf);
 	if (feat) e << sensor_error::subfeature_name(name.as_string());
-	throw e;
+	BOOST_THROW_EXCEPTION(e);
 }
 
 
