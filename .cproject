@@ -133,6 +133,7 @@
 									<listOptionValue builtIn="false" value="BOOST_SP_DISABLE_THREADS"/>
 									<listOptionValue builtIn="false" value="BOOST_DISABLE_ASSERTS"/>
 									<listOptionValue builtIn="false" value="NDEBUG"/>
+									<listOptionValue builtIn="false" value="META_DISABLE_CHECK_POINTER"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.other.other.171634695" name="Other flags" superClass="gnu.cpp.compiler.option.other.other" value="-c -fmessage-length=0 -pipe -Wconversion -fmax-errors=10" valueType="string"/>
 								<option id="gnu.cpp.compiler.option.optimization.flags.657956493" name="Other optimization flags" superClass="gnu.cpp.compiler.option.optimization.flags" value="-flto" valueType="string"/>
@@ -233,6 +234,7 @@
 									<listOptionValue builtIn="false" value="BOOST_SP_DISABLE_THREADS"/>
 									<listOptionValue builtIn="false" value="NDEBUG"/>
 									<listOptionValue builtIn="false" value="BOOST_DISABLE_ASSERTS"/>
+									<listOptionValue builtIn="false" value="META_DISABLE_CHECK_POINTER"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.other.other.1594201016" name="Other flags" superClass="gnu.cpp.compiler.option.other.other" value="-c -fmessage-length=0 -pipe -Wconversion -fmax-errors=10" valueType="string"/>
 								<option id="gnu.cpp.compiler.option.optimization.flags.1034012552" name="Other optimization flags" superClass="gnu.cpp.compiler.option.optimization.flags" value="-march=native" valueType="string"/>

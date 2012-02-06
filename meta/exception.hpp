@@ -49,7 +49,11 @@ struct null_pointer_exception
 	template <typename T>
 	static T *check(T *p, const char *var_name) throw (null_pointer_exception);
 
+#ifndef META_DISABLE_CHECK_POINTER
 #	define META_CHECK_POINTER(var) (::meta::null_pointer_exception::check(var, #var))
+#else
+#	define META_CHECK_POINTER(var) (&*(var))
+#endif
 
 };
 
