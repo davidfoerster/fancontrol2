@@ -60,9 +60,6 @@ public:
 
 	bool has_parent() const;
 
-	const weak_ptr<this_type> &this_ptr();
-	const weak_ptr<const this_type> &this_ptr() const;
-
 	object_wrapper(const this_type &);
 
 	this_type &operator=(const this_type &);
@@ -79,9 +76,6 @@ protected:
 	basic_type *m_object;
 
 	shared_ptr<parent_type> m_parent;
-
-private:
-	weak_ptr<this_type> m_this_ptr;
 };
 
 
