@@ -9,11 +9,7 @@
 #ifndef CONDITIONAL_SHARED_PTR_HPP_
 #define CONDITIONAL_SHARED_PTR_HPP_
 
-#ifndef BOOST_SP_DISABLE_THREADS
-#	warning The locking mechanism of conditional_shared_ptr is not thread-safe!
-#endif
-
-
+#include <boost/smart_ptr/detail/sp_counted_base.hpp>
 #include <cstddef>
 #include <boost/assert.hpp>
 
@@ -28,21 +24,19 @@ namespace internal {
 	class shared_reference_counter_base
 	{
 	public:
-		typedef std::size_t size_type;
+		typedef int counter_t;
 
 		virtual ~shared_reference_counter_base() {};
 
-		bool unique() const;
-
 		void ref();
 
-		void unref();
+		bool unref();
 
 	protected:
 		shared_reference_counter_base();
 
 	private:
-		size_type m_counter;
+		counter_t m_counter;
 	};
 
 
@@ -77,8 +71,6 @@ namespace internal {
 	class conditional_shared_ptr_base
 	{
 	public:
-		bool unique() const;
-
 		conditional_shared_ptr_base(const conditional_shared_ptr_base &o);
 
 	protected:
@@ -95,7 +87,7 @@ namespace internal {
 	private:
 		void ref();
 
-		void unref();
+		bool unref();
 
 		shared_reference_counter_base *m_reference_counter;
 	};
@@ -247,22 +239,24 @@ shared_reference_counter_base::shared_reference_counter_base()
 inline
 void shared_reference_counter_base::ref()
 {
-	m_counter += 1;
+	BOOST_ASSERT(m_counter > 0);
+#ifdef BOOST_DISABLE_THREADS
+	++m_counter;
+#else
+	boost::detail::atomic_increment(&m_counter);
+#endif
 }
 
 
 inline
-void shared_reference_counter_base::unref()
+bool shared_reference_counter_base::unref()
 {
-	BOOST_ASSERT(!unique());
-	m_counter -= 1;
-}
-
-
-inline
-bool shared_reference_counter_base::unique() const
-{
-	return m_counter == 1;
+	BOOST_ASSERT(m_counter > 0);
+#ifdef BOOST_DISABLE_THREADS
+	return --m_counter != 0;
+#else
+	return boost::detail::atomic_exchange_and_add(&m_counter, -1) != 1;
+#endif
 }
 
 
@@ -334,7 +328,7 @@ conditional_shared_ptr_base &conditional_shared_ptr_base::operator=(const condit
 inline
 conditional_shared_ptr_base::~conditional_shared_ptr_base()
 {
-	if (unique())
+	if (!unref())
 		delete m_reference_counter;
 }
 
@@ -348,17 +342,10 @@ void conditional_shared_ptr_base::ref()
 
 
 inline
-void conditional_shared_ptr_base::unref()
+bool conditional_shared_ptr_base::unref()
 {
-	if (m_reference_counter)
+	return !m_reference_counter ||
 		m_reference_counter->unref();
-}
-
-
-inline
-bool conditional_shared_ptr_base::unique() const
-{
-	return m_reference_counter && m_reference_counter->unique();
 }
 
 }
