@@ -57,7 +57,7 @@ public:
 
 	void write_valve(value_t value);
 
-	void update_valve();
+	void update_valve(bool force = false);
 
 	void reset();
 
@@ -90,7 +90,7 @@ public:
 private:
 	value_t effective_value(value_t) const;
 
-	void update_valve(value_t);
+	void update_valve(bool force, value_t);
 
 	value_t m_last_update;
 };

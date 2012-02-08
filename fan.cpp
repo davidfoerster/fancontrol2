@@ -79,18 +79,18 @@ value_t fan::effective_value(value_t value) const
 }
 
 
-void fan::update_valve(value_t value)
+void fan::update_valve(bool force, value_t value)
 {
-	if (!(std::abs(value - m_last_update) < (2.f / static_cast<value_t>(pwm::pwm_max())))) {
+	if (force || !(std::abs(value - m_last_update) < (2.f / static_cast<value_t>(pwm::pwm_max())))) {
 		m_valve.write(value);
 		m_last_update = value;
 	}
 }
 
 
-void fan::update_valve()
+void fan::update_valve(bool force)
 {
-	update_valve(effective_value(META_CHECK_POINTER(m_dependency)->rate()));
+	update_valve(force, effective_value(META_CHECK_POINTER(m_dependency)->rate()));
 }
 
 
