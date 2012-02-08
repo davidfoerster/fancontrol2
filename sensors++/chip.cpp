@@ -250,4 +250,7 @@ void chip::chip_deleter(sensors_chip_name *chip)
 	delete chip;
 }
 
+
+template std::ostream &operator<<(std::ostream&, const chip&);
+
 } /* namespace sensors */

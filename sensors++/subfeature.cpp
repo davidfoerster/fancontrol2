@@ -88,4 +88,7 @@ subfeature::type_enum subfeature::type_from_name(sensors_feature_type feature, c
 	return SENSORS_SUBFEATURE_UNKNOWN;
 }
 
+
+template std::ostream &operator<<(std::ostream &out, const subfeature &sfeat);
+
 } /* namespace sensors */

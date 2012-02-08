@@ -9,6 +9,19 @@
 #ifndef UTILITY_HPP_
 #define UTILITY_HPP_
 
+
+#ifndef META_LOG_LEVEL
+#	define META_LOG_LEVEL 0
+#endif
+
+#if META_LOG_LEVEL > 0
+#	include <iostream>
+#	define META_LOG(level, what) (((level) <= META_LOG_LEVEL) ? ((::std::clog << what) << ::std::endl, static_cast<void>(0)) : static_cast<void>(0))
+#else
+#	define META_LOG(level, what) (static_cast<void>(0))
+#endif
+
+
 #include <cstddef>
 #include <cstring>
 

@@ -192,4 +192,7 @@ bool feature::Types::is_valid(const std::pair<type_enum, int> &which)
 	return is_valid(which.first, which.second);
 }
 
+
+template std::ostream &operator<<(std::ostream&, const feature&);
+
 } /* namespace sensors */

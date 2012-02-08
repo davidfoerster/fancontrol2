@@ -154,6 +154,9 @@ private:
 };
 
 
+template <typename Char, class Traits>
+std::basic_ostream<Char, Traits> &operator<<(std::basic_ostream<Char, Traits>&, const chip&);
+
 
 // implementations ========================================
 
@@ -284,6 +287,20 @@ int chip::mixed_comparator::compare(const chip &a, const basic_type *b)
 {
 	return compare(a.get(), b);
 }
+
+
+template <typename Char, class Traits>
+std::basic_ostream<Char, Traits> &operator<<(std::basic_ostream<Char, Traits> &out, const chip &ch)
+{
+	if (!!ch) {
+		out << ch.prefix() << ':' << ch->addr;
+	} else {
+		out << "<null>";
+	}
+	return out;
+}
+
+extern template std::ostream &operator<<(std::ostream&, const chip&);
 
 } /* namespace sensors */
 #endif /* SENSORS_CHIP_HPP_ */

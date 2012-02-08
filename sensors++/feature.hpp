@@ -12,12 +12,12 @@
 #include "internal/common.hpp"
 #include "internal/object_wrapper.hpp"
 
+#include "meta/exception.hpp"
 #include "meta/self_referenced.hpp"
 #include <chromium/base/stack_container.h>
 #include <boost/weak_ptr.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/ref.hpp>
-
 #include <map>
 
 #include "csensors.hpp"
@@ -106,6 +106,9 @@ protected:
 };
 
 
+template <typename Char, class Traits>
+std::basic_ostream<Char, Traits> &operator<<(std::basic_ostream<Char, Traits>&, const feature&);
+
 
 // implementations ========================================
 
@@ -140,6 +143,20 @@ const string_ref &feature::name() const
 {
 	return m_name;
 }
+
+
+template <typename Char, class Traits>
+std::basic_ostream<Char, Traits> &operator<<(std::basic_ostream<Char, Traits> &out, const feature &feat)
+{
+	if (!!feat) {
+		out << *META_CHECK_POINTER(feat.parent()) << '/' << feat.name();
+	} else {
+		out << "<null>";
+	}
+	return out;
+}
+
+extern template std::ostream &operator<<(std::ostream&, const feature&);
 
 } /* namespace sensors */
 #endif /* SENSORS_FEATURE_H_ */

@@ -73,6 +73,9 @@ public:
 };
 
 
+template <typename Char, class Traits>
+std::basic_ostream<Char, Traits> &operator<<(std::basic_ostream<Char, Traits>&, const subfeature&);
+
 
 // implementations ========================================
 
@@ -132,6 +135,20 @@ bool subfeature::type_comparator::less(const subfeature &a, type_enum tb)
 {
 	return less(a.get(), tb);
 }
+
+
+template <typename Char, class Traits>
+std::basic_ostream<Char, Traits> &operator<<(std::basic_ostream<Char, Traits> &out, const subfeature &sfeat)
+{
+	if (!!sfeat) {
+		out << *META_CHECK_POINTER(sfeat.parent()) << '_' << sfeat->name;
+	} else {
+		out << "<null>";
+	}
+	return out;
+}
+
+extern template std::ostream &operator<<(std::ostream &out, const subfeature &sfeat);
 
 } /* namespace sensors */
 #endif /* SENSORS_SUBFEATURE_HPP_ */

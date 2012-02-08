@@ -29,7 +29,10 @@ value_t bounded_control::convert_rate(value_t raw_value) const
 
 value_t simple_bounded_control::rate_impl() const
 {
-	return (this->*m_rate_converter)(static_cast<value_t>(m_source->value()));
+	double value = m_source->value();
+	value_t rate = (this->*m_rate_converter)(static_cast<value_t>(value));
+	//META_LOG(5, "Reading from " << *m_source << ':' << ' ' << value << '=' << '>' << rate);
+	return rate;
 }
 
 
@@ -78,6 +81,9 @@ value_t aggregated_control::rate_impl() const
 	} else {
 		max = 0;
 	}
+
+	//META_LOG(5, sources.size() << " sources have the aggregated maximum value " << max << '.');
+
 	return max;
 }
 
