@@ -96,7 +96,7 @@ void fan::update_valve(bool force)
 
 void fan::reset()
 {
-	update_valve(effective_value(m_reset_rate));
+	update_valve(true, effective_value(m_reset_rate));
 }
 
 
