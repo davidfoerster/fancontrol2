@@ -105,7 +105,7 @@ const struct sigaction *get_signal_action_definition()
 void register_signal_handlers()
 {
 	static const struct sigaction *signal_action_definition = get_signal_action_definition();
-	static const int signals[] = { SIGHUP, SIGINT, SIGQUIT, SIGPIPE, SIGTERM, SIGCONT, SIGUSR1 };
+	static const int signals[] = { SIGHUP, SIGINT, SIGQUIT, SIGPIPE, SIGTERM, SIGCONT };
 
 	last_signal = -1;
 
@@ -141,10 +141,6 @@ int sleep(const struct timespec *duration)
 
 					case SIGCONT:
 						// request to poll now (instead of waiting a whole interval)
-						//return sleep_reset();  // just fall through instead
-
-					case SIGUSR1:
-						// force next pwm update
 						return sleep_reset();
 
 					default:  // i.e. SIGPIPE

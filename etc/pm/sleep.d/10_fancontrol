@@ -4,7 +4,7 @@ PIDFILE=/var/run/fancontrol.pid
 case "$1" in
 	resume|thaw)
 		PID="`cat "$PIDFILE" 2>/dev/null`"
-		test -z "$PID" || kill -s USR1 "$PID"
+		test -z "$PID" || kill -s CONT "$PID"
 		exit $?
 		;;
 esac

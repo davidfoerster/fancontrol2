@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
 
 			do {
 				for (config::fans_container::iterator it = fans.begin(); it != fans.end(); ++it) {
-					META_CHECK_POINTER(*it)->update_valve(r == -SIGUSR1);
+					META_CHECK_POINTER(*it)->update_valve(r == -SIGCONT);
 				}
 			} while ((r = sleep(&cfg_wrap->interval)) < 0);
 
