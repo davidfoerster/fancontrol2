@@ -18,8 +18,7 @@
 
 #include <cstring>
 #include <boost/assert.hpp>
-#include <sys/types.h>
-#include <fcntl.h>
+#include <unistd.h>
 
 namespace sensors {
 
@@ -132,10 +131,9 @@ pwm::value_t pwm::value(const string_ref &item) const throw (io_error)
 
 pwm::value_t pwm::value_read(const string_ref &item, bool ignore_value) const throw (io_error)
 {
-	std::string path; make_itempath(item, path);
-	std::ifstream f;
+	std::fstream f;
 	f.exceptions(m_expeption_mask);
-	f.open(path.c_str());
+	open(f, item, std::ios::in);
 
 	value_t value;
 	if (!ignore_value) {
@@ -181,57 +179,83 @@ void pwm::value(const string_ref &item, value_t value) throw (io_error)
 
 void pwm::value_write(const string_ref &item, value_t value) throw (io_error)
 {
-	std::string path; make_itempath(item, path);
-	std::ofstream f;
+	std::fstream f;
 	f.exceptions(m_expeption_mask);
-	f.open(path.c_str());
+	open(f, item, std::ios::out);
 	f << value;
 }
 
 
-void pwm::make_itempath(const string_ref &item, std::string &dst) const
+std::string pwm::make_itempath(const string_ref &item) const
 {
 	if (item.empty()) {
-		dst = m_basepath;
+		return m_basepath;
 	} else {
+		std::string dst;
 		const size_t required = m_basepath.length() + item.length() + 1;
 		dst.reserve(required + 1);
 		dst = m_basepath;
 		dst += '_';
 		item.AppendToString(&dst);
 		BOOST_ASSERT(dst.length() == required);
+		return dst;
 	}
 }
 
 
-bool pwm::exists_internal(const string_ref &item, int open_mode) const
+void pwm::open(std::fstream &file, const string_ref &item, std::ios::openmode mode) const
 {
-	std::string path; make_itempath(item, path);
-	int fd = ::open(path.c_str(), open_mode, O_DIRECT|O_NOATIME|O_NOCTTY);
-	return fd > 0 && ::close(fd) == 0;
+	file.open(item.empty() ? m_basepath.c_str() : make_itempath(item).c_str(), mode);
+}
+
+
+bool pwm::exists_internal(const string_ref &item, int mode) const
+{
+	const char *path;
+
+	std::string buf;
+	if (item.empty()) {
+		path = m_basepath.c_str();
+	} else {
+		buf = make_itempath(item);
+		path = buf.c_str();
+	}
+
+	if (::euidaccess(path, mode) == 0)
+		return true;
+
+	switch (errno) {
+		case EACCES:
+		case ELOOP:
+		case ENAMETOOLONG:
+		case ENOENT:
+		case ENOTDIR:
+		case EROFS:
+			break;
+
+		default:
+			BOOST_THROW_EXCEPTION(io_error()
+				<< io_error::what_t("::access() failed")
+				<< io_error::filename(path)
+				<< io_error::errno_code(errno));
+			break;
+	}
+	return false;
 }
 
 
 bool pwm::exists(const string_ref &item, std::ios::open_mode mode_) const
 {
-	int mode;
-	switch (mode_ & (std::ios::in|std::ios::out)) {
-		case (static_cast<int>(std::ios::in) | static_cast<int>(std::ios::out)):
-			mode = O_RDWR;
-			break;
+	int mode = 0;
 
-		case std::ios::in:
-			mode = O_RDONLY;
-			break;
+	if (mode_ & std::ios::in)
+		mode |= R_OK;
 
-		case std::ios::out:
-			mode = O_WRONLY;
-			break;
+	if (mode_ & std::ios::out)
+		mode |= W_OK;
 
-		default:
-			BOOST_THROW_EXCEPTION(std::ios::failure("Invalid open mode"));
-			break;
-	}
+	if (!mode)
+		BOOST_THROW_EXCEPTION(std::ios::failure("Invalid open mode"));
 
 	return exists_internal(item, mode);
 }
@@ -239,7 +263,7 @@ bool pwm::exists(const string_ref &item, std::ios::open_mode mode_) const
 
 bool pwm::exists(item_enum item) const
 {
-	return exists_internal(Item::name(item), O_RDWR);
+	return exists_internal(Item::name(item), R_OK|W_OK);
 }
 
 

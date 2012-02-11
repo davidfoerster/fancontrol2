@@ -158,7 +158,9 @@ private:
 
 	bool exists_internal(const string_ref &item, int open_mode) const;
 
-	void make_itempath(const string_ref &item, std::string &dst) const;
+	std::string make_itempath(const string_ref &item) const;
+
+	void open(std::fstream &file, const string_ref &item, std::ios::openmode mode) const;
 
 	friend class sensors::chip;
 };
