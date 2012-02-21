@@ -29,12 +29,15 @@
 								<option id="gnu.cpp.compiler.exe.debug.option.debugging.level.1144064494" name="Debug Level" superClass="gnu.cpp.compiler.exe.debug.option.debugging.level" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.include.paths.162881392" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/fancontrol2}&quot;"/>
-									<listOptionValue builtIn="false" value="/usr/local/include"/>
-									<listOptionValue builtIn="false" value="/usr/include/x86_64-linux-gnu"/>
-									<listOptionValue builtIn="false" value="/usr/include"/>
-									<listOptionValue builtIn="false" value="/usr/include/c++/4.6"/>
-									<listOptionValue builtIn="false" value="/usr/include/c++/4.6/x86_64-linux-gnu"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/chromium base library}&quot;"/>
+									<listOptionValue builtIn="true" value="/usr/include/c++/4.6"/>
+									<listOptionValue builtIn="true" value="/usr/include/c++/4.6/x86_64-linux-gnu"/>
+									<listOptionValue builtIn="true" value="/usr/include/c++/4.6/backward"/>
+									<listOptionValue builtIn="true" value="/usr/lib/gcc/x86_64-linux-gnu/4.6.1/include"/>
+									<listOptionValue builtIn="true" value="/usr/local/include"/>
+									<listOptionValue builtIn="true" value="/usr/lib/gcc/x86_64-linux-gnu/4.6.1/include-fixed"/>
+									<listOptionValue builtIn="true" value="/usr/include/x86_64-linux-gnu"/>
+									<listOptionValue builtIn="true" value="/usr/include"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.preprocessor.def.703272659" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="_GLIBCXX_HOSTED=1"/>
@@ -49,14 +52,15 @@
 								<option id="gnu.c.compiler.exe.debug.option.debugging.level.428245971" name="Debug Level" superClass="gnu.c.compiler.exe.debug.option.debugging.level" value="gnu.c.debugging.level.max" valueType="enumerated"/>
 								<option id="gnu.c.compiler.option.include.paths.1862213243" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/fancontrol2}&quot;"/>
-									<listOptionValue builtIn="false" value="/usr/lib/gcc/x86_64-linux-gnu/4.6.1/include"/>
-									<listOptionValue builtIn="false" value="/usr/local/include"/>
-									<listOptionValue builtIn="false" value="/usr/lib/gcc/x86_64-linux-gnu/4.6.1/include-fixed"/>
-									<listOptionValue builtIn="false" value="/usr/include/x86_64-linux-gnu"/>
-									<listOptionValue builtIn="false" value="/usr/include"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/chromium base library}&quot;"/>
+									<listOptionValue builtIn="true" value="/usr/lib/gcc/x86_64-linux-gnu/4.6.1/include"/>
+									<listOptionValue builtIn="true" value="/usr/local/include"/>
+									<listOptionValue builtIn="true" value="/usr/lib/gcc/x86_64-linux-gnu/4.6.1/include-fixed"/>
+									<listOptionValue builtIn="true" value="/usr/include/x86_64-linux-gnu"/>
+									<listOptionValue builtIn="true" value="/usr/include"/>
 								</option>
 								<option id="gnu.c.compiler.option.misc.other.1621508850" name="Other flags" superClass="gnu.c.compiler.option.misc.other" value="-c -fmessage-length=0 -pipe -Wconversion" valueType="string"/>
-								<option id="gnu.c.compiler.option.preprocessor.def.symbols.1009800892" superClass="gnu.c.compiler.option.preprocessor.def.symbols" valueType="definedSymbols"/>
+								<option id="gnu.c.compiler.option.preprocessor.def.symbols.1009800892" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols"/>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.198348148" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.c.linker.exe.debug.92863154" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.exe.debug"/>
@@ -83,11 +87,11 @@
 							<tool id="cdt.managedbuild.tool.gnu.assembler.exe.debug.1535780656" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.exe.debug">
 								<option id="gnu.both.asm.option.include.paths.143515357" name="Include paths (-I)" superClass="gnu.both.asm.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/fancontrol2}&quot;"/>
-									<listOptionValue builtIn="false" value="/usr/lib/gcc/x86_64-linux-gnu/4.6.1/include"/>
-									<listOptionValue builtIn="false" value="/usr/local/include"/>
-									<listOptionValue builtIn="false" value="/usr/lib/gcc/x86_64-linux-gnu/4.6.1/include-fixed"/>
-									<listOptionValue builtIn="false" value="/usr/include/x86_64-linux-gnu"/>
-									<listOptionValue builtIn="false" value="/usr/include"/>
+									<listOptionValue builtIn="true" value="/usr/lib/gcc/x86_64-linux-gnu/4.6.1/include"/>
+									<listOptionValue builtIn="true" value="/usr/local/include"/>
+									<listOptionValue builtIn="true" value="/usr/lib/gcc/x86_64-linux-gnu/4.6.1/include-fixed"/>
+									<listOptionValue builtIn="true" value="/usr/include/x86_64-linux-gnu"/>
+									<listOptionValue builtIn="true" value="/usr/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.1045239098" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>
@@ -95,7 +99,15 @@
 					</folderInfo>
 				</configuration>
 			</storageModule>
-			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
+			<storageModule moduleId="org.eclipse.cdt.core.externalSettings">
+				<externalSettings containerId="chromium base library;cdt.managedbuild.config.gnu.so.debug.1446957190" factoryId="org.eclipse.cdt.core.cfg.export.settings.sipplier">
+					<externalSetting>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/chromium base library"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/chromium base library/Debug"/>
+						<entry flags="RESOLVED" kind="libraryFile" name="chromium_base"/>
+					</externalSetting>
+				</externalSettings>
+			</storageModule>
 		</cconfiguration>
 		<cconfiguration id="cdt.managedbuild.config.gnu.exe.release.1072239587">
 			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="cdt.managedbuild.config.gnu.exe.release.1072239587" moduleId="org.eclipse.cdt.core.settings" name="Release">
@@ -121,14 +133,15 @@
 								<option id="gnu.cpp.compiler.exe.release.option.debugging.level.731440607" name="Debug Level" superClass="gnu.cpp.compiler.exe.release.option.debugging.level" value="gnu.cpp.compiler.debugging.level.none" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.include.paths.1381782564" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/fancontrol2}&quot;"/>
-									<listOptionValue builtIn="false" value="/usr/local/include"/>
-									<listOptionValue builtIn="false" value="/usr/lib/gcc/x86_64-linux-gnu/4.6.1/include-fixed"/>
-									<listOptionValue builtIn="false" value="/usr/lib/gcc/x86_64-linux-gnu/4.6.1/include"/>
-									<listOptionValue builtIn="false" value="/usr/include/x86_64-linux-gnu"/>
-									<listOptionValue builtIn="false" value="/usr/include"/>
-									<listOptionValue builtIn="false" value="/usr/include/c++/4.6"/>
-									<listOptionValue builtIn="false" value="/usr/include/c++/4.6/x86_64-linux-gnu"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/chromium base library}&quot;"/>
+									<listOptionValue builtIn="true" value="/usr/include/c++/4.6"/>
+									<listOptionValue builtIn="true" value="/usr/include/c++/4.6/x86_64-linux-gnu"/>
+									<listOptionValue builtIn="true" value="/usr/include/c++/4.6/backward"/>
+									<listOptionValue builtIn="true" value="/usr/lib/gcc/x86_64-linux-gnu/4.6.1/include"/>
+									<listOptionValue builtIn="true" value="/usr/local/include"/>
+									<listOptionValue builtIn="true" value="/usr/lib/gcc/x86_64-linux-gnu/4.6.1/include-fixed"/>
+									<listOptionValue builtIn="true" value="/usr/include/x86_64-linux-gnu"/>
+									<listOptionValue builtIn="true" value="/usr/include"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.preprocessor.def.499138513" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="_GLIBCXX_HOSTED=1"/>
@@ -147,11 +160,11 @@
 								<option id="gnu.c.compiler.option.misc.other.1658735530" name="Other flags" superClass="gnu.c.compiler.option.misc.other" value="-c -fmessage-length=0 -pipe -Wconversion -fmax-errors=10" valueType="string"/>
 								<option id="gnu.c.compiler.option.include.paths.1492666915" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/fancontrol2}&quot;"/>
-									<listOptionValue builtIn="false" value="/usr/lib/gcc/x86_64-linux-gnu/4.6.1/include"/>
-									<listOptionValue builtIn="false" value="/usr/local/include"/>
-									<listOptionValue builtIn="false" value="/usr/lib/gcc/x86_64-linux-gnu/4.6.1/include-fixed"/>
-									<listOptionValue builtIn="false" value="/usr/include/x86_64-linux-gnu"/>
-									<listOptionValue builtIn="false" value="/usr/include"/>
+									<listOptionValue builtIn="true" value="/usr/lib/gcc/x86_64-linux-gnu/4.6.1/include"/>
+									<listOptionValue builtIn="true" value="/usr/local/include"/>
+									<listOptionValue builtIn="true" value="/usr/lib/gcc/x86_64-linux-gnu/4.6.1/include-fixed"/>
+									<listOptionValue builtIn="true" value="/usr/include/x86_64-linux-gnu"/>
+									<listOptionValue builtIn="true" value="/usr/include"/>
 								</option>
 								<option id="gnu.c.compiler.option.preprocessor.def.symbols.406484455" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="NDEBUG"/>
@@ -184,11 +197,11 @@
 							<tool id="cdt.managedbuild.tool.gnu.assembler.exe.release.452887717" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.exe.release">
 								<option id="gnu.both.asm.option.include.paths.919278972" name="Include paths (-I)" superClass="gnu.both.asm.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/fancontrol2}&quot;"/>
-									<listOptionValue builtIn="false" value="/usr/lib/gcc/x86_64-linux-gnu/4.6.1/include"/>
-									<listOptionValue builtIn="false" value="/usr/local/include"/>
-									<listOptionValue builtIn="false" value="/usr/lib/gcc/x86_64-linux-gnu/4.6.1/include-fixed"/>
-									<listOptionValue builtIn="false" value="/usr/include/x86_64-linux-gnu"/>
-									<listOptionValue builtIn="false" value="/usr/include"/>
+									<listOptionValue builtIn="true" value="/usr/lib/gcc/x86_64-linux-gnu/4.6.1/include"/>
+									<listOptionValue builtIn="true" value="/usr/local/include"/>
+									<listOptionValue builtIn="true" value="/usr/lib/gcc/x86_64-linux-gnu/4.6.1/include-fixed"/>
+									<listOptionValue builtIn="true" value="/usr/include/x86_64-linux-gnu"/>
+									<listOptionValue builtIn="true" value="/usr/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.1332187012" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>
@@ -196,7 +209,15 @@
 					</folderInfo>
 				</configuration>
 			</storageModule>
-			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
+			<storageModule moduleId="org.eclipse.cdt.core.externalSettings">
+				<externalSettings containerId="chromium base library;cdt.managedbuild.config.gnu.so.release.1862711734" factoryId="org.eclipse.cdt.core.cfg.export.settings.sipplier">
+					<externalSetting>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/chromium base library"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/chromium base library/Release"/>
+						<entry flags="RESOLVED" kind="libraryFile" name="chromium_base"/>
+					</externalSetting>
+				</externalSettings>
+			</storageModule>
 		</cconfiguration>
 		<cconfiguration id="cdt.managedbuild.config.gnu.exe.debug.2046506812.1437143856">
 			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="cdt.managedbuild.config.gnu.exe.debug.2046506812.1437143856" moduleId="org.eclipse.cdt.core.settings" name="Optimized">
@@ -223,13 +244,16 @@
 								<option id="gnu.cpp.compiler.exe.debug.option.optimization.level.2043971138" name="Optimization Level" superClass="gnu.cpp.compiler.exe.debug.option.optimization.level" value="gnu.cpp.compiler.optimization.level.more" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.exe.debug.option.debugging.level.285779698" name="Debug Level" superClass="gnu.cpp.compiler.exe.debug.option.debugging.level" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.include.paths.1633352089" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/fancontrol2}&quot;"/>
-									<listOptionValue builtIn="false" value="/usr/local/include"/>
-									<listOptionValue builtIn="false" value="/usr/include/x86_64-linux-gnu"/>
-									<listOptionValue builtIn="false" value="/usr/include"/>
-									<listOptionValue builtIn="false" value="/usr/include/c++/4.6"/>
-									<listOptionValue builtIn="false" value="/usr/include/c++/4.6/x86_64-linux-gnu"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/chromium base library}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/fancontrol2}&quot;"/>
+									<listOptionValue builtIn="true" value="/usr/include/c++/4.6"/>
+									<listOptionValue builtIn="true" value="/usr/include/c++/4.6/x86_64-linux-gnu"/>
+									<listOptionValue builtIn="true" value="/usr/include/c++/4.6/backward"/>
+									<listOptionValue builtIn="true" value="/usr/lib/gcc/x86_64-linux-gnu/4.6.1/include"/>
+									<listOptionValue builtIn="true" value="/usr/local/include"/>
+									<listOptionValue builtIn="true" value="/usr/lib/gcc/x86_64-linux-gnu/4.6.1/include-fixed"/>
+									<listOptionValue builtIn="true" value="/usr/include/x86_64-linux-gnu"/>
+									<listOptionValue builtIn="true" value="/usr/include"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.preprocessor.def.835715350" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="_GLIBCXX_HOSTED=1"/>
@@ -247,11 +271,11 @@
 								<option id="gnu.c.compiler.exe.debug.option.debugging.level.1699834631" name="Debug Level" superClass="gnu.c.compiler.exe.debug.option.debugging.level" value="gnu.c.debugging.level.max" valueType="enumerated"/>
 								<option id="gnu.c.compiler.option.include.paths.1707306235" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/fancontrol2}&quot;"/>
-									<listOptionValue builtIn="false" value="/usr/lib/gcc/x86_64-linux-gnu/4.6.1/include"/>
-									<listOptionValue builtIn="false" value="/usr/local/include"/>
-									<listOptionValue builtIn="false" value="/usr/lib/gcc/x86_64-linux-gnu/4.6.1/include-fixed"/>
-									<listOptionValue builtIn="false" value="/usr/include/x86_64-linux-gnu"/>
-									<listOptionValue builtIn="false" value="/usr/include"/>
+									<listOptionValue builtIn="true" value="/usr/lib/gcc/x86_64-linux-gnu/4.6.1/include"/>
+									<listOptionValue builtIn="true" value="/usr/local/include"/>
+									<listOptionValue builtIn="true" value="/usr/lib/gcc/x86_64-linux-gnu/4.6.1/include-fixed"/>
+									<listOptionValue builtIn="true" value="/usr/include/x86_64-linux-gnu"/>
+									<listOptionValue builtIn="true" value="/usr/include"/>
 								</option>
 								<option id="gnu.c.compiler.option.misc.other.1627507781" name="Other flags" superClass="gnu.c.compiler.option.misc.other" value="-c -fmessage-length=0 -pipe -Wconversion" valueType="string"/>
 								<option id="gnu.c.compiler.option.optimization.flags.126072539" name="Other optimization flags" superClass="gnu.c.compiler.option.optimization.flags" value="-march=native" valueType="string"/>
@@ -284,11 +308,11 @@
 							<tool id="cdt.managedbuild.tool.gnu.assembler.exe.debug.437361045" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.exe.debug">
 								<option id="gnu.both.asm.option.include.paths.697391172" name="Include paths (-I)" superClass="gnu.both.asm.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/fancontrol2}&quot;"/>
-									<listOptionValue builtIn="false" value="/usr/lib/gcc/x86_64-linux-gnu/4.6.1/include"/>
-									<listOptionValue builtIn="false" value="/usr/local/include"/>
-									<listOptionValue builtIn="false" value="/usr/lib/gcc/x86_64-linux-gnu/4.6.1/include-fixed"/>
-									<listOptionValue builtIn="false" value="/usr/include/x86_64-linux-gnu"/>
-									<listOptionValue builtIn="false" value="/usr/include"/>
+									<listOptionValue builtIn="true" value="/usr/lib/gcc/x86_64-linux-gnu/4.6.1/include"/>
+									<listOptionValue builtIn="true" value="/usr/local/include"/>
+									<listOptionValue builtIn="true" value="/usr/lib/gcc/x86_64-linux-gnu/4.6.1/include-fixed"/>
+									<listOptionValue builtIn="true" value="/usr/include/x86_64-linux-gnu"/>
+									<listOptionValue builtIn="true" value="/usr/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.70413875" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>
@@ -296,7 +320,15 @@
 					</folderInfo>
 				</configuration>
 			</storageModule>
-			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
+			<storageModule moduleId="org.eclipse.cdt.core.externalSettings">
+				<externalSettings containerId="chromium base library;cdt.managedbuild.config.gnu.so.debug.1446957190" factoryId="org.eclipse.cdt.core.cfg.export.settings.sipplier">
+					<externalSetting>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="includePath" name="/chromium base library"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="libraryPath" name="/chromium base library/Debug"/>
+						<entry flags="RESOLVED" kind="libraryFile" name="chromium_base"/>
+					</externalSetting>
+				</externalSettings>
+			</storageModule>
 		</cconfiguration>
 	</storageModule>
 	<storageModule moduleId="cdtBuildSystem" version="4.0.0">
