@@ -189,6 +189,7 @@
 									<listOptionValue builtIn="false" value="--as-needed"/>
 								</option>
 								<option id="gnu.cpp.link.option.flags.477459270" name="Linker flags" superClass="gnu.cpp.link.option.flags" value="-flto -O2 -march=native" valueType="string"/>
+								<option id="gnu.cpp.link.option.strip.1381347586" superClass="gnu.cpp.link.option.strip" value="true" valueType="boolean"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.224621346" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
