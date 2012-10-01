@@ -31,7 +31,7 @@ pwms:
     pwm2: &pwm2
         chip: *hwmon2
         output: 2
-        
+
 
 fans:
     fan2:
@@ -39,8 +39,8 @@ fans:
             chip: *hwmon2
             input: fan2_input
         valve: *pwm2
-        start: 90
-        stop:  80
+        start: 0.35
+        stop:  0.31
         reset: 0.75
         dependencies: [*core0, *core1, *cpu]
 

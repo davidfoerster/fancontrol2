@@ -7,45 +7,45 @@
 
 #include "utils.hpp"
 #include "fan.hpp"
-#include "meta/utility.hpp"
-
+#include <boost/foreach.hpp>
 #include <cstdlib>
 #include <csignal>
 
+
 namespace fancontrol {
 
+	int main(int argc, char *argv[])
+	{
+		int r = EXIT_SUCCESS;
+		std::unique_ptr<fancontrol::config_wrapper> cfg_wrap;
 
-int main(int argc, char *argv[])
-{
-	int r = EXIT_SUCCESS;
-	std::auto_ptr<fancontrol::config_wrapper> cfg_wrap;
+		try {
+			cfg_wrap = fancontrol::config_wrapper::make_config(argc, argv);
+			config::fans_container &fans = cfg_wrap->cfg.fans;
 
-	try {
-		cfg_wrap = fancontrol::config_wrapper::make_config(argc, argv);
-		config::fans_container &fans = META_CHECK_POINTER(cfg_wrap)->cfg.fans;
+			if (!cfg_wrap->do_check) {
+				register_signal_handlers();
 
-		if (!cfg_wrap->do_check) {
-			register_signal_handlers();
+				do {
+					BOOST_FOREACH(shared_ptr<fan> &f, fans){
+						const bool force = r == -SIGCONT;
+						f->update_valve(force);
+					}
+				} while ((r = sleep(&cfg_wrap->interval)) < 0);
 
-			do {
-				for (config::fans_container::iterator it = fans.begin(); it != fans.end(); ++it) {
-					META_CHECK_POINTER(*it)->update_valve(r == -SIGCONT);
-				}
-			} while ((r = sleep(&cfg_wrap->interval)) < 0);
+				cfg_wrap.reset();
 
-			cfg_wrap.reset();
-
-		} else {
-			r = !fans.empty() ? EXIT_SUCCESS : EXIT_FAILURE;
+			} else {
+				r = !fans.empty() ? EXIT_SUCCESS : EXIT_FAILURE;
+			}
+		} catch (util::exception_base &e) {
+			r = handle_exception(e, !!cfg_wrap);
+		} catch (std::runtime_error &e) {
+			r = handle_exception(e, !!cfg_wrap);
 		}
-	} catch (meta::exception_base &e) {
-		r = handle_exception(e, !!cfg_wrap);
-	} catch (std::runtime_error &e) {
-		r = handle_exception(e, !!cfg_wrap);
-	}
 
-	return r;
-}
+		return r;
+	}
 
 }
 

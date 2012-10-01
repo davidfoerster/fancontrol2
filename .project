@@ -3,7 +3,6 @@
 	<name>fancontrol2</name>
 	<comment></comment>
 	<projects>
-		<project>chromium base library</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

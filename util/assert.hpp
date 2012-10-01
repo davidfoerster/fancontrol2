@@ -6,8 +6,8 @@
  */
 
 #pragma once
-#ifndef META_ASSERT_HPP_
-#define META_ASSERT_HPP_
+#ifndef UTIL_ASSERT_HPP_
+#define UTIL_ASSERT_HPP_
 
 #include <boost/current_function.hpp>
 #include <boost/assert.hpp>
@@ -19,13 +19,13 @@
 #endif
 
 
-#ifdef BOOST_DISABLE_ASSERTS
+#if defined(BOOST_DISABLE_ASSERTS) || defined(NDEBUG)
 #	define assert_printf(expr, format, ...) (static_cast<void>(0))
 #else
 #	define assert_printf(expr, format, ...) ((expr) ? static_cast<void>(0) : \
-		::meta::assertion::detail::assert_printf_fail(#expr, BOOST_CURRENT_FUNCTION, __FILE__, __LINE__, BOOST_ASSERT_MSG_FILE, format, ## __VA_ARGS__))
+		::util::assertion::detail::assert_printf_fail(#expr, BOOST_CURRENT_FUNCTION, __FILE__, __LINE__, BOOST_ASSERT_MSG_FILE, format, ## __VA_ARGS__))
 
-namespace meta {
+namespace util {
 	namespace assertion {
 		namespace detail {
 
@@ -39,12 +39,12 @@ namespace meta {
 	}
 }
 
-#endif
+#endif // defined(BOOST_DISABLE_ASSERTS) || defined(NDEBUG)
 
 
-#ifdef BOOST_DISABLE_ASSERTS
+#if defined(BOOST_DISABLE_ASSERTS) || defined(NDEBUG)
 #	define BOOST_VERIFY_R(expr) (!!(expr))
-#	define BOOST_VERIFY_P(expr) (expr)
+#	define BOOST_VERIFY_P(expr) ((expr), static_cast<void>(0))
 #else
 #	if defined BOOST_ENABLE_ASSERT_HANDLER
 #		define BOOST_VERIFY_R(expr) ((expr) || (::boost::assertion_failed(#expr, BOOST_CURRENT_FUNCTION, __FILE__, __LINE__), false))
@@ -60,9 +60,9 @@ namespace meta {
 #endif
 
 #	define BOOST_VERIFY_P(expr) ((expr) ? static_cast<void>(0) : \
-		::meta::assertion::detail::assert_perror_fail(#expr, BOOST_CURRENT_FUNCTION, __FILE__, __LINE__, BOOST_ASSERT_MSG_FILE, errno))
+		::util::assertion::detail::assert_perror_fail(#expr, BOOST_CURRENT_FUNCTION, __FILE__, __LINE__, BOOST_ASSERT_MSG_FILE, errno))
 
-namespace meta {
+namespace util {
 	namespace assertion {
 		namespace detail {
 
@@ -76,6 +76,6 @@ namespace meta {
 	}
 }
 
-#endif
+#endif // defined(BOOST_DISABLE_ASSERTS) || defined(NDEBUG)
 
-#endif /* ASSERT_HPP_ */
+#endif /* UTIL_ASSERT_HPP_ */
