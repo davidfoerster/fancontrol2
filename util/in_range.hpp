@@ -37,8 +37,8 @@ namespace util {
 	typename ::boost::disable_if< ::boost::is_integral<T>, bool>::type
 	in_range(const T &x, const T &min, const T &max)
 	{
-		UTIL_ASSERT(min <= max);
-		return x >= min && x < max;
+	    UTIL_ASSERT(min <= max);
+	    return x >= min && x < max;
 	}
 
 	template <typename T>
@@ -46,18 +46,18 @@ namespace util {
 	typename ::boost::enable_if< ::boost::is_integral<T>, bool>::type
 	in_range(const T x, const T min, const T max)
 	{
-		UTIL_ASSERT(min <= max);
-		typedef typename ::boost::make_unsigned<T>::type unsigned_t;
-		return static_cast<unsigned_t>(x - min) < static_cast<unsigned_t>(max - min);
+	    UTIL_ASSERT(min <= max);
+	    typedef typename ::boost::make_unsigned<T>::type unsigned_t;
+	    return static_cast<unsigned_t>(x - min) < static_cast<unsigned_t>(max - min);
 	}
 
 	template <typename T>
 	inline bool in_range(const T *x, const T *min, const T *max)
 	{
-		return in_range(
-				reinterpret_cast< ::uintptr_t>(x),
-				reinterpret_cast< ::uintptr_t>(min),
-				reinterpret_cast< ::uintptr_t>(max));
+	    return in_range(
+			    reinterpret_cast< ::uintptr_t>(x),
+			    reinterpret_cast< ::uintptr_t>(min),
+			    reinterpret_cast< ::uintptr_t>(max));
 	}
 
 } // namespace util

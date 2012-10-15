@@ -5,17 +5,5 @@
  *      Author: malte
  */
 
+#define UTIL_STRCAT_API
 #include "strcat.hpp"
-
-
-namespace util {
-
-	template class basic_strcat<char>;
-
-}
-
-
-template ::std::string &operator<<(::std::string&, signed int);
-template ::std::string &operator<<(::std::string&, unsigned int);
-template ::std::string &operator<<(::std::string&, signed long long);
-template ::std::string &operator<<(::std::string&, unsigned long long);

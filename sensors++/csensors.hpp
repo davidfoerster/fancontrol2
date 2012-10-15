@@ -26,7 +26,7 @@ namespace sensors {
 
 	namespace helper {
 
-		bool equals(const char *a, const char *b);
+	    bool equals(const char *a, const char *b);
 
 	}
 
@@ -36,16 +36,16 @@ namespace sensors {
 
 	namespace helper {
 
-		inline bool equals(const sensors_bus_id &a, const sensors_bus_id &b)
-		{
-			return a.nr == b.nr;
-		}
+	    inline bool equals(const sensors_bus_id &a, const sensors_bus_id &b)
+	    {
+		    return a.nr == b.nr;
+	    }
 
 
-		inline bool equals(const sensors_chip_name &a, const sensors_chip_name &b)
-		{
-			return a.addr == b.addr && a.bus == b.bus;
-		}
+	    inline bool equals(const sensors_chip_name &a, const sensors_chip_name &b)
+	    {
+		    return a.addr == b.addr && a.bus == b.bus;
+	    }
 
 	} // namespace helper
 
@@ -54,13 +54,13 @@ namespace sensors {
 
 	inline bool operator==(const sensors_bus_id &a, const sensors_bus_id &b)
 	{
-		return helper::equals(a, b);
+	    return helper::equals(a, b);
 	}
 
 
 	inline bool operator==(const sensors_chip_name &a, const sensors_chip_name &b)
 	{
-		return helper::equals(a, b);
+	    return helper::equals(a, b);
 	}
 
 #endif

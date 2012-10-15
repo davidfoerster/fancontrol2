@@ -23,19 +23,19 @@
 #	define assert_printf(expr, format, ...) (static_cast<void>(0))
 #else
 #	define assert_printf(expr, format, ...) ((expr) ? static_cast<void>(0) : \
-		::util::assertion::detail::assert_printf_fail(#expr, BOOST_CURRENT_FUNCTION, __FILE__, __LINE__, BOOST_ASSERT_MSG_FILE, format, ## __VA_ARGS__))
+	    ::util::assertion::detail::assert_printf_fail(#expr, BOOST_CURRENT_FUNCTION, __FILE__, __LINE__, BOOST_ASSERT_MSG_FILE, format, ## __VA_ARGS__))
 
 namespace util {
 	namespace assertion {
-		namespace detail {
+	    namespace detail {
 
-			void assert_printf_fail(
-					const char *expr,
-					const char *function, const char *file, unsigned int line,
-					::std::FILE *dst, const char *format, ...)
-				throw() __attribute__ ((__noreturn__));
+		    void assert_printf_fail(
+				    const char *expr,
+				    const char *function, const char *file, unsigned int line,
+				    ::std::FILE *dst, const char *format, ...)
+			    throw() __attribute__ ((__noreturn__));
 
-		}
+	    }
 	}
 }
 
@@ -60,19 +60,19 @@ namespace util {
 #endif
 
 #	define BOOST_VERIFY_P(expr) ((expr) ? static_cast<void>(0) : \
-		::util::assertion::detail::assert_perror_fail(#expr, BOOST_CURRENT_FUNCTION, __FILE__, __LINE__, BOOST_ASSERT_MSG_FILE, errno))
+	    ::util::assertion::detail::assert_perror_fail(#expr, BOOST_CURRENT_FUNCTION, __FILE__, __LINE__, BOOST_ASSERT_MSG_FILE, errno))
 
 namespace util {
 	namespace assertion {
-		namespace detail {
+	    namespace detail {
 
-			void assert_perror_fail(
-					const char *expr,
-					const char *function, const char *file, unsigned int line,
-					::std::FILE *dst, int errnum)
-				throw() __attribute__ ((__noreturn__));
+		    void assert_perror_fail(
+				    const char *expr,
+				    const char *function, const char *file, unsigned int line,
+				    ::std::FILE *dst, int errnum)
+			    throw() __attribute__ ((__noreturn__));
 
-		}
+	    }
 	}
 }
 
