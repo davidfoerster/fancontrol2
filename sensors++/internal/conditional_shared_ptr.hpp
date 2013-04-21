@@ -289,7 +289,7 @@ namespace sensors {
 
 
 		template <typename T>
-		conditional_shared_ptr_base::conditional_shared_ptr_base(T *ptr)
+		conditional_shared_ptr_base::conditional_shared_ptr_base(T *ptr __attribute__((unused)))
 			: m_reference_counter(0)
 		{
 		}

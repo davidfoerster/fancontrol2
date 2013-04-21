@@ -540,7 +540,7 @@ namespace util {
 	template <typename U, std::size_t SizeU, class ExtentU>
 	inline
 	static_allocator<T, Size, Extent>::static_allocator(
-			const static_allocator<U, SizeU, ExtentU> &other,
+			const static_allocator<U, SizeU, ExtentU> &other __attribute__((unused)),
 			const ExtentU &extent )
 		: Extent( extent )
 	{ }
