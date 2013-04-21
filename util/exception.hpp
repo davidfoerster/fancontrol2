@@ -16,51 +16,51 @@
 namespace util {
 
 	class exception_base
-	    : public virtual ::std::exception
-	    , public virtual ::boost::exception
+		: public virtual ::std::exception
+		, public virtual ::boost::exception
 	{
 	public:
-	    typedef ::boost::error_info<struct tag_what, ::std::string> what_t;
+		typedef ::boost::error_info<struct tag_what, ::std::string> what_t;
 
-	    virtual ~exception_base() throw();
+		virtual ~exception_base() throw();
 
-	    virtual const char *what() const throw();
+		virtual const char *what() const throw();
 
 	protected:
-	    mutable ::std::string msg;
+		mutable ::std::string msg;
 	};
 
 
 	struct runtime_error
-	    : public virtual exception_base
+		: public virtual exception_base
 	{
-	    runtime_error() throw();
+		runtime_error() throw();
 
-	    virtual ~runtime_error() throw();
+		virtual ~runtime_error() throw();
 
-	    explicit runtime_error(const ::std::runtime_error &e);
+		explicit runtime_error(const ::std::runtime_error &e);
 	};
 
 
 	namespace ns_null_pointer_exception {
 
-	    struct null_pointer_exception
-		    : public virtual runtime_error
-	    {
-		    typedef ::boost::error_info<struct tag_var_name, const char*> var_name;
+		struct null_pointer_exception
+			: public virtual runtime_error
+		{
+			typedef ::boost::error_info<struct tag_var_name, const char*> var_name;
 
-		    virtual ~null_pointer_exception() throw();
-	    };
+			virtual ~null_pointer_exception() throw();
+		};
 
 
-	    template <class T>
-	    typename T::element_type *check(T &p, const char *var_name) throw (null_pointer_exception);
+		template <class T>
+		typename T::element_type *check(T &p, const char *var_name) throw (null_pointer_exception);
 
-	    template <typename T>
-	    T *check(T *p, const char *var_name) throw (null_pointer_exception);
+		template <typename T>
+		T *check(T *p, const char *var_name) throw (null_pointer_exception);
 
-	    extern
-	    void check(const void *p, const char *var_name) throw (null_pointer_exception);
+		extern
+		void check(const void *p, const char *var_name) throw (null_pointer_exception);
 
 	} // namespace ns_null_pointer_exception
 
@@ -75,14 +75,14 @@ namespace util {
 
 
 	struct io_error
-	    : public virtual runtime_error
+		: public virtual runtime_error
 	{
-	    typedef ::boost::error_info<struct tag_errno_code, int> errno_code;
-	    typedef ::boost::error_info<struct targ_filename, ::std::string> filename;
+		typedef ::boost::error_info<struct tag_errno_code, int> errno_code;
+		typedef ::boost::error_info<struct targ_filename, ::std::string> filename;
 
-	    virtual ~io_error() throw();
+		virtual ~io_error() throw();
 
-	    virtual const char *what() const throw();
+		virtual const char *what() const throw();
 	};
 
 
@@ -91,23 +91,23 @@ namespace util {
 
 	namespace ns_null_pointer_exception {
 
-	    template <class T>
-	    inline
-	    typename T::element_type *check(T &p, const char *var_name)
-	    throw (null_pointer_exception)
-	    {
-		    return check(p.get(), var_name);
-	    }
+		template <class T>
+		inline
+		typename T::element_type *check(T &p, const char *var_name)
+		throw (null_pointer_exception)
+		{
+			return check(p.get(), var_name);
+		}
 
 
-	    template <typename T>
-	    inline
-	    T *check(T *p, const char *var_name)
-	    throw (null_pointer_exception)
-	    {
-		    check(static_cast<const void*>(p), var_name);
-		    return p;
-	    }
+		template <typename T>
+		inline
+		T *check(T *p, const char *var_name)
+		throw (null_pointer_exception)
+		{
+			check(static_cast<const void*>(p), var_name);
+			return p;
+		}
 
 	} // namespace ns_null_pointer_exception
 

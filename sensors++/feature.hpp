@@ -35,72 +35,72 @@ namespace sensors {
 
 
 	class feature
-	    : virtual public ::util::self_referenced<feature>
-	    , public object_wrapper_numbered<const sensors_feature, chip>
+		: virtual public ::util::self_referenced<feature>
+		, public object_wrapper_numbered<const sensors_feature, chip>
 	{
 	public:
-	    typedef ::util::self_referenced<feature> self_referenced_type;
+		typedef ::util::self_referenced<feature> self_referenced_type;
 
-	    typedef object_wrapper_numbered<const sensors_feature, chip> super;
+		typedef object_wrapper_numbered<const sensors_feature, chip> super;
 
-	    typedef sensors_feature_type type_enum;
+		typedef sensors_feature_type type_enum;
 
-	    typedef sensors::subfeature SF;
+		typedef sensors::subfeature SF;
 
-	    typedef ::std::unordered_map<
-			    sensors_subfeature_type, weak_ptr<SF>,
-			    ::boost::hash<sensors_subfeature_type>
-	    > map_type;
+		typedef ::std::unordered_map<
+				sensors_subfeature_type, weak_ptr<SF>,
+				::boost::hash<sensors_subfeature_type>
+		> map_type;
 
-	    class key1 {
-		    key1() {}
-		    friend class chip;
-	    };
+		class key1 {
+			key1() {}
+			friend class chip;
+		};
 
-	    struct Types {
-		    typedef ::std::array<string_ref, SENSORS_FEATURE_BEEP_ENABLE + 1> type_names_t;
+		struct Types {
+			typedef ::std::array<string_ref, SENSORS_FEATURE_BEEP_ENABLE + 1> type_names_t;
 
-		    static type_names_t &make_names(type_names_t &a);
+			static type_names_t &make_names(type_names_t &a);
 
-		    static const type_names_t &names();
+			static const type_names_t &names();
 
-		    static const string_ref &name(type_enum);
+			static const string_ref &name(type_enum);
 
-		    static bool is_valid(type_enum type);
+			static bool is_valid(type_enum type);
 
-		    static bool is_valid(type_enum type, int index);
+			static bool is_valid(type_enum type, int index);
 
-		    static bool is_valid(const ::std::pair<type_enum, int>&);
+			static bool is_valid(const ::std::pair<type_enum, int>&);
 
-		    static bool check_name(const string_ref &name1, type_enum type2, int index2);
+			static bool check_name(const string_ref &name1, type_enum type2, int index2);
 
-		    static type_enum from_name(const string_ref &name);
-	    };
+			static type_enum from_name(const string_ref &name);
+		};
 
-	    template <class Tag>
-	    feature(basic_type *feature, const shared_ptr<chip> &chip, Tag tag);
+		template <class Tag>
+		feature(basic_type *feature, const shared_ptr<chip> &chip, Tag tag);
 
-	    template <class Tag>
-	    feature(basic_type *feature, const string_ref &name, const shared_ptr<chip> &chip, key1, Tag);
+		template <class Tag>
+		feature(basic_type *feature, const string_ref &name, const shared_ptr<chip> &chip, key1, Tag);
 
-	    shared_ptr<SF> subfeature(sensors_subfeature_type type);
-	    shared_ptr<SF> operator[](sensors_subfeature_type type) const;
+		shared_ptr<SF> subfeature(sensors_subfeature_type type);
+		shared_ptr<SF> operator[](sensors_subfeature_type type) const;
 
-	    shared_ptr<SF> subfeature(const string_ref &type);
-	    shared_ptr<SF> operator[](const string_ref &type) const;
+		shared_ptr<SF> subfeature(const string_ref &type);
+		shared_ptr<SF> operator[](const string_ref &type) const;
 
-	    typename rebind_ptr<map_type>::other discover_all_subfeatures();
+		typename rebind_ptr<map_type>::other discover_all_subfeatures();
 
-	    const map_type &subfeatures() const;
+		const map_type &subfeatures() const;
 
-	    const string_ref &name() const;
+		const string_ref &name() const;
 
-	    bool operator==(const feature &o) const;
+		bool operator==(const feature &o) const;
 
 	protected:
-	    string_ref m_name;
+		string_ref m_name;
 
-	    map_type m_subfeatures;
+		map_type m_subfeatures;
 	};
 
 } /* namespace sensors */
@@ -117,43 +117,43 @@ namespace sensors {
 
 	template <class Tag>
 	feature::feature(basic_type *feature, const shared_ptr<chip> &chip, Tag tag)
-	    : selfreference_type(tag)
-	    , object_wrapper_numbered(feature, chip)
-	    , m_name(feature ? feature->name : 0)
+		: selfreference_type(tag)
+		, object_wrapper_numbered(feature, chip)
+		, m_name(feature ? feature->name : 0)
 	{
 	}
 
 
 	template <class Tag>
 	feature::feature(basic_type *feature, const string_ref &name, const shared_ptr<chip> &chip, key1, Tag tag)
-	    : selfreference_type(tag)
-	    , object_wrapper_numbered(feature, chip)
-	    , m_name(name)
+		: selfreference_type(tag)
+		, object_wrapper_numbered(feature, chip)
+		, m_name(name)
 	{
-	    if (feature) {
-		    BOOST_ASSERT(name == feature->name);
-	    }
+		if (feature) {
+			BOOST_ASSERT(name == feature->name);
+		}
 	}
 
 
 	inline
 	const feature::map_type &feature::subfeatures() const
 	{
-	    return m_subfeatures;
+		return m_subfeatures;
 	}
 
 
 	inline
 	const string_ref &feature::name() const
 	{
-	    return m_name;
+		return m_name;
 	}
 
 
 	inline
 	bool feature::operator==(const feature &o) const
 	{
-	    return super::operator==(o);
+		return super::operator==(o);
 	}
 
 } /* namespace sensors */
@@ -163,9 +163,9 @@ template <typename Char, class Traits>
 ::std::basic_ostream<Char, Traits> &operator<<(::std::basic_ostream<Char, Traits> &out, const ::sensors::feature &feat)
 {
 	if (!!feat) {
-	    out << *UTIL_CHECK_POINTER(feat.parent()) << '/' << feat.name();
+		out << *UTIL_CHECK_POINTER(feat.parent()) << '/' << feat.name();
 	} else {
-	    out << "<null>";
+		out << "<null>";
 	}
 	return out;
 }

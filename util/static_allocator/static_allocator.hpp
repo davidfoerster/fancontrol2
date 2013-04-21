@@ -79,7 +79,7 @@ namespace util {
 		private:
 			template < ::std::size_t SizeU>
 			void assign( const static_container_base<T, SizeU> &other,
-	    		typename ::boost::enable_if_c< Size >= SizeU, const void*>::type unused = NULL );
+				typename ::boost::enable_if_c< Size >= SizeU, const void*>::type unused = NULL );
 
 			size_type m_size;
 
@@ -169,8 +169,8 @@ namespace util {
 
 		template <typename U, ::std::size_t SizeU, class ExtentU>
 		explicit static_allocator(
-	    		const static_allocator<U, SizeU, ExtentU> &other,
-	    		const ExtentU &extent = ExtentU() );
+				const static_allocator<U, SizeU, ExtentU> &other,
+				const ExtentU &extent = ExtentU() );
 
 		size_type max_size() const;
 
@@ -193,8 +193,8 @@ namespace util {
 		template <typename U>
 		struct rebind {
 			typedef static_allocator< U, Size,
-	        		typename Extent::template rebind<U>::other
-	    		> other;
+					typename Extent::template rebind<U>::other
+				> other;
 		};
 
 	};
@@ -236,8 +236,8 @@ namespace util {
 
 		template <typename U, ::std::size_t SizeU, class ExtentU>
 		explicit static_allocator(
-	    		const static_allocator<U, SizeU, ExtentU> &other,
-	    		const ExtentU &extent );
+				const static_allocator<U, SizeU, ExtentU> &other,
+				const ExtentU &extent );
 
 		size_type max_size() const;
 
@@ -277,7 +277,7 @@ namespace util {
 		statically_allocated_container_wrapper();
 
 		explicit statically_allocated_container_wrapper( size_type count,
-	    		const value_type &value = value_type() );
+				const value_type &value = value_type() );
 
 		template <class InputIterator>
 		statically_allocated_container_wrapper( InputIterator first, InputIterator last );
@@ -339,7 +339,7 @@ namespace util {
 
 		template< ::std::size_t Numerator, ::std::size_t Denominator> struct static_divide_ceil
 			: ::boost::integral_constant< ::std::size_t,
-	    		(Numerator != 0) ? (Numerator - 1) / Denominator + 1 : 0 >
+				(Numerator != 0) ? (Numerator - 1) / Denominator + 1 : 0 >
 		{ };
 
 
@@ -354,106 +354,106 @@ namespace util {
 
 	namespace detail {
 
-	    template <typename T, ::std::size_t S>
-	    inline
-	    typename static_container_base<T,S>::size_type static_container_base<T,S>::size() const
-	    {
-		    return m_size;
-	    }
-
-
-	    template <typename T, ::std::size_t S>
-	    inline
-	    void static_container_base<T,S>::size( size_type n )
-	    {
-		    m_size = n;
-			BOOST_ASSERT( n <= max_size() );
-	    }
-
-
-	    template <typename T, ::std::size_t S>
+		template <typename T, ::std::size_t S>
 		inline
-		typename static_container_base<T,S>::size_type static_container_base<T,S>::free() const
+		typename static_container_base<T,S>::size_type static_container_base<T,S>::size() const
 		{
-		    return max_size() - size();
+			return m_size;
 		}
 
 
-	    template <typename T, ::std::size_t S>
-	    inline
-	    typename static_container_base<T,S>::size_type static_container_base<T,S>::max_size() const
-	    {
-		    return capacity;
-	    }
+		template <typename T, ::std::size_t S>
+		inline
+		void static_container_base<T,S>::size( size_type n )
+		{
+			m_size = n;
+			BOOST_ASSERT( n <= max_size() );
+		}
 
 
-	    template <typename T, ::std::size_t S>
-	    inline
-	    T *static_container_base<T,S>::data()
-	    {
-		    return reinterpret_cast<T*>(m_data);
-	    }
-
-	    template <typename T, ::std::size_t S>
-	    inline
-	    const T *static_container_base<T,S>::data() const
-	    {
-		    return reinterpret_cast<const T*>(m_data);
-	    }
+		template <typename T, ::std::size_t S>
+		inline
+		typename static_container_base<T,S>::size_type static_container_base<T,S>::free() const
+		{
+			return max_size() - size();
+		}
 
 
-	    template <typename T, ::std::size_t S>
-	    inline
-	    T *static_container_base<T,S>::data_end()
-	    {
-		    return data() + max_size();
-	    }
-
-	    template <typename T, ::std::size_t S>
-	    inline
-	    const T *static_container_base<T,S>::data_end() const
-	    {
-		    return data() + max_size();
-	    }
+		template <typename T, ::std::size_t S>
+		inline
+		typename static_container_base<T,S>::size_type static_container_base<T,S>::max_size() const
+		{
+			return capacity;
+		}
 
 
-	    template <typename T, ::std::size_t S>
+		template <typename T, ::std::size_t S>
+		inline
+		T *static_container_base<T,S>::data()
+		{
+			return reinterpret_cast<T*>(m_data);
+		}
+
+		template <typename T, ::std::size_t S>
+		inline
+		const T *static_container_base<T,S>::data() const
+		{
+			return reinterpret_cast<const T*>(m_data);
+		}
+
+
+		template <typename T, ::std::size_t S>
+		inline
+		T *static_container_base<T,S>::data_end()
+		{
+			return data() + max_size();
+		}
+
+		template <typename T, ::std::size_t S>
+		inline
+		const T *static_container_base<T,S>::data_end() const
+		{
+			return data() + max_size();
+		}
+
+
+		template <typename T, ::std::size_t S>
 		bool static_container_base<T,S>::in_range( const void *p,
-		    difference_type offset_begin, difference_type offset_end
-	    ) const {
-		    return ::util::in_range(
-				    reinterpret_cast< ::uintptr_t>(p),
-				    reinterpret_cast< ::uintptr_t>(data()) + offset_begin,
-				    reinterpret_cast< ::uintptr_t>(data_end()) + offset_end );
-	    }
+			difference_type offset_begin, difference_type offset_end
+		) const {
+			return ::util::in_range(
+					reinterpret_cast< ::uintptr_t>(p),
+					reinterpret_cast< ::uintptr_t>(data()) + offset_begin,
+					reinterpret_cast< ::uintptr_t>(data_end()) + offset_end );
+		}
 
 
-	    template <typename T, ::std::size_t S>
-	    inline static_container_base<T,S>::static_container_base()
-		    : m_size(0)
-	    { }
+		template <typename T, ::std::size_t S>
+		inline static_container_base<T,S>::static_container_base()
+			: m_size(0)
+		{ }
 
 
-	    template <typename T, ::std::size_t S>
-	    template < ::std::size_t SizeU>
-	    inline static_container_base<T,S>::static_container_base( const static_container_base<T, SizeU> &other )
-	    {
-		    assign( other );
-	    }
+		template <typename T, ::std::size_t S>
+		template < ::std::size_t SizeU>
+		inline static_container_base<T,S>::static_container_base( const static_container_base<T, SizeU> &other )
+		{
+			assign( other );
+		}
 
 
-	    template <typename T, ::std::size_t S>
-	    template < ::std::size_t SizeU>
-	    static_container_base<T,S> &static_container_base<T,S>::operator=( const static_container_base<T, SizeU> &other )
-	    {
-		    if( &other != this )
-			    assign( other );
-		    return *this;
-	    }
+		template <typename T, ::std::size_t S>
+		template < ::std::size_t SizeU>
+		static_container_base<T,S> &static_container_base<T,S>::operator=( const static_container_base<T, SizeU> &other )
+		{
+			if( &other != this )
+				assign( other );
+			return *this;
+		}
 
 
-	    template <typename T, ::std::size_t Size>
-	    template < ::std::size_t SizeU>
+		template <typename T, ::std::size_t Size>
+		template < ::std::size_t SizeU>
 		void static_container_base<T, Size>::assign(
 			const static_container_base<T, SizeU> &other,
 			typename ::boost::enable_if_c< Size >= SizeU, const void*>::type
@@ -462,84 +462,84 @@ namespace util {
 			const T *in = other.data();
 
 			for( const T *const last = this->data() + ::std::min(this->size(), other.size()); out < last; ++out, ++in )
-	    		*out = *in;
+				*out = *in;
 
 			for( const T *const last = this->data() + other.size(); out < last; ++out, ++in )
-	    		new (out) T(*in);
+				new (out) T(*in);
 
 			for( const T *const last = this->data() + this->size(); out < last; ++out )
-	    		(out++)->~T();
+				(out++)->~T();
 
-		    this->size( other.size() );
-	    }
-
-
-	    template <typename T>
-	    inline
-	    typename static_container_base<T,0>::size_type static_container_base<T,0>::size() const
-	    {
-		    return 0;
-	    }
-
-
-	    template <typename T>
-	    inline
-	    void static_container_base<T,0>::size( size_type n )
-	    {
-		    BOOST_ASSERT( n <= max_size() );
-	    }
-
-
-	    template <typename T>
-	    inline
-	    T *static_container_base<T,0>::data() const
-	    {
-		    return NULL;
-	    }
-
-
-	    template <typename T>
-	    inline
-	    bool static_container_base<T,0>::in_range(
-		    const void *p, difference_type offset_begin, difference_type offset_end
-	    ) const {
-		    // offsets are ignored on purpose
-		    return p == data();
-	    }
+			this->size( other.size() );
+		}
 
 
 		template <typename T>
-	    inline
+		inline
+		typename static_container_base<T,0>::size_type static_container_base<T,0>::size() const
+		{
+			return 0;
+		}
+
+
+		template <typename T>
+		inline
+		void static_container_base<T,0>::size( size_type n )
+		{
+			BOOST_ASSERT( n <= max_size() );
+		}
+
+
+		template <typename T>
+		inline
+		T *static_container_base<T,0>::data() const
+		{
+			return NULL;
+		}
+
+
+		template <typename T>
+		inline
+		bool static_container_base<T,0>::in_range(
+			const void *p, difference_type offset_begin, difference_type offset_end
+		) const {
+			// offsets are ignored on purpose
+			return p == data();
+		}
+
+
+		template <typename T>
+		inline
 		void static_container_base<T,0>::assign( const static_container_base<T, 0> &other )
 		{ }
 
 
-	    template <typename T, ::std::size_t S>
-	    bool static_container<T,S>::is_inside_static_container( const void *p ) const
-	    {
-		    const bool b = this->in_range( p, 0, 2 );
-		    if( b ){
-			    BOOST_ASSERT_MSG( p < this->data_end(),
-				    "Trying to access an unallocated region" );
-			    BOOST_ASSERT_MSG( (reinterpret_cast< ::uintptr_t>(p) - reinterpret_cast< ::uintptr_t>(this->data())) % sizeof(T) == 0,
-				    "Object access at unaligned address" );
-		    }
-		    return b;
-	    }
+		template <typename T, ::std::size_t S>
+		bool static_container<T,S>::is_inside_static_container( const void *p ) const
+		{
+			const bool b = this->in_range( p, 0, 2 );
+			if( b ){
+				BOOST_ASSERT_MSG( p < this->data_end(),
+					"Trying to access an unallocated region" );
+				BOOST_ASSERT_MSG( (reinterpret_cast< ::uintptr_t>(p) - reinterpret_cast< ::uintptr_t>(this->data())) % sizeof(T) == 0,
+					"Object access at unaligned address" );
+			}
+			return b;
+		}
 
 
-	    template <typename T, ::std::size_t S>
-	    bool static_container<T,S>::is_inside_static_container( const void *p, size_type n ) const
-	    {
-		    const bool b = this->in_range(p, 0, 2);
-		    if( b ){
-			    BOOST_ASSERT_MSG( p == this->data() || (p == this->data_end() && n == 0),
-				    "Trying to deallocate an unallocated memory region" );
-			    BOOST_ASSERT_MSG( p != this->data() || n == this->size(),
-				    "Trying to deallocate with an unexpected size" );
-		    }
-		    return b;
-	    }
+		template <typename T, ::std::size_t S>
+		bool static_container<T,S>::is_inside_static_container( const void *p, size_type n ) const
+		{
+			const bool b = this->in_range(p, 0, 2);
+			if( b ){
+				BOOST_ASSERT_MSG( p == this->data() || (p == this->data_end() && n == 0),
+					"Trying to deallocate an unallocated memory region" );
+				BOOST_ASSERT_MSG( p != this->data() || n == this->size(),
+					"Trying to deallocate with an unexpected size" );
+			}
+			return b;
+		}
 
 	} // namespace detail
 
@@ -547,15 +547,15 @@ namespace util {
 	template <typename T, ::std::size_t Size, class Extent>
 	inline
 	static_allocator<T, Size, Extent>::static_allocator( const Extent &extent )
-	    : Extent( extent )
+		: Extent( extent )
 	{ }
 
 
 	template <typename T, ::std::size_t Size, class Extent>
 	inline
 	static_allocator<T, Size, Extent>::static_allocator( const static_allocator<T, Size, Extent> &other )
-	    : Extent( other )
-	    , static_container_type( other )
+		: Extent( other )
+		, static_container_type( other )
 	{ }
 
 
@@ -565,7 +565,7 @@ namespace util {
 	static_allocator<T, Size, Extent>::static_allocator(
 			const static_allocator<U, SizeU, ExtentU> &other,
 			const ExtentU &extent )
-	    : Extent( extent )
+		: Extent( extent )
 	{ }
 
 
@@ -573,7 +573,7 @@ namespace util {
 	inline
 	typename static_allocator<T, Size, Extent>::size_type static_allocator<T, Size, Extent>::max_size() const
 	{
-	    return ::std::max( static_container_type::max_size(), Extent::max_size() );
+		return ::std::max( static_container_type::max_size(), Extent::max_size() );
 	}
 
 
@@ -595,19 +595,19 @@ namespace util {
 	template <typename T, ::std::size_t Size, class Extent>
 	T *static_allocator<T, Size, Extent>::allocate( size_type n, const void *hint )
 	{
-	    if( n != 0 ){
-		    if( hint == static_container_type::data() && n <= static_container_type::max_size() ){ // TODO
-			    static_container_type::size( n );
-			    return static_container_type::data();
+		if( n != 0 ){
+			if( hint == static_container_type::data() && n <= static_container_type::max_size() ){ // TODO
+				static_container_type::size( n );
+				return static_container_type::data();
 			} else if( static_container_type::size() == 0 && n <= static_container_type::free() ){
-	    		static_container_type::size( n );
-			    return static_container_type::data();
-		    } else {
-			    return Extent::allocate( n, hint );
-		    }
-	    } else {
-		    return static_container_type::data_end();
-	    }
+				static_container_type::size( n );
+				return static_container_type::data();
+			} else {
+				return Extent::allocate( n, hint );
+			}
+		} else {
+			return static_container_type::data_end();
+		}
 	}
 
 
@@ -615,11 +615,11 @@ namespace util {
 	void
 	static_allocator<T, Size, Extent>::deallocate( T *p, size_type n )
 	{
-	    if( is_inside_static_container(p, n) ){
-		    static_container_type::size( 0 );
-	    } else {
-		    Extent::deallocate( p, n );
-	    }
+		if( is_inside_static_container(p, n) ){
+			static_container_type::size( 0 );
+		} else {
+			Extent::deallocate( p, n );
+		}
 	}
 
 
@@ -627,11 +627,11 @@ namespace util {
 	void
 	static_allocator<T, Size, Extent>::construct( T *p, const T &val )
 	{
-	    if( is_inside_static_container(p) ){
-		    new (p) T(val);
-	    } else {
-		    Extent::construct( p, val );
-	    }
+		if( is_inside_static_container(p) ){
+			new (p) T(val);
+		} else {
+			Extent::construct( p, val );
+		}
 	}
 
 
@@ -639,11 +639,11 @@ namespace util {
 	void
 	static_allocator<T, Size, Extent>::destroy( T* p )
 	{
-	    if( is_inside_static_container(p) ){
-		    p->~T();
-	    } else {
-		    Extent::destroy( p );
-	    }
+		if( is_inside_static_container(p) ){
+			p->~T();
+		} else {
+			Extent::destroy( p );
+		}
 	}
 
 
@@ -651,14 +651,14 @@ namespace util {
 	inline
 	bool static_allocator<T, Size, Extent>::operator==( const static_allocator<T, Size, Extent> &other ) const
 	{
-	    return this == &other;
+		return this == &other;
 	}
 
 	template <typename T, ::std::size_t Size, class Extent>
 	inline
 	bool static_allocator<T, Size, Extent>::operator!=( const static_allocator<T, Size, Extent> &other ) const
 	{
-	    return !operator==( other );
+		return !operator==( other );
 	}
 
 
@@ -671,7 +671,7 @@ namespace util {
 	template <typename T, ::std::size_t Size>
 	inline
 	static_allocator<T, Size, void>::static_allocator( const static_allocator<T, Size, void> &other )
-	    : static_container_type( other )
+		: static_container_type( other )
 	{ }
 
 
@@ -686,8 +686,8 @@ namespace util {
 	template <typename U, ::std::size_t SizeU, class ExtentU>
 	inline
 	static_allocator<T, Size, void>::static_allocator(
-		    const static_allocator<U, SizeU, ExtentU> &other,
-		    const ExtentU &extent )
+			const static_allocator<U, SizeU, ExtentU> &other,
+			const ExtentU &extent )
 	{ }
 
 
@@ -695,34 +695,34 @@ namespace util {
 	inline
 	typename static_allocator<T, Size, void>::size_type static_allocator<T, Size, void>::max_size() const
 	{
-	    return static_container_type::max_size();
+		return static_container_type::max_size();
 	}
 
 
 	template <typename T, ::std::size_t Size>
 	T *static_allocator<T, Size, void>::allocate( size_type n, const void *hint )
 	{
-	    if( n != 0 ){
-		    if( (static_container_type::size() == 0 && n <= static_container_type::free()) ||
-			    (hint == static_container_type::data() && n <= static_container_type::max_size())
-		    ){
-			    static_container_type::size( n );
-			    return static_container_type::data();
-		    } else {
-			    throw ::std::bad_alloc("statically allocated memory exhausted");
-		    }
-	    } else {
-		    return static_container_type::data_end();
-	    }
+		if( n != 0 ){
+			if( (static_container_type::size() == 0 && n <= static_container_type::free()) ||
+				(hint == static_container_type::data() && n <= static_container_type::max_size())
+			){
+				static_container_type::size( n );
+				return static_container_type::data();
+			} else {
+				throw ::std::bad_alloc("statically allocated memory exhausted");
+			}
+		} else {
+			return static_container_type::data_end();
+		}
 	}
 
 
 	template <typename T, ::std::size_t Size>
 	void static_allocator<T, Size, void>::deallocate( T *p, size_type n )
 	{
-	    if( BOOST_VERIFY(is_inside_static_container(p, n)) ){
-		    static_container_type::size( 0 );
-	    }
+		if( BOOST_VERIFY(is_inside_static_container(p, n)) ){
+			static_container_type::size( 0 );
+		}
 	}
 
 
@@ -730,8 +730,8 @@ namespace util {
 	inline
 	void static_allocator<T, Size, void>::construct( T *p, const T &val )
 	{
-	    BOOST_ASSERT( is_inside_static_container(p) );
-	    new (p) T(val);
+		BOOST_ASSERT( is_inside_static_container(p) );
+		new (p) T(val);
 	}
 
 
@@ -739,8 +739,8 @@ namespace util {
 	inline
 	void static_allocator<T, Size, void>::destroy( T* p )
 	{
-	    BOOST_ASSERT( is_inside_static_container(p) );
-	    p->~T();
+		BOOST_ASSERT( is_inside_static_container(p) );
+		p->~T();
 	}
 
 
@@ -802,7 +802,7 @@ namespace util {
 	typename ::boost::enable_if< has_static_allocator<C>, void>::type
 	reserve( C &c, typename C::size_type n )
 	{
-	    c.reserve(::std::max(n, static_cast<typename C::size_type>(C::allocator_type::initial_capacity)));
+		c.reserve(::std::max(n, static_cast<typename C::size_type>(C::allocator_type::initial_capacity)));
 	}
 
 

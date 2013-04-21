@@ -20,160 +20,160 @@
 namespace util {
 
 	pidfile::pidfile(const stringpiece &filename, bool root_only)
-		    throw (pidfile_exception, io_error)
-	    : m_filename(filename)
+			throw (pidfile_exception, io_error)
+		: m_filename(filename)
 	{
-	    using namespace std;
+		using namespace std;
 
-	    BOOST_ASSERT(!filename.empty());
+		BOOST_ASSERT(!filename.empty());
 
-	    int errnum = 0,
-		    &perrno = errno;
+		int errnum = 0,
+			&perrno = errno;
 
-	    if (!root_only || ::geteuid() == 0) {
-		    // try to open exclusively
-		    m_file = fopen(m_filename.c_str(), "wx");
-		    if (m_file) {
-			    if (fprintf(m_file, "%i\n", ::getpid()) > 1) {
-				    if (fflush(m_file) == 0) {
-					    return;
-				    } else {
-					    UTIL_DEBUG(perror("flush PID file"));
-				    }
-			    } else {
-				    UTIL_DEBUG(perror("write to PID file"));
-			    }
-		    } else {
-			    UTIL_DEBUG(perror("exclusively open PID file for writing"));
-		    }
+		if (!root_only || ::geteuid() == 0) {
+			// try to open exclusively
+			m_file = fopen(m_filename.c_str(), "wx");
+			if (m_file) {
+				if (fprintf(m_file, "%i\n", ::getpid()) > 1) {
+					if (fflush(m_file) == 0) {
+						return;
+					} else {
+						UTIL_DEBUG(perror("flush PID file"));
+					}
+				} else {
+					UTIL_DEBUG(perror("write to PID file"));
+				}
+			} else {
+				UTIL_DEBUG(perror("exclusively open PID file for writing"));
+			}
 
-	    } else {
-		    // don't try to write, if we are not allowed to anyway
-		    // instead, try to open fo reading
-		    perrno = 0;
-		    m_file = fopen(m_filename.c_str(), "r");
-		    if (m_file) {
-			    perrno = EEXIST;
-		    } else if (perrno == ENOENT) {
-			    // the file does not exist; this is good
-			    perrno = 0;
-			    return;
-		    }
-		    // don't unlink and close yet, we may still want to read the content in pidfile_exception()
-	    }
+		} else {
+			// don't try to write, if we are not allowed to anyway
+			// instead, try to open fo reading
+			perrno = 0;
+			m_file = fopen(m_filename.c_str(), "r");
+			if (m_file) {
+				perrno = EEXIST;
+			} else if (perrno == ENOENT) {
+				// the file does not exist; this is good
+				perrno = 0;
+				return;
+			}
+			// don't unlink and close yet, we may still want to read the content in pidfile_exception()
+		}
 
-	    errnum = perrno;
-	    if (errnum == EEXIST) {
-		    pidfile_exception ex(*this);
-		    cleanup();
-		    BOOST_THROW_EXCEPTION(ex);
-	    } else {
-		    cleanup();
-		    BOOST_THROW_EXCEPTION(io_error()
-				    << io_error::what_t("Could not access the PID file")
-				    << io_error::errno_code(errnum)
-				    << io_error::filename(m_filename.str()));
-	    }
+		errnum = perrno;
+		if (errnum == EEXIST) {
+			pidfile_exception ex(*this);
+			cleanup();
+			BOOST_THROW_EXCEPTION(ex);
+		} else {
+			cleanup();
+			BOOST_THROW_EXCEPTION(io_error()
+					<< io_error::what_t("Could not access the PID file")
+					<< io_error::errno_code(errnum)
+					<< io_error::filename(m_filename.str()));
+		}
 	}
 
 
 	pidfile::pidfile(pidfile &o)
 	{
-	    operator=(o);
+		operator=(o);
 	}
 
 
 	pidfile &pidfile::operator=(pidfile &o)
 	{
-	    cleanup();
-	    m_file = o.m_file;
-	    o.m_file = nullptr;
-	    m_filename = o.m_filename;
-	    return *this;
+		cleanup();
+		m_file = o.m_file;
+		o.m_file = nullptr;
+		m_filename = o.m_filename;
+		return *this;
 	}
 
 
 	pidfile::~pidfile()
 	{
-	    cleanup();
+		cleanup();
 	}
 
 
 	void pidfile::unlink()
 	{
-	    if (m_file) {
-		    if (::unlink(m_filename.c_str()) != 0)
-			    UTIL_DEBUG(::std::perror("unlink PID file"));
-	    }
+		if (m_file) {
+			if (::unlink(m_filename.c_str()) != 0)
+				UTIL_DEBUG(::std::perror("unlink PID file"));
+		}
 	}
 
 
 	void pidfile::close()
 	{
-	    if (m_file) {
-		    if (::std::fclose(m_file) != 0)
-			    UTIL_DEBUG(::std::perror("close PID file"));
-		    m_file = nullptr;
-	    }
+		if (m_file) {
+			if (::std::fclose(m_file) != 0)
+				UTIL_DEBUG(::std::perror("close PID file"));
+			m_file = nullptr;
+		}
 	}
 
 
 	void pidfile::cleanup()
 	{
-	    unlink();
-	    close();
+		unlink();
+		close();
 	}
 
 
 	pidfile::pidfile(const pidfile &o) throw()
 	{
-	    BOOST_THROW_EXCEPTION(::std::logic_error("Invalid operation"));
+		BOOST_THROW_EXCEPTION(::std::logic_error("Invalid operation"));
 	}
 
 
 	pidfile &pidfile::operator=(const pidfile &o) throw()
 	{
-	    BOOST_THROW_EXCEPTION(::std::logic_error("Invalid operation"));
+		BOOST_THROW_EXCEPTION(::std::logic_error("Invalid operation"));
 	}
 
 
 	pidfile_exception::pidfile_exception(pidfile &src) throw()
 	{
-	    using namespace std;
+		using namespace std;
 
-	    *this << what_t("An instance of fancontrol is running already");
+		*this << what_t("An instance of fancontrol is running already");
 
-	    if (!src.m_file)
-		    src.m_file = fopen(src.m_filename.c_str(), "r");
+		if (!src.m_file)
+			src.m_file = fopen(src.m_filename.c_str(), "r");
 
-	    if (src.m_file) {
-		    int pid;
-		    if (fscanf(src.m_file, "%i", &pid) == 1) {
-			    *this << pid_running(pid);
-		    } else {
-			    UTIL_DEBUG(perror("parse PID file"));
-		    }
-		    // we rely on it being closed by pidfile
-	    } else {
-		    BOOST_THROW_EXCEPTION(io_error() << io_error::errno_code(errno));
-	    }
+		if (src.m_file) {
+			int pid;
+			if (fscanf(src.m_file, "%i", &pid) == 1) {
+				*this << pid_running(pid);
+			} else {
+				UTIL_DEBUG(perror("parse PID file"));
+			}
+			// we rely on it being closed by pidfile
+		} else {
+			BOOST_THROW_EXCEPTION(io_error() << io_error::errno_code(errno));
+		}
 	}
 
 
 	const char *pidfile_exception::what() const throw()
 	{
-	    using ::boost::exception_detail::get_info;
+		using ::boost::exception_detail::get_info;
 
-	    if (msg.empty()) {
-		    exception_base::what();
+		if (msg.empty()) {
+			exception_base::what();
 
-		    const int *const pid = ::boost::exception_detail::get_info<pid_running>::get(*this);
-		    if (pid) {
-			    if (!msg.empty()) msg += ' ';
-			    ((msg += "(pid=") << *pid) += ')';
-		    }
-	    }
-	    return msg.c_str();
+			const int *const pid = ::boost::exception_detail::get_info<pid_running>::get(*this);
+			if (pid) {
+				if (!msg.empty()) msg += ' ';
+				((msg += "(pid=") << *pid) += ')';
+			}
+		}
+		return msg.c_str();
 	}
 
 } /* namespace util */

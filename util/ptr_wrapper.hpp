@@ -98,19 +98,19 @@ namespace util {
 
 	template <class W>
 	inline ptr_wrapper<W>::ptr_wrapper()
-	    : detail::ptr_wrapper_base<W>()
+		: detail::ptr_wrapper_base<W>()
 	{ }
 
 
 	template <class W>
 	inline ptr_wrapper<W>::ptr_wrapper( element_type* p )
-	    : detail::ptr_wrapper_base<W>(W(p))
+		: detail::ptr_wrapper_base<W>(W(p))
 	{ }
 
 
 	template <class W>
 	inline ptr_wrapper<W>::ptr_wrapper( const W &ptr )
-	    : detail::ptr_wrapper_base<W>(ptr)
+		: detail::ptr_wrapper_base<W>(ptr)
 	{ }
 
 
@@ -130,51 +130,51 @@ namespace util {
 
 	template <class W>
 	inline ptr_wrapper<W*>::ptr_wrapper( W *p )
-	    : detail::ptr_wrapper_base<W*>(p)
+		: detail::ptr_wrapper_base<W*>(p)
 	{ }
 
 
 	template <class W>
 	inline ::std::size_t hash_value( const ptr_wrapper<W> &k )
 	{
-	    return ::boost::hash<typename ptr_wrapper<W>::element_type>()(k.ref());
+		return ::boost::hash<typename ptr_wrapper<W>::element_type>()(k.ref());
 	}
 
 
 	namespace detail {
 
-	    template <class W>
-	    inline ptr_wrapper_base<W>::ptr_wrapper_base()
-		    : m_ptr()
-	    { }
+		template <class W>
+		inline ptr_wrapper_base<W>::ptr_wrapper_base()
+			: m_ptr()
+		{ }
 
 
-	    template <class W>
-	    inline ptr_wrapper_base<W>::ptr_wrapper_base( const W &ptr )
-		    : m_ptr(ptr)
-	    { }
+		template <class W>
+		inline ptr_wrapper_base<W>::ptr_wrapper_base( const W &ptr )
+			: m_ptr(ptr)
+		{ }
 
 
-	    template <class W>
-	    inline ptr_wrapper_base<W> &ptr_wrapper_base<W>::operator=( const W &ptr )
-	    {
-		    m_ptr = ptr;
-		    return *this;
-	    }
+		template <class W>
+		inline ptr_wrapper_base<W> &ptr_wrapper_base<W>::operator=( const W &ptr )
+		{
+			m_ptr = ptr;
+			return *this;
+		}
 
 
-	    template <class W>
-	    inline bool ptr_wrapper_base<W>::operator==( const element_type &o ) const
-	    {
-		    return ref() == o;
-	    }
+		template <class W>
+		inline bool ptr_wrapper_base<W>::operator==( const element_type &o ) const
+		{
+			return ref() == o;
+		}
 
 
-	    template <class W>
-	    inline bool ptr_wrapper_base<W>::operator<( const element_type &o ) const
-	    {
-		    return ref() < o;
-	    }
+		template <class W>
+		inline bool ptr_wrapper_base<W>::operator<( const element_type &o ) const
+		{
+			return ref() < o;
+		}
 
 	} // namespace detail
 

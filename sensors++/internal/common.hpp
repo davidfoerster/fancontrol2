@@ -29,7 +29,7 @@ namespace sensors {
 
 	template <typename Key, typename T, class Hash, class Equal, class Alloc>
 	struct rebind_ptr< ::std::unordered_map<Key, ::boost::weak_ptr<T>, Hash, Equal, Alloc> > {
-	    typedef ::std::unordered_map<Key, ::boost::shared_ptr<T>, Hash, Equal, Alloc> other;
+		typedef ::std::unordered_map<Key, ::boost::shared_ptr<T>, Hash, Equal, Alloc> other;
 	};
 
 
@@ -50,14 +50,14 @@ namespace sensors {
 	template <string_ref::size_type Size>
 	inline string_ref STRING_REF(const string_ref::value_type (&s)[Size])
 	{
-	    BOOST_ASSERT(string_ref::traits_type::find(s, Size, 0) == &s[Size-1]);
-	    return string_ref(s, s + Size - 1);
+		BOOST_ASSERT(string_ref::traits_type::find(s, Size, 0) == &s[Size-1]);
+		return string_ref(s, s + Size - 1);
 	}
 
 
 	inline string_ref STRING_REF()
 	{
-	    return string_ref(nullptr);
+		return string_ref(nullptr);
 	}
 
 }

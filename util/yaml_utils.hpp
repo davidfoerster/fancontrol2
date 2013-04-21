@@ -21,11 +21,11 @@ namespace std {
 
 	template<>
 	struct iterator_traits< ::YAML::Iterator > {
-	    typedef ::ssize_t difference_type;
-	    typedef ::YAML::Node value_type;
-	    typedef value_type* pointer;
-	    typedef value_type& reference;
-	    typedef bidirectional_iterator_tag iterator_category;
+		typedef ::ssize_t difference_type;
+		typedef ::YAML::Node value_type;
+		typedef value_type* pointer;
+		typedef value_type& reference;
+		typedef bidirectional_iterator_tag iterator_category;
 	};
 
 } // namespace std

@@ -17,12 +17,12 @@ namespace util {
 
 	template <typename T, ::std::size_t Size, class Extent = ::std::allocator<T> >
 	class static_vector
-	    : public statically_allocated_container_wrapper<
-		    ::std::vector< T, static_allocator<T, Size> >
-	      >
+		: public statically_allocated_container_wrapper<
+			::std::vector< T, static_allocator<T, Size> >
+		  >
 	{
 	public:
-	    typedef ::std::vector< T, static_allocator<T, Size> > nested_type;
+		typedef ::std::vector< T, static_allocator<T, Size> > nested_type;
 	};
 
 } // namespace util

@@ -63,61 +63,61 @@ namespace fancontrol {
 	class config
 	{
 	public:
-	    typedef std::ios::failure ios_failure;
+		typedef std::ios::failure ios_failure;
 
-	    config(istream &source, const shared_ptr<sensor_container> &sensors, bool do_check = false)
-			    throw(::util::runtime_error, ParserException, ios_failure);
+		config(istream &source, const shared_ptr<sensor_container> &sensors, bool do_check = false)
+				throw(::util::runtime_error, ParserException, ios_failure);
 
-	    ~config();
+		~config();
 
-	    void reset();
+		void reset();
 
-	    bool auto_reset;
+		bool auto_reset;
 
-	    double m_interval;
+		double m_interval;
 
-	    double interval() const;
-	    void interval(struct timespec *t) const;
+		double interval() const;
+		void interval(struct timespec *t) const;
 
-	    shared_ptr<sensor_container> sensors;
+		shared_ptr<sensor_container> sensors;
 
-	    typedef util::ptr_wrapper< shared_ptr<control> > control_type;
-	    typedef util::static_vector<control_type, 16> controls_container;
-	    controls_container controls;
+		typedef util::ptr_wrapper< shared_ptr<control> > control_type;
+		typedef util::static_vector<control_type, 16> controls_container;
+		controls_container controls;
 
-	    typedef shared_ptr<fan> fan_type;
-	    typedef util::static_vector<fan_type, 8> fans_container;
-	    fans_container fans;
+		typedef shared_ptr<fan> fan_type;
+		typedef util::static_vector<fan_type, 8> fans_container;
+		fans_container fans;
 
 	private:
-	    shared_ptr<chip> parse_chip(const Node &node)
-			    throw(sensor_error, ParserException);
+		shared_ptr<chip> parse_chip(const Node &node)
+				throw(sensor_error, ParserException);
 
-	    shared_ptr<subfeature> parse_subfeature(const Node &node)
-			    throw(sensor_error, ParserException);
+		shared_ptr<subfeature> parse_subfeature(const Node &node)
+				throw(sensor_error, ParserException);
 
-	    shared_ptr<pwm> parse_pwm(const Node &node)
-			    throw(sensor_error, ParserException, ios_failure);
+		shared_ptr<pwm> parse_pwm(const Node &node)
+				throw(sensor_error, ParserException, ios_failure);
 
-	    shared_ptr<control> parse_simple_control(const Node &node)
-			    throw(sensor_error, ParserException);
+		shared_ptr<control> parse_simple_control(const Node &node)
+				throw(sensor_error, ParserException);
 
-	    shared_ptr<control> parse_aggregated_control(const Node &node)
-			    throw(sensor_error, ParserException);
+		shared_ptr<control> parse_aggregated_control(const Node &node)
+				throw(sensor_error, ParserException);
 
-	    shared_ptr<control> parse_dependencies(const Node &node)
-			    throw(sensor_error, ParserException);
+		shared_ptr<control> parse_dependencies(const Node &node)
+				throw(sensor_error, ParserException);
 
-	    const shared_ptr<fan> &parse_fan(const Node &node)
-			    throw(sensor_error, ParserException, ios_failure);
+		const shared_ptr<fan> &parse_fan(const Node &node)
+				throw(sensor_error, ParserException, ios_failure);
 
-	    fans_container::size_type parse_fans(const Node &node)
-			    throw(sensor_error, ParserException, ios_failure);
+		fans_container::size_type parse_fans(const Node &node)
+				throw(sensor_error, ParserException, ios_failure);
 
-	    void reset_nothrow();
+		void reset_nothrow();
 
 #if FANCONTROL_PIDFILE
-	    std::unique_ptr< ::util::pidfile > m_pidfile;
+		std::unique_ptr< ::util::pidfile > m_pidfile;
 #endif
 
 	};

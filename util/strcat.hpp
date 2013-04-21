@@ -39,40 +39,40 @@ namespace std {
 	template <typename CharT, class Traits, class Alloc, typename IntT>
 	basic_string<CharT, Traits, Alloc> &operator<<(basic_string<CharT, Traits, Alloc> &dst, IntT n_)
 	{
-	    using ::boost::end;
-	    typedef numeric_limits<IntT> limits;
-	    typedef typename ::boost::make_unsigned<IntT>::type UIntT;
+		using ::boost::end;
+		typedef numeric_limits<IntT> limits;
+		typedef typename ::boost::make_unsigned<IntT>::type UIntT;
 
-	    // digits10 is always 1 too low; plus we need one additional char for the sign
-	    CharT buf[limits::digits10 + 1 + limits::is_signed];
-	    CharT *p = end(buf);
-	    UIntT n = static_cast<UIntT>((n >= 0) ? n_ : -n_);
+		// digits10 is always 1 too low; plus we need one additional char for the sign
+		CharT buf[limits::digits10 + 1 + limits::is_signed];
+		CharT *p = end(buf);
+		UIntT n = static_cast<UIntT>((n >= 0) ? n_ : -n_);
 
-	    do {
-		    BOOST_ASSERT(p > buf);
-		    *(--p) = Traits::to_char_type(static_cast<typename Traits::int_type>(n % 10) + '0');
-		    n /= 10;
-	    } while (n != 0);
+		do {
+			BOOST_ASSERT(p > buf);
+			*(--p) = Traits::to_char_type(static_cast<typename Traits::int_type>(n % 10) + '0');
+			n /= 10;
+		} while (n != 0);
 
-	    if (n_ < 0) {
-		    BOOST_ASSERT(p > buf);
-		    *(--p) = static_cast<CharT>('-');
-	    }
+		if (n_ < 0) {
+			BOOST_ASSERT(p > buf);
+			*(--p) = static_cast<CharT>('-');
+		}
 
-	    return dst.append(p, end(buf) - p);
+		return dst.append(p, end(buf) - p);
 	}
 
 
 	template <typename CharT, class Traits, class Alloc>
 	inline basic_string<CharT, Traits, Alloc> &operator<<(basic_string<CharT, Traits, Alloc> &dst, signed short n)
 	{
-	    return dst << static_cast<signed int>(n);
+		return dst << static_cast<signed int>(n);
 	}
 
 	template <typename CharT, class Traits, class Alloc>
 	inline basic_string<CharT, Traits, Alloc> &operator<<(basic_string<CharT, Traits, Alloc> &dst, unsigned short n)
 	{
-	    return dst << static_cast<unsigned int>(n);
+		return dst << static_cast<unsigned int>(n);
 	}
 
 

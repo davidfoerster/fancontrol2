@@ -27,40 +27,40 @@ namespace util {
 	class self_referenced
 	{
 	public:
-	    typedef self_referenced<T> selfreference_type;
+		typedef self_referenced<T> selfreference_type;
 
-	    template <typename... Args>
-	    static shared_ptr<T> make(Args... args);
+		template <typename... Args>
+		static shared_ptr<T> make(Args... args);
 
-	    self_referenced<T> &operator=(const self_referenced<T> &);
+		self_referenced<T> &operator=(const self_referenced<T> &);
 
-	    shared_ptr<T> selfreference();
-	    shared_ptr<const T> selfreference() const;
+		shared_ptr<T> selfreference();
+		shared_ptr<const T> selfreference() const;
 
 	protected:
-	    struct factory_tag_t;
-	    typedef const factory_tag_t* factory_tag;
+		struct factory_tag_t;
+		typedef const factory_tag_t* factory_tag;
 
-	    explicit self_referenced(const factory_tag);
+		explicit self_referenced(const factory_tag);
 
-	    self_referenced(const self_referenced<T> &);
+		self_referenced(const self_referenced<T> &);
 
-	    ~self_referenced();
+		~self_referenced();
 
 	private:
-	    void init();
+		void init();
 
-	    self_referenced();
+		self_referenced();
 
-	    void selfreference(const shared_ptr<T> &);
+		void selfreference(const shared_ptr<T> &);
 
-	    weak_ptr<T> m_selfreference;
+		weak_ptr<T> m_selfreference;
 	};
 
 
 	namespace internal {
 
-	    void _self_reference_warning();
+		void _self_reference_warning();
 
 	}
 
@@ -69,17 +69,17 @@ namespace util {
 	template <class T>
 	inline self_referenced<T>::self_referenced(const factory_tag)
 	{
-	    init();
+		init();
 	}
 
 
 	template <class T>
 	inline void self_referenced<T>::init()
 	{
-	    /*
-	    const self_referenced<T> *p = NULL;  // this must be a base type of T
-	    UTIL_UNUSED(p);
-	    */
+		/*
+		const self_referenced<T> *p = NULL;  // this must be a base type of T
+		UTIL_UNUSED(p);
+		*/
 	}
 
 
@@ -92,36 +92,36 @@ namespace util {
 	template <class T>
 	inline self_referenced<T>::self_referenced(const self_referenced<T> &)
 	{
-	    // don't copy the self-reference
+		// don't copy the self-reference
 	}
 
 
 	template <class T>
 	inline self_referenced<T> &self_referenced<T>::operator=(const self_referenced<T> &)
 	{
-	    // don't copy the self-reference
+		// don't copy the self-reference
 	}
 
 
 	template <class T>
 	inline void self_referenced<T>::selfreference(const shared_ptr<T> &ptr)
 	{
-	    BOOST_ASSERT(dynamic_cast<const self_referenced<T>*>(ptr.get()) == this);
-	    m_selfreference = ptr;
+		BOOST_ASSERT(dynamic_cast<const self_referenced<T>*>(ptr.get()) == this);
+		m_selfreference = ptr;
 	}
 
 
 	template <class T>
 	inline shared_ptr<T> self_referenced<T>::selfreference()
 	{
-	    return m_selfreference.lock();
+		return m_selfreference.lock();
 	}
 
 
 	template <class T>
 	inline shared_ptr<const T> self_referenced<T>::selfreference() const
 	{
-	    return m_selfreference.lock();
+		return m_selfreference.lock();
 	}
 
 
@@ -129,9 +129,9 @@ namespace util {
 	template <typename... Args>
 	inline shared_ptr<T> self_referenced<T>::make(Args... args)
 	{
-	    shared_ptr<T> ptr(make_shared<T>(args..., factory_tag()));
-	    ptr->self_referenced<T>::selfreference(ptr);
-	    return ptr;
+		shared_ptr<T> ptr(make_shared<T>(args..., factory_tag()));
+		ptr->self_referenced<T>::selfreference(ptr);
+		return ptr;
 	}
 
 } /* namespace util */

@@ -20,11 +20,11 @@
 namespace util {
 	namespace detail {
 
-	    template <typename T>
-	    inline void __log( const T &what )
-	    {
-		    (::std::clog << what) << ::std::endl;
-	    }
+		template <typename T>
+		inline void __log( const T &what )
+		{
+			(::std::clog << what) << ::std::endl;
+		}
 
 	}
 }
