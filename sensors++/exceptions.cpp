@@ -17,11 +17,12 @@ namespace sensors {
 
 	const char *sensor_error::strerror(int errnum)
 	{
-		if (errnum < 0) {
-			errnum = -errnum;
-			if (errnum < 0) errnum -= 1;
-		}
-		return BOOST_VERIFY_R(errnum < sensor_error::_end) ? sensors_strerror(errnum) : "Invalid error";
+		if (errnum < 0)
+			errnum = (errnum != std::numeric_limits<int>::min()) ? -errnum : invalid_error;
+
+		return BOOST_VERIFY_R(errnum < sensor_error::_end) ?
+				sensors_strerror(errnum) :
+				"Invalid error";
 	}
 
 

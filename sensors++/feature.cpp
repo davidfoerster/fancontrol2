@@ -177,16 +177,20 @@ namespace sensors {
 	const string_ref &feature::Types::name(type_enum type)
 	{
 		const type_names_t &names = Types::names();
-		return (::util::in_range<ssize_t>(type, 0, names.size())) ?
-				names[type] :
-				string_ref::empty_string();
+		return is_valid(type, names) ? names[type] : string_ref::empty_string();
 	}
 
 
 	bool feature::Types::is_valid(type_enum type)
 	{
 		const type_names_t &names = Types::names();
-		return ::util::in_range<string_ref::difference_type>(type, 0, names.size()) && !names[type].empty();
+		return is_valid(type, names) && !names[type].empty();
+	}
+
+
+	bool feature::Types::is_valid(type_enum type, const type_names_t &names)
+	{
+		return type >= 0 && type < names.size();
 	}
 
 

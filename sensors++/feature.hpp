@@ -63,6 +63,7 @@ namespace sensors {
 
 			static bool is_valid(type_enum type);
 
+			static bool is_valid(type_enum type, const type_names_t &names);
 			static bool is_valid(type_enum type, int index);
 
 			static bool is_valid(const std::pair<type_enum, int>&);
