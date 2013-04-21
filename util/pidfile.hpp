@@ -12,6 +12,7 @@
 #include "stringpiece/stringpiece.hpp"
 #include "exception.hpp"
 #include <cstdio>
+#include <unistd.h>
 
 
 namespace util {
@@ -22,7 +23,7 @@ namespace util {
 	struct pidfile_exception
 		: virtual public runtime_error
 	{
-		typedef ::boost::error_info<struct tag_pid_running, int> pid_running;
+		typedef boost::error_info<struct tag_pid_running, ::pid_t> pid_running;
 
 		explicit pidfile_exception(pidfile &src) throw ();
 
@@ -43,9 +44,9 @@ namespace util {
 		~pidfile();
 
 	private:
-		pidfile(const pidfile&) throw();
+		pidfile(const pidfile&) = delete;
 
-		pidfile &operator=(const pidfile&) throw();
+		pidfile &operator=(const pidfile&) = delete;
 
 		void close();
 
@@ -53,7 +54,7 @@ namespace util {
 
 		void cleanup();
 
-		::std::FILE *m_file;
+		std::FILE *m_file;
 
 		stringpiece_alloc m_filename;
 

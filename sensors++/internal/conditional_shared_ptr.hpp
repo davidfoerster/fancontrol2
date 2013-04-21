@@ -100,18 +100,16 @@ namespace sensors {
 		typedef const T element_type;
 		typedef const T value_type;
 
-		//typedef typename ::boost::remove_const<T>::type wrapped_type_no_const;
-
 		conditional_shared_ptr();
 
 		template <typename Y>
 		conditional_shared_ptr(const Y* ptr);
 
 		template <typename Y>
-		conditional_shared_ptr(::std::unique_ptr<Y> &ptr);
+		conditional_shared_ptr(std::unique_ptr<Y> &ptr);
 
 		template <typename Y, class D>
-		conditional_shared_ptr(::std::unique_ptr<Y> &ptr, D deleter);
+		conditional_shared_ptr(std::unique_ptr<Y> &ptr, D deleter);
 
 		value_type *get() const;
 
@@ -154,7 +152,7 @@ namespace sensors {
 
 	template <typename T>
 	template <typename Y>
-	conditional_shared_ptr<T>::conditional_shared_ptr(::std::unique_ptr<Y> &ptr)
+	conditional_shared_ptr<T>::conditional_shared_ptr(std::unique_ptr<Y> &ptr)
 		: internal::conditional_shared_ptr_base(ptr.get())
 		, m_ptr(ptr.get())
 	{
@@ -164,7 +162,7 @@ namespace sensors {
 
 	template <typename T>
 	template <typename Y, class D>
-	conditional_shared_ptr<T>::conditional_shared_ptr(::std::unique_ptr<Y> &ptr, D deleter)
+	conditional_shared_ptr<T>::conditional_shared_ptr(std::unique_ptr<Y> &ptr, D deleter)
 		: internal::conditional_shared_ptr_base(ptr.get(), deleter)
 		, m_ptr(ptr.get())
 	{
@@ -242,7 +240,7 @@ namespace sensors {
 		#ifdef BOOST_DISABLE_THREADS
 			++m_counter;
 		#else
-			::boost::detail::atomic_increment(&m_counter);
+			boost::detail::atomic_increment(&m_counter);
 		#endif
 		}
 
@@ -254,7 +252,7 @@ namespace sensors {
 		#ifdef BOOST_DISABLE_THREADS
 			return --m_counter != 0;
 		#else
-			return ::boost::detail::atomic_exchange_and_add(&m_counter, -1) != 1;
+			return boost::detail::atomic_exchange_and_add(&m_counter, -1) != 1;
 		#endif
 		}
 

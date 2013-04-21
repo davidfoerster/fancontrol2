@@ -36,7 +36,7 @@ namespace sensors {
 
 
 	void subfeature::value(double v) const
-		throw(::util::null_pointer_exception, sensor_error)
+		throw(util::null_pointer_exception, sensor_error)
 	{
 		int errnum = sensors_set_value(
 				(UTIL_CHECK_POINTER(parent()), UTIL_CHECK_POINTER(parent()->parent())->get()),
@@ -78,4 +78,4 @@ namespace sensors {
 } /* namespace sensors */
 
 
-template ::std::ostream &operator<<(::std::ostream&, const ::sensors::feature&);
+template std::ostream &operator<<(std::ostream&, const sensors::feature&);

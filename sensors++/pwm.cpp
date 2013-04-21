@@ -12,12 +12,11 @@
 #include "../util/static_allocator/static_allocator.hpp"
 #include <boost/range/algorithm/copy.hpp>
 #include <boost/integer/static_log2.hpp>
-#include <boost/utility/enable_if.hpp>
-#include <boost/type_traits/make_unsigned.hpp>
 #include <boost/assert.hpp>
 #include <fstream>
 #include <algorithm>
 #include <limits>
+#include <type_traits>
 #include <stdexcept>
 #include <cstring>
 #include <cstdint>
@@ -26,8 +25,26 @@
 
 namespace sensors {
 
-	using ::boost::shared_ptr;
-	using ::util::io_error;
+	using std::shared_ptr;
+	using util::io_error;
+
+
+	pwm::pwm(const string_ref &path)
+		: m_chip()
+		, m_basepath(path.str())
+		, m_number(0)
+	{
+		init();
+	}
+
+
+	pwm::pwm(int number, const shared_ptr<chip_t> &chip)
+		: m_chip(chip)
+		, m_basepath(make_basepath(*chip, number))
+		, m_number(number)
+	{
+		init();
+	}
 
 
 	const pwm::Item::names_type &pwm::Item::names()
@@ -55,7 +72,7 @@ namespace sensors {
 
 
 	/*
-	pwm::pwm(const ::std::string &path, int number, const shared_ptr<chip_t> &chip)
+	pwm::pwm(const std::string &path, int number, const shared_ptr<chip_t> &chip)
 		: selfreference_type(false)
 		, m_chip(chip)
 		, m_basepath(!path.empty() ? path : make_basepath(*chip, number))
@@ -68,7 +85,7 @@ namespace sensors {
 
 	void pwm::init()
 	{
-		m_expeption_mask = ::std::ios::badbit;
+		m_expeption_mask = std::ios::badbit;
 
 		if (m_number == 2 && m_chip && m_chip->quirks()[chip::Quirks::pwm2_alters_pwm1]) {
 			m_associated = m_chip->pwm(1);
@@ -76,13 +93,13 @@ namespace sensors {
 	}
 
 
-	::std::string pwm::make_basepath(const chip_t &chip, int number)
+	std::string pwm::make_basepath(const chip_t &chip, int number)
 	{
 		if (number <= 0)
-			BOOST_THROW_EXCEPTION(::std::logic_error("'number' must be positive"));
+			BOOST_THROW_EXCEPTION(std::logic_error("'number' must be positive"));
 
 		const string_ref &path = chip.path(), &prefix = Item::prefix();
-		::std::string str; str.reserve(path.size() + prefix.size() + 4);
+		std::string str; str.reserve(path.size() + prefix.size() + 4);
 		path.str(str);
 		if (str.back() != '/')
 			str += '/';
@@ -110,7 +127,7 @@ namespace sensors {
 		value_t value = this->value(Item::enable);
 		if (raw)
 			*raw = value;
-		return static_cast<enable_enum>(::std::min<value_t>(value, Enable::automatic));
+		return static_cast<enable_enum>(std::min<value_t>(value, Enable::automatic));
 	}
 
 
@@ -128,15 +145,15 @@ namespace sensors {
 
 	pwm::value_t pwm::value_read(const string_ref &item, bool ignore_value) const throw (io_error)
 	{
-		::std::fstream f;
+		std::fstream f;
 		f.exceptions(m_expeption_mask);
-		open(f, item, ::std::ios::in);
+		open(f, item, std::ios::in);
 
 		value_t value;
 		if (!ignore_value) {
 			f >> value;
 		} else {
-			f.ignore(::std::numeric_limits< ::std::streamsize>::max(), '\n');
+			f.ignore(std::numeric_limits< std::streamsize>::max(), '\n');
 			value = 0;
 		}
 
@@ -152,13 +169,13 @@ namespace sensors {
 			value_read(item, true);
 		}
 
-		value_write(item, ::std::min(value, pwm_max()));
+		value_write(item, std::min(value, pwm_max()));
 	}
 
 
 	void pwm::value(rate_t value) throw (io_error)
 	{
-		this->raw_value(static_cast<value_t>(::std::max<rate_t>(value, 0) * static_cast<rate_t>(pwm_max()) + 0.5f));
+		this->raw_value(static_cast<value_t>(std::max<rate_t>(value, 0) * static_cast<rate_t>(pwm_max()) + 0.5f));
 	}
 
 
@@ -176,19 +193,19 @@ namespace sensors {
 
 	void pwm::value_write(const string_ref &item, value_t value) throw (io_error)
 	{
-		::std::fstream f;
+		std::fstream f;
 		f.exceptions(m_expeption_mask);
-		open(f, item, ::std::ios::out);
+		open(f, item, std::ios::out);
 		f << value;
 	}
 
 
-	const char *pwm::make_itempath(const string_ref &item, ::std::string &dst) const
+	const char *pwm::make_itempath(const string_ref &item, std::string &dst) const
 	{
 		if (item.empty()) {
 			return m_basepath.c_str();
 		} else {
-			const ::std::size_t required = m_basepath.length() + item.length() + 1;
+			const std::size_t required = m_basepath.length() + item.length() + 1;
 			dst.reserve(required + 1);
 			dst = m_basepath;
 			(dst += '_') += item;
@@ -198,9 +215,9 @@ namespace sensors {
 	}
 
 
-	void pwm::open(::std::fstream &file, const string_ref &item, ::std::ios::openmode mode) const
+	void pwm::open(std::fstream &file, const string_ref &item, std::ios::openmode mode) const
 	{
-		::std::string buf;
+		std::string buf;
 		file.open(make_itempath(item, buf), mode);
 	}
 
@@ -211,12 +228,12 @@ namespace sensors {
 			EACCES, ELOOP, ENAMETOOLONG, ENOENT, ENOTDIR, EROFS
 		};
 
-		::std::string buf;
+		std::string buf;
 		const char *const path = make_itempath(item, buf);
 		if (::euidaccess(path, mode) == 0)
 			return true;
 
-		if (::util::any_of_equal(acceptable_errnos, errno))
+		if (util::any_of_equal(acceptable_errnos, errno))
 			return false;
 
 		BOOST_THROW_EXCEPTION(io_error()
@@ -229,15 +246,15 @@ namespace sensors {
 	namespace helper {
 
 		template <int N, typename Integer>
-		inline static typename ::boost::enable_if_c< N >= 0, Integer>::type shift_left(const Integer &x)
+		inline static typename std::enable_if< N >= 0, Integer>::type shift_left(const Integer &x)
 		{
 			return x << N;
 		}
 
 		template <int N, typename Integer>
-		inline static typename ::boost::disable_if_c< N >= 0, Integer>::type shift_left(const Integer &x)
+		inline static typename std::disable_if< N >= 0, Integer>::type shift_left(const Integer &x)
 		{
-			typedef typename ::boost::make_unsigned<Integer>::type Unsigned;
+			typedef typename std::make_unsigned<Integer>::type Unsigned;
 			return static_cast<Integer>(static_cast<Unsigned>(x) >> -N);
 		}
 
@@ -245,22 +262,22 @@ namespace sensors {
 		template <uintmax_t Source, uintmax_t Dest, typename Integer>
 		inline static Integer convert_flagbit(const Integer &src)
 		{
-			using ::boost::static_log2;
+			using boost::static_log2;
 			return shift_left<static_log2<Dest>::value - static_log2<Source>::value>(src & static_cast<Integer>(Source));
 		}
 
 	}
 
 
-	bool pwm::exists(const string_ref &item, ::std::ios::open_mode mode_) const
+	bool pwm::exists(const string_ref &item, std::ios::open_mode mode_) const
 	{
 		#if F_OK != 0
 		#	error "Assumption violated"
 		#endif
 
 		const int mode = F_OK
-			| helper::convert_flagbit< ::std::ios::in, R_OK, int >(mode_)
-			| helper::convert_flagbit< ::std::ios::out, W_OK, int >(mode_)
+			| helper::convert_flagbit< std::ios::in, R_OK, int >(mode_)
+			| helper::convert_flagbit< std::ios::out, W_OK, int >(mode_)
 			;
 
 		return exists_internal(item, mode);
@@ -270,15 +287,6 @@ namespace sensors {
 	bool pwm::exists(item_enum item) const
 	{
 		return exists_internal(Item::name(item), R_OK|W_OK);
-	}
-
-
-	pwm::rate_t pwm::normalize(rate_t v)
-	{
-		if (v > 1) {
-			v *= pwm_max_inverse();
-		}
-		return v;
 	}
 
 } /* namespace sensors */

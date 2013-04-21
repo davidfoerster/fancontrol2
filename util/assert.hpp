@@ -23,7 +23,7 @@
 #	define assert_printf(expr, format, ...) (static_cast<void>(0))
 #else
 #	define assert_printf(expr, format, ...) ((expr) ? static_cast<void>(0) : \
-		::util::assertion::detail::assert_printf_fail(#expr, BOOST_CURRENT_FUNCTION, __FILE__, __LINE__, BOOST_ASSERT_MSG_FILE, format, ## __VA_ARGS__))
+		util::assertion::detail::assert_printf_fail(#expr, BOOST_CURRENT_FUNCTION, __FILE__, __LINE__, BOOST_ASSERT_MSG_FILE, format, ## __VA_ARGS__))
 
 namespace util {
 	namespace assertion {
@@ -32,7 +32,7 @@ namespace util {
 			void assert_printf_fail(
 					const char *expr,
 					const char *function, const char *file, unsigned int line,
-					::std::FILE *dst, const char *format, ...)
+					std::FILE *dst, const char *format, ...)
 				throw() __attribute__ ((__noreturn__));
 
 		}
@@ -47,7 +47,7 @@ namespace util {
 #	define BOOST_VERIFY_P(expr) ((expr), static_cast<void>(0))
 #else
 #	if defined BOOST_ENABLE_ASSERT_HANDLER
-#		define BOOST_VERIFY_R(expr) ((expr) || (::boost::assertion_failed(#expr, BOOST_CURRENT_FUNCTION, __FILE__, __LINE__), false))
+#		define BOOST_VERIFY_R(expr) ((expr) || (boost::assertion_failed(#expr, BOOST_CURRENT_FUNCTION, __FILE__, __LINE__), false))
 #	elif defined __GNUC__
 #		define BOOST_VERIFY_R(expr) ((expr) || (::__assert_fail(#expr, __FILE__, __LINE__, BOOST_CURRENT_FUNCTION), false))
 
@@ -60,7 +60,7 @@ namespace util {
 #endif
 
 #	define BOOST_VERIFY_P(expr) ((expr) ? static_cast<void>(0) : \
-		::util::assertion::detail::assert_perror_fail(#expr, BOOST_CURRENT_FUNCTION, __FILE__, __LINE__, BOOST_ASSERT_MSG_FILE, errno))
+		util::assertion::detail::assert_perror_fail(#expr, BOOST_CURRENT_FUNCTION, __FILE__, __LINE__, BOOST_ASSERT_MSG_FILE, errno))
 
 namespace util {
 	namespace assertion {
@@ -69,7 +69,7 @@ namespace util {
 			void assert_perror_fail(
 					const char *expr,
 					const char *function, const char *file, unsigned int line,
-					::std::FILE *dst, int errnum)
+					std::FILE *dst, int errnum)
 				throw() __attribute__ ((__noreturn__));
 
 		}

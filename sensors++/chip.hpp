@@ -14,9 +14,7 @@
 #include "internal/lock.hpp"
 #include "exceptions.hpp"
 
-#include "../util/self_referenced.hpp"
-#include <boost/weak_ptr.hpp>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <boost/functional/hash.hpp>
 #include <unordered_map>
 #include <bitset>
@@ -27,10 +25,10 @@
 
 namespace sensors {
 
-	using ::boost::shared_ptr;
-	using ::boost::weak_ptr;
+	using std::shared_ptr;
+	using std::weak_ptr;
 
-	using ::util::io_error;
+	using util::io_error;
 
 	struct sensors_chip_name;
 	class feature;
@@ -38,7 +36,7 @@ namespace sensors {
 
 
 	class chip
-		: virtual public ::util::self_referenced<chip>
+		: virtual public std::enable_shared_from_this<chip>
 		, public conditional_shared_ptr<sensors_chip_name>
 	{
 	public:
@@ -46,13 +44,13 @@ namespace sensors {
 		typedef conditional_shared_ptr<basic_type> super;
 		typedef sensors::feature feat_t;
 		typedef sensors::pwm pwm_t;
-		typedef ::std::pair<sensors_feature_type, int> feature_key_type;
+		typedef std::pair<sensors_feature_type, int> feature_key_type;
 
-		typedef ::std::unordered_map<
+		typedef std::unordered_map<
 				feature_key_type, weak_ptr<feat_t>,
-				::boost::hash<feature_key_type>
+				boost::hash<feature_key_type>
 			> feature_map_type;
-		typedef ::std::unordered_map< unsigned int, weak_ptr<pwm_t> > pwm_map_type;
+		typedef std::unordered_map< unsigned int, weak_ptr<pwm_t> > pwm_map_type;
 
 		struct Quirks {
 			enum value {
@@ -61,22 +59,20 @@ namespace sensors {
 				_length
 			};
 
-			typedef ::std::bitset<_length> Set;
+			typedef std::bitset<_length> Set;
 		};
 
 		typedef Quirks::value quirks_enum;
 
 		struct prefix_comparator
-			: ::std::binary_function<const basic_type&, const string_ref&, bool>
+			: std::binary_function<const basic_type&, const string_ref&, bool>
 		{
 			bool operator()(const basic_type &chip, const string_ref &prefix) const;
 		};
 
-		template <class Tag>
-		chip(const basic_type *chip, Tag) throw (sensor_error, io_error);
+		chip(const basic_type *chip) throw (sensor_error, io_error);
 
-		template <class Tag>
-		chip(::std::unique_ptr<basic_type> &chip, Tag) throw (sensor_error, io_error);
+		chip(std::unique_ptr<basic_type> &chip) throw (sensor_error, io_error);
 
 		typename rebind_ptr<feature_map_type>::other discover_features();
 
@@ -129,37 +125,13 @@ namespace sensors {
 
 
 template <typename Char, class Traits>
-::std::basic_ostream<Char, Traits> &operator<<(::std::basic_ostream<Char, Traits>&, const ::sensors::chip&);
+std::basic_ostream<Char, Traits> &operator<<(std::basic_ostream<Char, Traits>&, const sensors::chip&);
 
 
 
 // implementations ========================================
 
 namespace sensors {
-
-	template <class Tag>
-	chip::chip(const basic_type *chip, Tag tag)
-	throw (sensor_error, io_error)
-		: selfreference_type(tag)
-		, super(chip)
-		, m_prefix(chip->prefix), m_path(chip->path)
-		, m_autolock()
-	{
-		init();
-	}
-
-
-	template <class Tag>
-	chip::chip(::std::unique_ptr<basic_type> &chip, Tag tag)
-	throw (sensor_error, io_error)
-		: selfreference_type(tag)
-		, super(chip)
-		, m_prefix(chip->prefix), m_path(chip->path)
-		, m_autolock()
-	{
-		init();
-	}
-
 
 	inline
 	const chip::feature_map_type &chip::features() const
@@ -212,7 +184,7 @@ namespace sensors {
 
 
 template <typename Char, class Traits>
-::std::basic_ostream<Char, Traits> &operator<<(::std::basic_ostream<Char, Traits> &out, const ::sensors::chip &ch)
+std::basic_ostream<Char, Traits> &operator<<(std::basic_ostream<Char, Traits> &out, const sensors::chip &ch)
 {
 	if (!!ch) {
 		out << ch.prefix() << ':' << ch->addr;
@@ -224,6 +196,6 @@ template <typename Char, class Traits>
 
 
 extern
-template ::std::ostream &operator<<(::std::ostream&, const ::sensors::chip&);
+template std::ostream &operator<<(std::ostream&, const sensors::chip&);
 
 #endif /* SENSORS_CHIP_HPP_ */

@@ -8,25 +8,25 @@
 #include "sensors.hpp"
 
 #include "../util/algorithm.hpp"
-#include "../util/self_referenced.hpp"
-#include <boost/make_shared.hpp>
-#include <boost/ref.hpp>
-#include <boost/bind.hpp>
 #include <boost/range/algorithm/find_if.hpp>
 #include <boost/assert.hpp>
 #include <algorithm>
 #include <iterator>
+#include <functional>
+#include <memory>
 
 
 namespace sensors {
 
-	using ::boost::weak_ptr;
-	using ::boost::shared_ptr;
-	using ::util::self_referenced;
-	using ::util::io_error;
+	using std::weak_ptr;
+	using std::shared_ptr;
+	using std::bind;
+	using std::cref;
+	using namespace std::placeholders;
 
+	using util::io_error;
 
-	sensor_container::sensor_container(const char *config) throw (sensor_error, io_error, ::std::logic_error)
+	sensor_container::sensor_container(const char *config) throw (sensor_error, io_error, std::logic_error)
 		: m_chips(map_type::allocator_type::initial_capacity)
 		, m_lock(lock::instance(false))
 	{
@@ -41,10 +41,8 @@ namespace sensors {
 		const chip_t::basic_type *chip_basic; int nr = 0;
 		while (!!(chip_basic = sensors_get_detected_chips(match, &nr))) {
 			shared_ptr<chip_t> &chip = m_chips[*chip_basic];
-			if (!chip) {
-				chip = self_referenced<chip_t>::make(chip_basic);
-			}
-			map[*chip_basic] = chip;
+			if (!chip)
+				chip.reset(new chip_t(chip_basic));
 		}
 
 		return map;
@@ -71,7 +69,7 @@ namespace sensors {
 				if (!ignore_duplicate_matches && !!sensors_get_detected_chips(match, &nr))
 					BOOST_THROW_EXCEPTION(sensor_error(sensor_error::misplaced_wildcard));
 
-				chip = self_referenced<chip_t>::make(chip_basic);
+				chip.reset(new chip_t(chip_basic));
 			}
 		}
 		return chip;
@@ -89,9 +87,9 @@ namespace sensors {
 
 	shared_ptr<chip> sensor_container::operator[](const string_ref &name) const
 	{
-		using ::boost::bind;
-		const map_type::const_iterator it = ::boost::find_if(m_chips,
-				bind(chip_t::prefix_comparator(), bind(static_cast<get_key_t>(::std::get<0>), _1), ::boost::ref(name)));
+		const map_type::const_iterator it = boost::find_if(m_chips,
+				bind(chip_t::prefix_comparator(),
+						bind(static_cast<get_key_t>(std::get<0>), _1), cref(name)));
 		return (it != m_chips.end()) ? it->second : shared_ptr<chip_t>();
 	}
 
@@ -102,9 +100,9 @@ namespace sensors {
 	) throw (sensor_error)
 	{
 		// do we know that chip already?
-		using ::boost::bind;
-		const map_type::iterator it_chip = ::boost::find_if(m_chips,
-				bind(chip_t::prefix_comparator(), bind(static_cast<get_key_t>(::std::get<0>), _1), ::boost::ref(name)));
+		map_type::iterator it_chip = boost::find_if(m_chips,
+				bind(chip_t::prefix_comparator(),
+						bind(static_cast<get_key_t>(std::get<0>), _1), cref(name)));
 
 		if (it_chip != m_chips.end()) {
 			BOOST_ASSERT(it_chip->second);
@@ -130,26 +128,28 @@ namespace sensors {
 		BOOST_ASSERT(basic_chip != &match);
 		BOOST_ASSERT(!basic_chip || basic_chip->prefix != name.begin());
 
-		shared_ptr<chip_t> &chip = (it_chip != m_chips.end()) ?
-			it_chip->second :
-			(m_chips[*basic_chip] = self_referenced<chip_t>::make(basic_chip));
+		if (it_chip == m_chips.end()) {
+			std::pair<map_type::iterator, bool> r =
+					m_chips.emplace(*basic_chip, std::make_shared<chip_t>(basic_chip));
+			BOOST_ASSERT(r.second);
+			it_chip = r.first;
+		}
 
 		if (!ignore_duplicate_matches && !!sensors_get_detected_chips(&match, &nr))
 			BOOST_THROW_EXCEPTION(sensor_error(sensor_error::misplaced_wildcard));
 
-		return chip;
+		return it_chip->second;
 	}
 
 
 	shared_ptr<chip> sensor_container::parse_name(const string_ref &name)
 	{
-		::std::unique_ptr<chip_t::basic_type> chip_basic(new chip_t::basic_type);
+		std::unique_ptr<chip_t::basic_type> chip_basic(new chip_t::basic_type);
 		int errnum = sensors_parse_chip_name(name.c_str(), chip_basic.get());
 		if (errnum == sensor_error::no_error) {
 			shared_ptr<chip_t> &chip = m_chips[*chip_basic];
-			if (!chip) {
-				chip = self_referenced<chip_t>::make(::boost::ref(chip_basic));
-			}
+			if (!chip)
+				chip.reset(new chip_t(std::ref(chip_basic)));
 			return chip;
 		} else {
 			if (sensor_error::to_enum(errnum) != sensor_error::unparsable_chip_name)

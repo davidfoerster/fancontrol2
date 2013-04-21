@@ -29,7 +29,7 @@
 
 
 namespace std {
-	template<class, ::std::size_t> class array;
+	template<class, std::size_t> class array;
 }
 
 
@@ -56,7 +56,7 @@ namespace util {
 	template <typename T>
 	T *zero(T *x);
 
-	template <typename T, ::std::size_t Size>
+	template <typename T, std::size_t Size>
 	T (&zero(T (&a)[Size]))[Size];
 
 
@@ -96,13 +96,13 @@ namespace util {
 	void swap( T (&a)[2] );
 
 	template <typename T>
-	void swap( ::std::pair<T, T> &a );
+	void swap( std::pair<T, T> &a );
 
 	template <typename T>
-	void swap( ::std::array<T, 2> &a );
+	void swap( std::array<T, 2> &a );
 
 	template <typename T>
-	void swap( ::std::tuple<T, T> &a );
+	void swap( std::tuple<T, T> &a );
 
 
 	template <typename T1, typename T2 = T1> struct equal_to;
@@ -121,7 +121,7 @@ namespace util {
 	inline T &clip(T &x, T &min, T &max)
 	{
 		UTIL_ASSERT(min <= max);
-		return ::std::min(::std::max(x, min), max);
+		return std::min(std::max(x, min), max);
 	}
 
 
@@ -154,14 +154,14 @@ namespace util {
 	template <typename T>
 	inline T *zero(T *x)
 	{
-		::std::memset(&x, 0, sizeof(*x));
+		std::memset(&x, 0, sizeof(*x));
 		return x;
 	}
 
-	template <typename T, ::std::size_t Size>
+	template <typename T, std::size_t Size>
 	inline T (&zero(T (&a)[Size]))[Size]
 	{
-		::std::memset(a, 0, sizeof(a));
+		std::memset(a, 0, sizeof(T) * Size);
 		return a;
 	}
 
@@ -176,91 +176,91 @@ namespace util {
 	template <typename R1, typename R2>
 	bool has_prefix(const R1 &range, const R2 &prefix)
 	{
-		using ::boost::size;
+		using boost::size;
 		return size(range) >= size(prefix) &&
-			::std::equal(begin(prefix), end(prefix), begin(range));
+			std::equal(begin(prefix), end(prefix), begin(range));
 	}
 
 	template <typename R1, typename R2, typename Predicate>
 	bool has_prefix(const R1 &range, const R2 &prefix, Predicate pred)
 	{
-		using ::boost::begin;
-		using ::boost::end;
-		using ::boost::size;
+		using boost::begin;
+		using boost::end;
+		using boost::size;
 		return size(range) >= size(prefix) &&
-			::std::equal(begin(prefix), end(prefix), begin(range), pred);
+			std::equal(begin(prefix), end(prefix), begin(range), pred);
 	}
 
 
 	template <typename Range, typename Predicate>
 	inline bool any_of( const Range &r, Predicate pred )
 	{
-		return ::std::any_of( ::boost::begin(r), ::boost::end(r), pred );
+		return std::any_of( boost::begin(r), boost::end(r), pred );
 	}
 
 
 	template <typename Iterator, typename T>
 	inline bool any_of_equal( Iterator begin, Iterator end, const T &val )
 	{
-		return ::std::find( begin, end, val ) != end;
+		return std::find( begin, end, val ) != end;
 	}
 
 	template <typename Range, typename T>
 	inline bool any_of_equal( const Range &r, const T &val )
 	{
-		return any_of_equal( ::boost::begin(r), ::boost::end(r), val );
+		return any_of_equal( boost::begin(r), boost::end(r), val );
 	}
 
 
 	template <typename Range, typename Predicate>
 	inline bool all_of( const Range &r, Predicate pred )
 	{
-		return ::std::all_of( ::boost::begin(r), ::boost::end(r), pred );
+		return std::all_of( boost::begin(r), boost::end(r), pred );
 	}
 
 
 	template <typename Iterator, typename T>
 	inline bool all_of_equal( Iterator begin, Iterator end, const T &val )
 	{
-		typedef typename ::std::iterator_traits<Iterator>::value_type value_type;
-		return ::std::all_of( begin, end, ::std::bind2nd(equal_to<value_type, T>(), val) );
+		typedef typename std::iterator_traits<Iterator>::value_type value_type;
+		return std::all_of( begin, end, std::bind2nd(equal_to<value_type, T>(), val) );
 	}
 
 	template <typename Range, typename T>
 	inline bool all_of_equal( const Range &r, const T &val )
 	{
-		return all_of_equal( ::boost::begin(r), ::boost::end(r), val );
+		return all_of_equal( boost::begin(r), boost::end(r), val );
 	}
 
 
 	template <typename T>
 	inline void swap( T (&a)[2] )
 	{
-		::std::swap( a[0], a[1] );
+		std::swap( a[0], a[1] );
 	}
 
 	template <typename T>
-	inline void swap( ::std::pair<T, T> &a )
+	inline void swap( std::pair<T, T> &a )
 	{
-		::std::swap( a.first, a.second );
+		std::swap( a.first, a.second );
 	}
 
 	template <typename T>
-	inline void swap( ::std::array<T, 2> &a )
+	inline void swap( std::array<T, 2> &a )
 	{
-		::std::swap( a[0], a[1] );
+		std::swap( a[0], a[1] );
 	}
 
 	template <typename T>
-	inline void swap( ::std::tuple<T, T> &a )
+	inline void swap( std::tuple<T, T> &a )
 	{
-		::std::swap( ::std::get<0>(a), ::std::get<1>(a) );
+		std::swap( std::get<0>(a), std::get<1>(a) );
 	}
 
 
 	template <typename T1, typename T2>
 	struct equal_to
-		: ::std::binary_function<const T1&, const T2&, bool>
+		: std::binary_function<const T1&, const T2&, bool>
 	{
 		inline bool operator()(const T1 &a, const T2 &b) const {
 			return a == b;
@@ -270,7 +270,7 @@ namespace util {
 
 	template <typename T1, typename T2>
 	struct not_equal_to
-		: ::std::binary_function<const T1, const T2, bool>
+		: std::binary_function<const T1, const T2, bool>
 	{
 		inline bool operator()(const T1 &a, const T2 &b) const {
 			return !(a == b);

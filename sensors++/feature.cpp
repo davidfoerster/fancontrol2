@@ -12,19 +12,32 @@
 
 #include "../util/algorithm.hpp"
 #include "../util/stringpiece/lexical_cast.hpp"
-#include <boost/make_shared.hpp>
-#include <boost/bind.hpp>
 #include <boost/range/algorithm/find_if.hpp>
 #include <boost/assert.hpp>
 #include <algorithm>
 #include <iterator>
+#include <functional>
 
 
 namespace sensors {
 
-	using ::boost::shared_ptr;
-	using ::boost::weak_ptr;
-	using ::util::self_referenced;
+	using std::shared_ptr;
+	using std::weak_ptr;
+
+
+	feature::feature(basic_type *feature, const shared_ptr<chip> &chip)
+		: object_wrapper_numbered(feature, chip)
+		, m_name(feature ? feature->name : 0)
+	{
+	}
+
+
+	feature::feature(basic_type *feature, const string_ref &name, const shared_ptr<chip> &chip, key1)
+		: object_wrapper_numbered(feature, chip)
+		, m_name(name)
+	{
+		BOOST_ASSERT(!feature || name == feature->name);
+	}
 
 
 	shared_ptr<subfeature> feature::subfeature(subfeature::type_enum type)
@@ -36,7 +49,7 @@ namespace sensors {
 		if (!!*this && parent() && !!*parent()) {
 			const SF::basic_type *sf_basic = sensors_get_subfeature(parent()->get(), get(), type);
 			if (sf_basic) {
-				shared_ptr<SF> sf_new(self_referenced<SF>::make(sf_basic, selfreference()));
+				shared_ptr<SF> sf_new(new SF(sf_basic, shared_from_this()));
 				sf = sf_new;
 				return sf_new;
 			}
@@ -85,7 +98,8 @@ namespace sensors {
 				shared_ptr<SF> &dst = subfeatures[sf_basic->type];
 				weak_ptr<SF> &src = this->m_subfeatures[sf_basic->type];
 				if (src.expired()) {
-					src = dst = self_referenced<SF>::make(sf_basic, selfreference());
+					dst.reset(new SF(sf_basic, shared_from_this()));
+					src = dst;
 				} else {
 					dst = src.lock();
 				}
@@ -124,11 +138,15 @@ namespace sensors {
 
 	feature::type_enum feature::Types::from_name(const string_ref &name)
 	{
+		using std::bind;
+		using std::cref;
+		using namespace std::placeholders;
+		using boost::find_if;
+		using util::has_prefix;
 		if (!name.empty()) {
 			const type_names_t &names = Types::names();
 			const type_names_t::const_iterator pos =
-				::boost::find_if(names,
-					::boost::bind(::util::has_prefix<string_ref>, ::boost::ref(name), _1));
+					find_if(names, bind(has_prefix<string_ref>, cref(name), _1));
 			if (pos != names.end())
 				return static_cast<type_enum>(pos - names.begin());
 		}
@@ -141,13 +159,13 @@ namespace sensors {
 
 		if (is_valid(type2, index2)) {
 			const string_ref &name2 = names()[type2];
-			if (::util::has_prefix(name1, name2)) {
+			if (util::has_prefix(name1, name2)) {
 				const string_ref number_str(name1.substr(name2.size()));
 				if (starts_with_nonzero_digit(number_str)) {
-					::util::streamstate streamstate;
-					const int index1 = ::util::lexical_cast<int>(number_str, &streamstate);
+					util::streamstate streamstate;
+					const int index1 = util::lexical_cast<int>(number_str, &streamstate);
 					return index1 == index2 &&
-						( (streamstate.first & ::std::ios::eofbit) ||
+						( (streamstate.first & std::ios::eofbit) ||
 						  number_str[streamstate.second] == '_' );
 				}
 			}
@@ -178,7 +196,7 @@ namespace sensors {
 	}
 
 
-	bool feature::Types::is_valid(const ::std::pair<type_enum, int> &which)
+	bool feature::Types::is_valid(const std::pair<type_enum, int> &which)
 	{
 		return is_valid(which.first, which.second);
 	}

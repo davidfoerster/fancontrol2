@@ -12,7 +12,6 @@
 #include "../util/stringpiece/lexical_cast.hpp"
 
 #include <boost/filesystem.hpp>
-#include <boost/make_shared.hpp>
 #include <boost/foreach.hpp>
 #include <boost/assert.hpp>
 #include <cstring>
@@ -20,9 +19,28 @@
 
 namespace sensors {
 
-	using ::boost::weak_ptr;
-	using ::boost::shared_ptr;
-	using ::util::self_referenced;
+	using std::weak_ptr;
+	using std::shared_ptr;
+
+
+	chip::chip(const basic_type *chip)
+	throw (sensor_error, io_error)
+		: super(chip)
+		, m_prefix(chip->prefix), m_path(chip->path)
+		, m_autolock()
+	{
+		init();
+	}
+
+
+	chip::chip(std::unique_ptr<basic_type> &chip)
+	throw (sensor_error, io_error)
+		: super(chip)
+		, m_prefix(chip->prefix), m_path(chip->path)
+		, m_autolock()
+	{
+		init();
+	}
 
 
 	void chip::init() throw (sensor_error)
@@ -45,7 +63,8 @@ namespace sensors {
 				if (!src.expired()) {
 					dst = src.lock();
 				} else {
-					src = (dst = self_referenced<feat_t>::make(ft_basic, selfreference()));
+					dst.reset(new feat_t(ft_basic, shared_from_this()));
+					src = dst;
 				}
 			}
 		}
@@ -55,8 +74,8 @@ namespace sensors {
 
 	typename rebind_ptr<chip::pwm_map_type>::other chip::discover_pwms()
 	{
-		namespace fs = ::boost::filesystem;
-		using ::std::string;
+		namespace fs = boost::filesystem;
+		using std::string;
 
 		const string_ref &prefix = pwm::Item::prefix();
 		BOOST_ASSERT(!prefix.empty());
@@ -68,13 +87,13 @@ namespace sensors {
 		{
 			const fs::path feature_path(it->path().filename());
 			const string &feature_name = feature_path.native();
-			if (::util::has_prefix(feature_name, prefix))
+			if (util::has_prefix(feature_name, prefix))
 			{
 				const string_ref number_str(feature_name.data() + prefix.length());
 				if (starts_with_nonzero_digit(number_str)) {
-					::util::streamstate streamstate;
-					const unsigned index = ::util::lexical_cast<unsigned>(number_str, &streamstate);;
-					if (streamstate.first & ::std::ios::eofbit) {
+					util::streamstate streamstate;
+					const unsigned index = util::lexical_cast<unsigned>(number_str, &streamstate);;
+					if (streamstate.first & std::ios::eofbit) {
 						shared_ptr<pwm_t> p(pwm(index));
 						if (p) {
 							BOOST_ASSERT(map.count(index) == 0);
@@ -95,7 +114,7 @@ namespace sensors {
 			if (!p.expired())
 				return p.lock();
 
-			shared_ptr<pwm_t> p_new(self_referenced<pwm_t>::make(number, selfreference()));
+			shared_ptr<pwm_t> p_new(new pwm_t(number, shared_from_this()));
 			if (p_new->exists()) {
 				p = p_new;
 				return p_new;
@@ -125,13 +144,14 @@ namespace sensors {
 						const string_ref number_str(ft_basic->name + prefix.length());
 						BOOST_ASSERT(starts_with_nonzero_digit(number_str));
 
-						::util::streamstate streamstate;
+						util::streamstate streamstate;
 						const int number = util::lexical_cast<int>(number_str, &streamstate);
-						BOOST_ASSERT(streamstate.first & ::std::ios::eofbit);
+						BOOST_ASSERT(streamstate.first & std::ios::eofbit);
 
 						if (number == key.second) {
-							shared_ptr<feat_t> ft_new(self_referenced<feat_t>::make(
-								ft_basic, string_ref(ft_basic->name, number_str.end()), selfreference(), feat_t::key1()));
+							shared_ptr<feat_t> ft_new(new feat_t(
+								ft_basic, string_ref(ft_basic->name, number_str.end()),
+								shared_from_this(), feat_t::key1()));
 							ft = ft_new;
 							return ft_new;
 						}
@@ -155,9 +175,9 @@ namespace sensors {
 		feature_map_type::key_type which(feat_t::Types::from_name(name), 0);
 		const string_ref number_str(name.substr(feat_t::Types::name(which.first).length()));
 		if (starts_with_nonzero_digit(number_str)) {
-			::util::streamstate streamstate;
-			which.second = ::util::lexical_cast<feature_map_type::key_type::second_type>(number_str, &streamstate);
-			if (streamstate.first & ::std::ios::eofbit) {
+			util::streamstate streamstate;
+			which.second = util::lexical_cast<feature_map_type::key_type::second_type>(number_str, &streamstate);
+			if (streamstate.first & std::ios::eofbit) {
 				name = string_ref();
 				success = true;
 			} else {
@@ -209,5 +229,5 @@ namespace sensors {
 } /* namespace sensors */
 
 
-template ::std::ostream &operator<<(::std::ostream&, const ::sensors::chip&);
+template std::ostream &operator<<(std::ostream&, const sensors::chip&);
 

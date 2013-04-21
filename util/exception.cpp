@@ -10,7 +10,7 @@
 
 namespace util {
 
-	using ::boost::exception_detail::get_info;
+	using boost::exception_detail::get_info;
 
 
 	exception_base::~exception_base() throw()
@@ -20,7 +20,7 @@ namespace util {
 	const char *exception_base::what() const throw()
 	{
 		if (msg.empty()) {
-			const ::std::string *const what = get_info<what_t>::get(*this);
+			const std::string *const what = get_info<what_t>::get(*this);
 			if (what && !what->empty()) {
 				msg = *what;
 			} else {
@@ -35,7 +35,7 @@ namespace util {
 	{ }
 
 
-	runtime_error::runtime_error(const ::std::runtime_error &e)
+	runtime_error::runtime_error(const std::runtime_error &e)
 	{
 		*this << what_t(e.what());
 	}
@@ -53,7 +53,7 @@ namespace util {
 	{
 		if (msg.empty()) {
 			{
-				const ::std::string *const what = get_info<what_t>::get(*this);
+				const std::string *const what = get_info<what_t>::get(*this);
 				if (what && !what->empty()) {
 					msg = *what;
 				} else {
@@ -64,7 +64,7 @@ namespace util {
 			{
 				const int *const errnum = get_info<errno_code>::get(*this);
 				if (errnum) {
-					const char *const errmsg = ::std::strerror(*errnum);
+					const char *const errmsg = std::strerror(*errnum);
 					BOOST_ASSERT(errmsg && *errmsg);
 					((msg += ':') += ' ') += errmsg;
 					msg += " (errno=";
@@ -73,7 +73,7 @@ namespace util {
 			}
 
 			{
-				const ::std::string *const filename = get_info<io_error::filename>::get(*this);
+				const std::string *const filename = get_info<io_error::filename>::get(*this);
 				if (filename && !filename->empty()) {
 					((msg += " on `") += *filename) += '\'';
 				}

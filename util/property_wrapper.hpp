@@ -95,7 +95,7 @@ namespace util {
 
 		bool set(const T &new_value);
 
-		property_wrapper<T, G> &operator=(const T &new_value) throw(::std::invalid_argument);
+		property_wrapper<T, G> &operator=(const T &new_value) throw(std::invalid_argument);
 
 		property_wrapper<T, G> &operator=(const property_wrapper<T, G> &other);
 	};
@@ -123,7 +123,7 @@ namespace util {
 
 		bool set(const T &new_value);
 
-		const_property_wrapper<T, G> &operator=(const T &new_value) throw(::std::invalid_argument);
+		const_property_wrapper<T, G> &operator=(const T &new_value) throw(std::invalid_argument);
 
 		const_property_wrapper<T, G> &operator=(const property_wrapper<T, G> &other);
 	};
@@ -153,7 +153,7 @@ namespace util {
 
 		bool set(T *new_value);
 
-		pointer_property_wrapper<T, G> &operator=(T *new_value) throw(::std::invalid_argument);
+		pointer_property_wrapper<T, G> &operator=(T *new_value) throw(std::invalid_argument);
 
 		pointer_property_wrapper<T, G> &operator=(const property_wrapper<T*, G> &other);
 	};
@@ -192,10 +192,10 @@ namespace util {
 
 
 	template <typename T, class G>
-	property_wrapper<T, G> &property_wrapper<T,G>::operator=(const T &new_value) throw(::std::invalid_argument)
+	property_wrapper<T, G> &property_wrapper<T,G>::operator=(const T &new_value) throw(std::invalid_argument)
 	{
 		if (!set(new_value))
-			BOOST_THROW_EXCEPTION(::std::invalid_argument("new_value"));
+			BOOST_THROW_EXCEPTION(std::invalid_argument("new_value"));
 		return *this;
 	}
 
@@ -238,7 +238,7 @@ namespace util {
 	inline
 	const_property_wrapper<T, G> &
 	const_property_wrapper<T,G>::operator=(const T &new_value)
-		throw(::std::invalid_argument)
+		throw(std::invalid_argument)
 	{
 		return super::operator=(new_value);
 	}
@@ -275,7 +275,7 @@ namespace util {
 	inline
 	pointer_property_wrapper<T, G> &
 	pointer_property_wrapper<T,G>::operator=(T *new_value)
-		throw(::std::invalid_argument)
+		throw(std::invalid_argument)
 	{
 		return super::operator=(new_value);
 	}

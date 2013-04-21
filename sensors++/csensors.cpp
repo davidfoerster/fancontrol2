@@ -6,7 +6,7 @@
 
 namespace sensors {
 
-	using ::std::size_t;
+	using std::size_t;
 
 
 	const char *const default_config_path = "/etc/sensors3.conf";
@@ -16,7 +16,7 @@ namespace sensors {
 
 		bool equals(const char *a, const char *b)
 		{
-			return a == b || (a && b && ::std::strcmp(a, b) == 0);
+			return a == b || (a && b && std::strcmp(a, b) == 0);
 		}
 
 	}
@@ -31,8 +31,8 @@ namespace sensors {
 	size_t hash_value(const sensors_chip_name &k)
 	{
 		size_t seed = 0;
-		::boost::hash_combine(seed, k.bus);
-		::boost::hash_combine(seed, k.addr);
+		boost::hash_combine(seed, k.bus);
+		boost::hash_combine(seed, k.addr);
 		return seed;
 	}
 

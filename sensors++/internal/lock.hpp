@@ -12,15 +12,15 @@
 #include "../csensors.hpp"
 #include "../exceptions.hpp"
 #include <stdexcept>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <cstdio>
 #include <sys/stat.h>
 
 
 namespace sensors {
 
-	using ::boost::shared_ptr;
-	using ::util::io_error;
+	using std::shared_ptr;
+	using util::io_error;
 
 
 	class lock
@@ -34,7 +34,7 @@ namespace sensors {
 		void auto_release(bool);
 
 		bool initialized() const;
-		sensor_error::type_enum init(const char *config = default_config_path) throw (::std::logic_error, io_error);
+		sensor_error::type_enum init(const char *config = default_config_path) throw (std::logic_error, io_error);
 
 		bool same_config_file(const char *f) const throw (io_error);
 

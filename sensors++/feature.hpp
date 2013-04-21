@@ -14,42 +14,37 @@
 #include "csensors.hpp"
 #include "chip.hpp"
 
+#include "../util/static_allocator/static_allocator.hpp"
 #include "../util/exception.hpp"
-#include "../util/self_referenced.hpp"
-#include <boost/weak_ptr.hpp>
-#include <boost/shared_ptr.hpp>
-#include <boost/ref.hpp>
 #include <boost/functional/hash.hpp>
 #include <boost/assert.hpp>
-#include "../util/static_allocator/static_allocator.hpp"
 #include <array>
 #include <unordered_map>
+#include <memory>
 
 
 namespace sensors {
 
-	using ::boost::shared_ptr;
-	using ::boost::weak_ptr;
+	using std::shared_ptr;
+	using std::weak_ptr;
 
 	class subfeature;
 
 
 	class feature
-		: virtual public ::util::self_referenced<feature>
+		: virtual public std::enable_shared_from_this<feature>
 		, public object_wrapper_numbered<const sensors_feature, chip>
 	{
 	public:
-		typedef ::util::self_referenced<feature> self_referenced_type;
-
 		typedef object_wrapper_numbered<const sensors_feature, chip> super;
 
 		typedef sensors_feature_type type_enum;
 
 		typedef sensors::subfeature SF;
 
-		typedef ::std::unordered_map<
+		typedef std::unordered_map<
 				sensors_subfeature_type, weak_ptr<SF>,
-				::boost::hash<sensors_subfeature_type>
+				boost::hash<sensors_subfeature_type>
 		> map_type;
 
 		class key1 {
@@ -58,7 +53,7 @@ namespace sensors {
 		};
 
 		struct Types {
-			typedef ::std::array<string_ref, SENSORS_FEATURE_BEEP_ENABLE + 1> type_names_t;
+			typedef std::array<string_ref, SENSORS_FEATURE_BEEP_ENABLE + 1> type_names_t;
 
 			static type_names_t &make_names(type_names_t &a);
 
@@ -70,18 +65,16 @@ namespace sensors {
 
 			static bool is_valid(type_enum type, int index);
 
-			static bool is_valid(const ::std::pair<type_enum, int>&);
+			static bool is_valid(const std::pair<type_enum, int>&);
 
 			static bool check_name(const string_ref &name1, type_enum type2, int index2);
 
 			static type_enum from_name(const string_ref &name);
 		};
 
-		template <class Tag>
-		feature(basic_type *feature, const shared_ptr<chip> &chip, Tag tag);
+		feature(basic_type *feature, const shared_ptr<chip> &chip);
 
-		template <class Tag>
-		feature(basic_type *feature, const string_ref &name, const shared_ptr<chip> &chip, key1, Tag);
+		feature(basic_type *feature, const string_ref &name, const shared_ptr<chip> &chip, key1);
 
 		shared_ptr<SF> subfeature(sensors_subfeature_type type);
 		shared_ptr<SF> operator[](sensors_subfeature_type type) const;
@@ -107,34 +100,13 @@ namespace sensors {
 
 
 template <typename Char, class Traits>
-::std::basic_ostream<Char, Traits> &operator<<(::std::basic_ostream<Char, Traits>&, const ::sensors::feature&);
+std::basic_ostream<Char, Traits> &operator<<(std::basic_ostream<Char, Traits>&, const sensors::feature&);
 
 
 
 // implementations ========================================
 
 namespace sensors {
-
-	template <class Tag>
-	feature::feature(basic_type *feature, const shared_ptr<chip> &chip, Tag tag)
-		: selfreference_type(tag)
-		, object_wrapper_numbered(feature, chip)
-		, m_name(feature ? feature->name : 0)
-	{
-	}
-
-
-	template <class Tag>
-	feature::feature(basic_type *feature, const string_ref &name, const shared_ptr<chip> &chip, key1, Tag tag)
-		: selfreference_type(tag)
-		, object_wrapper_numbered(feature, chip)
-		, m_name(name)
-	{
-		if (feature) {
-			BOOST_ASSERT(name == feature->name);
-		}
-	}
-
 
 	inline
 	const feature::map_type &feature::subfeatures() const
@@ -160,7 +132,7 @@ namespace sensors {
 
 
 template <typename Char, class Traits>
-::std::basic_ostream<Char, Traits> &operator<<(::std::basic_ostream<Char, Traits> &out, const ::sensors::feature &feat)
+std::basic_ostream<Char, Traits> &operator<<(std::basic_ostream<Char, Traits> &out, const sensors::feature &feat)
 {
 	if (!!feat) {
 		out << *UTIL_CHECK_POINTER(feat.parent()) << '/' << feat.name();
@@ -171,7 +143,7 @@ template <typename Char, class Traits>
 }
 
 extern
-template ::std::ostream &operator<<(::std::ostream&, const ::sensors::feature&);
+template std::ostream &operator<<(std::ostream&, const sensors::feature&);
 
 
 #endif // SENSORS_FEATURE_HPP_

@@ -6,8 +6,8 @@
  */
 
 #pragma once
-#ifndef YAML_UTILS_HPP_
-#define YAML_UTILS_HPP_
+#ifndef UTIL_YAML_HPP_
+#define UTIL_YAML_HPP_
 
 
 namespace YAML {
@@ -20,13 +20,13 @@ namespace std {
 	struct iterator_traits;
 
 	template<>
-	struct iterator_traits< ::YAML::Iterator > {
+	struct iterator_traits< YAML::Iterator > {
 		typedef ::ssize_t difference_type;
-		typedef ::YAML::Node value_type;
+		typedef YAML::Node value_type;
 		typedef value_type* pointer;
 		typedef value_type& reference;
 		typedef bidirectional_iterator_tag iterator_category;
 	};
 
 } // namespace std
-#endif /* YAML_UTILS_HPP_ */
+#endif /* UTIL_YAML_HPP_ */

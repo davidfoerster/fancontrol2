@@ -7,8 +7,6 @@
 
 #include "lock.hpp"
 #include "../../util/assert.hpp"
-#include <boost/weak_ptr.hpp>
-#include <boost/make_shared.hpp>
 #include <cerrno>
 
 
@@ -20,9 +18,9 @@ static bool operator==(const struct timespec &a, const struct timespec &b)
 
 namespace sensors {
 
-	using ::util::io_error;
-	using ::boost::weak_ptr;
-	using ::boost::shared_ptr;
+	using util::io_error;
+	using std::weak_ptr;
+	using std::shared_ptr;
 
 
 	namespace helper {
@@ -34,10 +32,10 @@ namespace sensors {
 		}
 
 
-		static ::std::FILE *fopen_stat(const char *config, struct stat *statbuf) throw (io_error)
+		static std::FILE *fopen_stat(const char *config, struct stat *statbuf) throw (io_error)
 		{
 			if (config) {
-				::std::FILE *const f = ::std::fopen(config, "r");
+				std::FILE *const f = std::fopen(config, "r");
 				if (f && (!statbuf || ::fstat(::fileno(f), statbuf) == 0))
 					return f;
 			}
@@ -87,7 +85,7 @@ namespace sensors {
 	}
 
 
-	sensor_error::type_enum lock::init(const char *config) throw (::std::logic_error, io_error)
+	sensor_error::type_enum lock::init(const char *config) throw (std::logic_error, io_error)
 	{
 		if (!m_initialized)
 			return init_internal(config);
@@ -95,13 +93,13 @@ namespace sensors {
 		if (same_config_file(config))
 			return sensor_error::no_error;
 
-		BOOST_THROW_EXCEPTION(::std::logic_error("You cannot reinitialise libsensors with a different configuration file whithout releasing it first."));
+		BOOST_THROW_EXCEPTION(std::logic_error("You cannot reinitialise libsensors with a different configuration file whithout releasing it first."));
 	}
 
 
 	sensor_error::type_enum lock::init_internal(const char *config) throw (io_error)
 	{
-		::std::FILE *const f = helper::fopen_stat(config, &m_config_file_stat);
+		std::FILE *const f = helper::fopen_stat(config, &m_config_file_stat);
 		sensor_error::type_enum r = sensor_error::to_enum(sensors_init(f));
 		m_initialized = r == sensor_error::no_error;
 

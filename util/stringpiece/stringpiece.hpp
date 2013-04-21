@@ -10,6 +10,7 @@
 #define UTIL_STRINGPIECE_HPP_
 
 #include "../algorithm.hpp"
+#include "../enable_if.hpp"
 #include <boost/range/begin.hpp>
 #include <boost/range/end.hpp>
 #include <boost/range/size.hpp>
@@ -20,16 +21,13 @@
 #include <boost/range/algorithm/equal.hpp>
 #include <boost/range/algorithm/mismatch.hpp>
 #include <boost/range/algorithm/lexicographical_compare.hpp>
-#include <boost/type_traits/make_unsigned.hpp>
-#include <boost/type_traits/is_same.hpp>
-#include <boost/type_traits/is_integral.hpp>
-#include <boost/utility/enable_if.hpp>
 #include <algorithm>
 #include <iterator>
 #include <utility>
 #include <string>
 #include <iosfwd>
 #include <stdexcept>
+#include <type_traits>
 
 
 #ifndef UTIL_STRINGPIECE_HPP_API
@@ -47,10 +45,10 @@ namespace util {
 
 		template <typename Range>
 		static
-		typename ::boost::disable_if<
-			::boost::is_same<
-				typename ::boost::range_category<Range>::type,
-				::std::random_access_iterator_tag
+		typename std::_disable_if<
+			std::is_same<
+				typename boost::range_category<Range>::type,
+				std::random_access_iterator_tag
 			>,
 			bool
 		>::type
@@ -58,10 +56,10 @@ namespace util {
 
 		template <typename Range>
 		static
-		typename ::boost::enable_if<
-			::boost::is_same<
-			 typename ::boost::range_category<Range>::type,
-				::std::random_access_iterator_tag
+		typename std::_enable_if<
+			std::is_same<
+			 typename boost::range_category<Range>::type,
+				std::random_access_iterator_tag
 			>,
 			bool
 		>::type
@@ -72,30 +70,30 @@ namespace util {
 
 	template <typename Iterator>
 	class basic_stringpiece
-		: public ::std::pair<Iterator, Iterator>
+		: public std::pair<Iterator, Iterator>
 	{
 	private:
-		typedef ::std::pair<Iterator, Iterator> base_t;
-		typedef ::std::iterator_traits<Iterator> iterator_traits;
+		typedef std::pair<Iterator, Iterator> base_t;
+		typedef std::iterator_traits<Iterator> iterator_traits;
 
 	public:
 		typedef basic_stringpiece<Iterator> self_t;
 		typedef Iterator iterator;
-		typedef typename ::boost::range_const_iterator<base_t>::type const_iterator;
+		typedef typename boost::range_const_iterator<base_t>::type const_iterator;
 		typedef typename iterator_traits::value_type value_type;
 		typedef typename iterator_traits::pointer pointer;
 		typedef typename iterator_traits::reference reference;
 		typedef typename iterator_traits::difference_type difference_type;
-		typedef typename ::boost::make_unsigned<difference_type>::type size_type;
+		typedef typename std::make_unsigned<difference_type>::type size_type;
 
 		struct traits_type
-			: ::std::char_traits<value_type>
+			: std::char_traits<value_type>
 		{
-			typedef ::std::char_traits<value_type> underlying_type;
+			typedef std::char_traits<value_type> underlying_type;
 
-			static inline bool le(const value_type &a, const value_type &b) { return lt(a, b) || eq(a, b); }
-			static inline bool gt(const value_type &a, const value_type &b) { return !le(a, b); }
-			static inline bool ge(const value_type &a, const value_type &b) { return !lt(a, b); }
+			static inline bool le(const value_type &a, const value_type &b) { return traits_type::lt(a, b) || traits_type::eq(a, b); }
+			static inline bool gt(const value_type &a, const value_type &b) { return !traits_type::le(a, b); }
+			static inline bool ge(const value_type &a, const value_type &b) { return !traits_type::lt(a, b); }
 		};
 
 		static const basic_stringpiece<Iterator> &empty_string();
@@ -105,19 +103,19 @@ namespace util {
 
 		basic_stringpiece(const Iterator &begin, const Iterator &end);
 
-		basic_stringpiece(const ::std::pair<Iterator, Iterator> &other);
+		basic_stringpiece(const std::pair<Iterator, Iterator> &other);
 
 		template <typename U>
-		explicit basic_stringpiece(const ::std::pair<U, U> &other);
+		explicit basic_stringpiece(const std::pair<U, U> &other);
 
 		template <class Allocator>
-		basic_stringpiece(const ::std::basic_string<value_type, typename traits_type::underlying_type, Allocator> &other);
+		basic_stringpiece(const std::basic_string<value_type, typename traits_type::underlying_type, Allocator> &other);
 
 		explicit basic_stringpiece(const value_type *s);
 
 		basic_stringpiece(const value_type *s, size_type length);
 
-		template < ::std::size_t Size>
+		template < std::size_t Size>
 		basic_stringpiece(const value_type (&s)[Size]);
 
 		virtual ~basic_stringpiece();
@@ -127,19 +125,19 @@ namespace util {
 		inline bool empty() const { return begin() == end(); }
 		inline bool operator!() const { return empty(); }
 
-		typename ::boost::enable_if<
-			::boost::is_same<
+		typename std::_enable_if<
+			std::is_same<
 				typename iterator_traits::iterator_category,
-				::std::random_access_iterator_tag
+				std::random_access_iterator_tag
 			>,
 			const value_type*
 		>::type
 		c_str() const;
 
 		template <class Alloc>
-		void str(::std::basic_string<value_type, typename traits_type::underlying_type, Alloc> &s) const;
+		void str(std::basic_string<value_type, typename traits_type::underlying_type, Alloc> &s) const;
 
-		::std::basic_string<value_type> str() const;
+		std::basic_string<value_type> str() const;
 
 		inline Iterator begin() const { return this->first; }
 		inline Iterator end() const { return this->second; }
@@ -185,15 +183,15 @@ namespace util {
 		bool prefix_of(const value_type *s) const;
 
 		template <typename Integer>
-		typename boost::enable_if<boost::is_integral<Integer>, self_t>::type
+		typename std::_enable_if<std::is_integral<Integer>, self_t>::type
 		parse(Integer &, unsigned base = 10) const;
 	};
 
 
-	template <typename CharT = char, class Alloc = ::std::allocator<CharT> >
+	template <typename CharT = char, class Alloc = std::allocator<CharT> >
 	class basic_stringpiece_alloc
 		: public basic_stringpiece<const CharT*>
-		, private ::std::allocator<CharT>
+		, private std::allocator<CharT>
 	{
 		typedef basic_stringpiece<const CharT*> sp_t;
 
@@ -250,7 +248,7 @@ namespace util {
 
 
 	template <typename Range>
-	basic_stringpiece<typename ::boost::range_iterator<Range>::type>
+	basic_stringpiece<typename boost::range_iterator<Range>::type>
 	make_stringpiece(const Range &r);
 
 } // namespace util
@@ -297,14 +295,14 @@ namespace util {
 
 
 	template <typename Iterator>
-	inline basic_stringpiece<Iterator>::basic_stringpiece(const ::std::pair<Iterator, Iterator> &other)
+	inline basic_stringpiece<Iterator>::basic_stringpiece(const std::pair<Iterator, Iterator> &other)
 		: base_t(other)
 	{ }
 
 
 	template <typename Iterator>
 	template <typename U>
-	inline basic_stringpiece<Iterator>::basic_stringpiece(const ::std::pair<U, U> &other)
+	inline basic_stringpiece<Iterator>::basic_stringpiece(const std::pair<U, U> &other)
 		: base_t(other)
 	{ }
 
@@ -312,7 +310,7 @@ namespace util {
 	template <typename Iterator>
 	template <class Allocator>
 	inline basic_stringpiece<Iterator>::basic_stringpiece(
-			const ::std::basic_string<value_type, typename traits_type::underlying_type, Allocator> &other)
+			const std::basic_string<value_type, typename traits_type::underlying_type, Allocator> &other)
 		: base_t( (other.c_str(), base_t(other.data(), other.data()+other.size())) )
 	{ }
 
@@ -330,7 +328,7 @@ namespace util {
 
 
 	template <typename Iterator>
-	template < ::std::size_t Size>
+	template < std::size_t Size>
 	inline basic_stringpiece<Iterator>::basic_stringpiece(const value_type (&s)[Size])
 		: base_t(s, s + Size - !s[Size-1])
 	{ }
@@ -343,10 +341,10 @@ namespace util {
 
 	template <typename Iterator>
 	inline
-	typename ::boost::enable_if<
-		::boost::is_same<
+	typename std::_enable_if<
+		std::is_same<
 			typename basic_stringpiece<Iterator>::iterator_traits::iterator_category,
-			::std::random_access_iterator_tag
+			std::random_access_iterator_tag
 		>,
 		const typename basic_stringpiece<Iterator>::value_type*
 	>::type
@@ -354,14 +352,14 @@ namespace util {
 	{
 		if (detail::is_c_str(*this))
 			return &*begin();
-		throw ::std::logic_error("cannot convert to C string");
+		throw std::logic_error("cannot convert to C string");
 	}
 
 
 	template <typename Iterator>
 	template <class Alloc>
 	void basic_stringpiece<Iterator>::str(
-			::std::basic_string<value_type, typename traits_type::underlying_type, Alloc> &s
+			std::basic_string<value_type, typename traits_type::underlying_type, Alloc> &s
 	) const {
 		if (!empty()) {
 			s.assign(begin(), end());
@@ -373,12 +371,12 @@ namespace util {
 
 	template <typename Iterator>
 	inline
-	::std::basic_string<typename basic_stringpiece<Iterator>::value_type>
+	std::basic_string<typename basic_stringpiece<Iterator>::value_type>
 	basic_stringpiece<Iterator>::str() const
 	{
 		return !empty() ?
-			::std::basic_string<value_type>(begin(), end()) :
-			::std::basic_string<value_type>();
+			std::basic_string<value_type>(begin(), end()) :
+			std::basic_string<value_type>();
 	}
 
 
@@ -431,9 +429,9 @@ namespace util {
 	bool basic_stringpiece<Iterator>::operator==(const Range &r) const
 	{
 		return
-			(&*::boost::begin(r) == &*this->begin()) ?
-				&*::boost::end(r) == &*this->end() :
-				::boost::equal(*this, r, traits_type::eq);
+			(&*boost::begin(r) == &*this->begin()) ?
+				&*boost::end(r) == &*this->end() :
+				boost::equal(*this, r, traits_type::eq);
 	}
 
 
@@ -476,7 +474,7 @@ namespace util {
 	template <typename Range>
 	bool basic_stringpiece<Iterator>::operator<(const Range &r) const
 	{
-		return ::boost::lexicographical_compare(*this, r, &traits_type::lt);
+		return boost::lexicographical_compare(*this, r, &traits_type::lt);
 	}
 
 
@@ -484,7 +482,7 @@ namespace util {
 	template <typename Range>
 	bool basic_stringpiece<Iterator>::operator<=(const Range &r) const
 	{
-		return ::boost::lexicographical_compare(*this, r, &traits_type::le);
+		return boost::lexicographical_compare(*this, r, &traits_type::le);
 	}
 
 
@@ -492,7 +490,7 @@ namespace util {
 	template <typename Range>
 	bool basic_stringpiece<Iterator>::operator>(const Range &r) const
 	{
-		return ::boost::lexicographical_compare(*this, r, &traits_type::gt);
+		return boost::lexicographical_compare(*this, r, &traits_type::gt);
 	}
 
 
@@ -500,7 +498,7 @@ namespace util {
 	template <typename Range>
 	bool basic_stringpiece<Iterator>::operator>=(const Range &r) const
 	{
-		return ::boost::lexicographical_compare(*this, r, &traits_type::ge);
+		return boost::lexicographical_compare(*this, r, &traits_type::ge);
 	}
 
 
@@ -508,11 +506,11 @@ namespace util {
 	template <typename Range>
 	int basic_stringpiece<Iterator>::compare(const Range &r) const
 	{
-		const ::std::pair<Iterator, typename ::boost::range_const_iterator<Range>::type>
-			mismatch = ::boost::mismatch(*this, r);
+		const std::pair<Iterator, typename boost::range_const_iterator<Range>::type>
+			mismatch = boost::mismatch(*this, r);
 		const value_type
 			c1 = (mismatch.first != this->end()) ? *mismatch.first : static_cast<value_type>(0),
-			c2 = (mismatch.second != ::boost::end(r)) ? *mismatch.second : static_cast<value_type>(0);
+			c2 = (mismatch.second != boost::end(r)) ? *mismatch.second : static_cast<value_type>(0);
 		return util::compare(c1, c2, &traits_type::lt);
 	}
 
@@ -541,19 +539,6 @@ namespace util {
 	}
 
 
-	/*
-	template <typename Iterator>
-	template <typename Integer>
-	typename boost::enable_if< boost::is_integral<Integer>, basic_stringpiece<Iterator> >::type
-	basic_stringpiece<Iterator>::operator>>(Integer &n_, unsigned base) const
-	{
-		const_iterator it = begin();
-		Integer n = 0;
-		while (it != end() && util::in_range<value_type>(*it, '0', '9' + 1)) {
-			n = n * base +
-		}
-	}
-	*/
 
 
 	template <typename C, class A>
@@ -566,7 +551,8 @@ namespace util {
 
 	template <typename C, class A>
 	inline basic_stringpiece_alloc<C,A>::basic_stringpiece_alloc(const self_t &other)
-		: A(other)
+		: basic_stringpiece<const C*>()
+		, A(other)
 	{
 		init(other, !!other.m_capacity);
 	}
@@ -655,8 +641,8 @@ namespace util {
 	template <typename C, class A>
 	inline void basic_stringpiece_alloc<C,A>::swap(self_t &other)
 	{
-		::std::swap<sp_t>(*this, other);
-		::std::swap(this->m_capacity, other.m_capacity);
+		std::swap<sp_t>(*this, other);
+		std::swap(this->m_capacity, other.m_capacity);
 	}
 
 
@@ -672,8 +658,8 @@ namespace util {
 	void basic_stringpiece_alloc<C,A>::init(const Range &r, bool allocate_always)
 	{
 		if (allocate_always || detail::is_c_str(r)) {
-			m_capacity = ::boost::size(r) + 1;
-			typename ::boost::range_const_iterator<Range>::type begin = ::boost::begin(r);
+			m_capacity = boost::size(r) + 1;
+			typename boost::range_const_iterator<Range>::type begin = boost::begin(r);
 			value_type *buf = this->allocate(m_capacity);
 			this->first = buf; this->second = buf + (m_capacity - 1);
 			while (buf != this->second)
@@ -708,50 +694,50 @@ namespace util {
 
 	template <typename Range>
 	inline
-	basic_stringpiece<typename ::boost::range_iterator<Range>::type>
+	basic_stringpiece<typename boost::range_iterator<Range>::type>
 	make_stringpiece(const Range &r)
 	{
-		return basic_stringpiece<typename ::boost::range_iterator<Range>::type>(r);
+		return basic_stringpiece<typename boost::range_iterator<Range>::type>(r);
 	}
 
 
 	template <typename CharT, class Allocator, typename Iterator>
-	inline bool operator==(::std::basic_string<CharT, Allocator> &s1, const util::basic_stringpiece<Iterator> &s2)
+	inline bool operator==(std::basic_string<CharT, Allocator> &s1, const util::basic_stringpiece<Iterator> &s2)
 	{
 		return s2 == s1;
 	}
 
 
 	template <typename CharT, class Allocator, typename Iterator>
-	inline bool operator!=(::std::basic_string<CharT, Allocator> &s1, const util::basic_stringpiece<Iterator> &s2)
+	inline bool operator!=(std::basic_string<CharT, Allocator> &s1, const util::basic_stringpiece<Iterator> &s2)
 	{
 		return s2 != s1;
 	}
 
 
 	template <typename CharT, class Allocator, typename Iterator>
-	inline bool operator<(::std::basic_string<CharT, Allocator> &s1, const util::basic_stringpiece<Iterator> &s2)
+	inline bool operator<(std::basic_string<CharT, Allocator> &s1, const util::basic_stringpiece<Iterator> &s2)
 	{
 		return s2 > s1;
 	}
 
 
 	template <typename CharT, class Allocator, typename Iterator>
-	inline bool operator<=(::std::basic_string<CharT, Allocator> &s1, const util::basic_stringpiece<Iterator> &s2)
+	inline bool operator<=(std::basic_string<CharT, Allocator> &s1, const util::basic_stringpiece<Iterator> &s2)
 	{
 		return s2 >= s1;
 	}
 
 
 	template <typename CharT, class Allocator, typename Iterator>
-	inline bool operator>(::std::basic_string<CharT, Allocator> &s1, const util::basic_stringpiece<Iterator> &s2)
+	inline bool operator>(std::basic_string<CharT, Allocator> &s1, const util::basic_stringpiece<Iterator> &s2)
 	{
 		return s2 < s1;
 	}
 
 
 	template <typename CharT, class Allocator, typename Iterator>
-	inline bool operator>=(::std::basic_string<CharT, Allocator> &s1, const util::basic_stringpiece<Iterator> &s2)
+	inline bool operator>=(std::basic_string<CharT, Allocator> &s1, const util::basic_stringpiece<Iterator> &s2)
 	{
 		return s2 <= s1;
 	}
@@ -761,10 +747,10 @@ namespace util {
 
 		template <typename Range>
 		static inline
-		typename ::boost::disable_if<
-			::boost::is_same<
-				typename ::boost::range_category<Range>::type,
-				::std::random_access_iterator_tag
+		typename std::_disable_if<
+			std::is_same<
+				typename boost::range_category<Range>::type,
+				std::random_access_iterator_tag
 			>,
 			bool
 		>::type
@@ -774,17 +760,17 @@ namespace util {
 
 		template <typename Range>
 		static inline
-		typename ::boost::enable_if<
-			::boost::is_same<
-			 typename ::boost::range_category<Range>::type,
-				::std::random_access_iterator_tag
+		typename std::_enable_if<
+			std::is_same<
+			 typename boost::range_category<Range>::type,
+				std::random_access_iterator_tag
 			>,
 			bool
 		>::type
 		is_c_str(const Range &r) {
-			const typename ::boost::range_const_iterator<Range>::type begin = ::boost::begin(r);
-			const typename ::boost::range_difference<Range>::type size = ::boost::size(r);
-			const typename ::boost::range_value<Range>::type *const data_end = (&*begin) + size;
+			const typename boost::range_const_iterator<Range>::type begin = boost::begin(r);
+			const typename boost::range_difference<Range>::type size = boost::size(r);
+			const typename boost::range_value<Range>::type *const data_end = (&*begin) + size;
 			return data_end == &*(begin + size) && *data_end == 0;
 		}
 

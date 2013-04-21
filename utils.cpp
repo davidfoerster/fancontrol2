@@ -8,9 +8,10 @@
 #include "utils.hpp"
 #include "sensors++/sensors.hpp"
 #include "util/assert.hpp"
+#include "util/preprocessor.hpp"
 
-#include <boost/make_shared.hpp>
 #include <boost/foreach.hpp>
+#include <boost/preprocessor/stringize.hpp>
 #include <iostream>
 #include <fstream>
 
@@ -21,8 +22,8 @@
 
 namespace fancontrol {
 
-	using ::sensors::sensor_container;
-	using ::sensors::sensor_error;
+	using sensors::sensor_container;
+	using sensors::sensor_error;
 
 	using std::cout;
 	using std::cerr;
@@ -72,13 +73,13 @@ namespace fancontrol {
 	}
 
 
-	int handle_exception(::util::exception_base &e, bool cfg_ok)
+	int handle_exception(util::exception_base &e, bool cfg_ok)
 	{
 		return handle_exception(
 				static_cast< std::exception&>(e),
 				cfg_ok
 	#if FANCONTROL_PIDFILE
-				|| !!dynamic_cast< ::util::pidfile_exception*>(&e)
+				|| !!dynamic_cast< util::pidfile_exception*>(&e)
 	#endif
 			);
 	}
@@ -158,8 +159,8 @@ namespace fancontrol {
 
 
 	config_wrapper::config_wrapper(
-		std::ifstream &config_file, const boost::shared_ptr<sensor_container> &sens, bool do_check)
-			throw(::util::runtime_error, ::YAML::ParserException, std::ios::failure)
+		std::ifstream &config_file, const std::shared_ptr<sensor_container> &sens, bool do_check)
+			throw(util::runtime_error, YAML::ParserException, std::ios::failure)
 		: cfg(config_file, sens, do_check)
 		, do_check(do_check)
 	{
@@ -168,11 +169,10 @@ namespace fancontrol {
 
 
 	std::unique_ptr<config_wrapper> config_wrapper::make_config(int argc, char *argv[])
-			throw(::util::runtime_error, ::YAML::ParserException)
+			throw(util::runtime_error, YAML::ParserException)
 	{
-		static const char *default_cfg_filename = UTIL_STRING(FANCONTROL_CONFIGFILE);
 		int argp = 1;
-		const char *cfg_filename = default_cfg_filename;
+		const char *cfg_filename = BOOST_PP_STRINGIZE(FANCONTROL_CONFIGFILE);
 		bool do_check = false;
 
 		if (argp < argc && std::strcmp(argv[argp], "--check") == 0) {
@@ -199,9 +199,9 @@ namespace fancontrol {
 			cfg_file.open(cfg_filename);
 
 			return std::unique_ptr<config_wrapper>(
-					new config_wrapper(cfg_file, boost::make_shared<sensor_container>(), do_check));
+					new config_wrapper(cfg_file, std::make_shared<sensor_container>(), do_check));
 		} catch (std::ios::failure &e) {
-			using ::util::io_error;
+			using util::io_error;
 			BOOST_THROW_EXCEPTION(io_error()
 				<< io_error::what_t(e.what())
 				<< io_error::errno_code(errno)

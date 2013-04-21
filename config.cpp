@@ -18,22 +18,21 @@
 #include "util/strcat.hpp"
 #include "util/algorithm.hpp"
 #include "util/static_allocator/static_string.hpp"
-#include "util/yaml_utils.hpp"
+#include "util/yaml.hpp"
 
-#include <boost/make_shared.hpp>
 #include <boost/format.hpp>
 #include <boost/range/begin.hpp>
 #include <boost/range/end.hpp>
 #include <boost/range/algorithm/find_if.hpp>
 #include <boost/iterator/transform_iterator.hpp>
-#include <boost/function.hpp>
-#include <boost/bind.hpp>
+#include <boost/preprocessor/stringize.hpp>
 #include <yaml-cpp/yaml.h>
 
 #include <string>
 #include <sstream>
 #include <istream>
 #include <iostream>
+#include <functional>
 
 #include <boost/assert.hpp>
 #include <cmath>
@@ -45,11 +44,19 @@
 #	define FANCONTROL_PIDFILE (1)
 #endif
 #if FANCONTROL_PIDFILE
-#	ifndef FANCONTROL_PIDFILE_PATH
-#		define FANCONTROL_PIDFILE_PATH /var/run/fancontrol.pid
-#	endif
 #	ifndef FANCONTROL_PIDFILE_ROOTONLY
-#		define FANCONTROL_PIDFILE_ROOTONLY (1)
+#		ifdef NDEBUG
+#			define FANCONTROL_PIDFILE_ROOTONLY (1)
+#		else
+#			define FANCONTROL_PIDFILE_ROOTONLY (0)
+#		endif
+#	endif
+#	ifndef FANCONTROL_PIDFILE_PATH
+#		if FANCONTROL_PIDFILE_ROOTONLY
+#			define FANCONTROL_PIDFILE_PATH /var/run/fancontrol.pid
+#		else
+#			define FANCONTROL_PIDFILE_PATH fancontrol.pid
+#		endif
 #	endif
 #endif
 
@@ -59,15 +66,19 @@ namespace fancontrol {
 	using std::string;
 	using std::istream;
 
-	using boost::shared_ptr;
-	using boost::make_shared;
-	using boost::static_pointer_cast;
+	using std::shared_ptr;
+	using std::make_shared;
+	using std::static_pointer_cast;
+	using std::bind;
+	using std::ref;
+	using std::cref;
+	using namespace std::placeholders;
 
-	using ::YAML::ParserException;
-	using ::YAML::Node;
-	using ::YAML::NodeType;
+	using YAML::ParserException;
+	using YAML::Node;
+	using YAML::NodeType;
 
-	using namespace ::sensors;
+	using namespace sensors;
 
 	typedef config::ios_failure ios_failure;
 
@@ -139,13 +150,14 @@ namespace fancontrol {
 	{
 		shared_ptr<subfeature> source(parse_subfeature(node["source"]));
 		controls_container::const_iterator it_ctrl = boost::find_if(controls,
-				boost::bind(simple_bounded_control::source_comparator(), _1, boost::ref(*source)));
+				bind(simple_bounded_control::source_comparator(), _1, cref(*source)));
 
 		if (it_ctrl == controls.end()) {
 			simple_bounded_control::value_t min, max;
 			node["min"] >> min;
 			node["max"] >> max;
-			controls.push_back(control_type(make_shared<simple_bounded_control>(source, min, max)));
+			controls.push_back(static_pointer_cast<control>(
+					make_shared<simple_bounded_control>(source, min, max)));
 			it_ctrl = controls.end() - 1;
 		}
 		//assert(dynamic_cast<simple_bounded_control*>(it_ctrl->get()));
@@ -158,16 +170,17 @@ namespace fancontrol {
 			throw(sensor_error, ParserException)
 	{
 		if (node.size() != 0) {
-			typedef ::boost::transform_iterator<
-					::boost::function<shared_ptr<control>(const Node&)>,
-					::YAML::Iterator
+			typedef boost::transform_iterator<
+						std::function<shared_ptr<control>(const Node&)>,
+						YAML::Iterator
 				> parse_dependency_iterator;
 
-			controls.push_back(shared_ptr<control>(make_shared< aggregated_control<> >(
+			controls.push_back(static_pointer_cast<control>(
+					make_shared< aggregated_control<> >(
 					parse_dependency_iterator(node.begin(),
-							boost::bind(&config::parse_dependencies, boost::ref(*this), _1)),
+									bind(&config::parse_dependencies, ref(*this), _1)),
 					parse_dependency_iterator(node.end()),
-				node.size()) ));
+					node.size())));
 			return controls.back();
 
 		} else {
@@ -214,7 +227,7 @@ namespace fancontrol {
 	config::parse_fans(const Node &node)
 			throw(sensor_error, ParserException, ios_failure)
 	{
-		for (::YAML::Iterator it = node.begin(); it != node.end(); ++it) {
+		for (YAML::Iterator it = node.begin(); it != node.end(); ++it) {
 			shared_ptr<fan> fan(parse_fan(it.second()));
 			it.first() >> fan->m_label.m_value;
 		}
@@ -231,17 +244,17 @@ namespace fancontrol {
 
 
 	config::config(istream &source, const shared_ptr<sensor_container> &sensors, bool do_check)
-			throw(::util::runtime_error, ParserException, ios_failure)
+			throw(util::runtime_error, ParserException, ios_failure)
 		: auto_reset(true)
 		, sensors(sensors)
 	{
-	#if FANCONTROL_PIDFILE
 		if (!do_check) {
+	#if FANCONTROL_PIDFILE
 			m_pidfile.reset(new util::pidfile(
-					string_ref(UTIL_STRING(FANCONTROL_PIDFILE_PATH)),
+					string_ref(BOOST_PP_STRINGIZE(FANCONTROL_PIDFILE_PATH)),
 					FANCONTROL_PIDFILE_ROOTONLY));
+#endif
 		}
-	#endif
 
 		YAML::Parser parser(source);
 		Node doc;

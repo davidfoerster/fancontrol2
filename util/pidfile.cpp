@@ -8,20 +8,19 @@
 #include "pidfile.hpp"
 #include "logging.hpp"
 #include "strcat.hpp"
+#include "preprocessor.hpp"
 
-#include <boost/lexical_cast.hpp>
-#include <algorithm>
-#include <stdexcept>
+#include <cerrno>
 
 #include <fcntl.h>
 #include <unistd.h>
-#include <cerrno>
 
 namespace util {
 
 	pidfile::pidfile(const stringpiece &filename, bool root_only)
 			throw (pidfile_exception, io_error)
-		: m_filename(filename)
+		: m_file(nullptr)
+		, m_filename(filename)
 	{
 		using namespace std;
 
@@ -103,7 +102,7 @@ namespace util {
 	{
 		if (m_file) {
 			if (::unlink(m_filename.c_str()) != 0)
-				UTIL_DEBUG(::std::perror("unlink PID file"));
+				UTIL_DEBUG(std::perror("unlink PID file"));
 		}
 	}
 
@@ -111,8 +110,8 @@ namespace util {
 	void pidfile::close()
 	{
 		if (m_file) {
-			if (::std::fclose(m_file) != 0)
-				UTIL_DEBUG(::std::perror("close PID file"));
+			if (std::fclose(m_file) != 0)
+				UTIL_DEBUG(std::perror("close PID file"));
 			m_file = nullptr;
 		}
 	}
@@ -122,18 +121,6 @@ namespace util {
 	{
 		unlink();
 		close();
-	}
-
-
-	pidfile::pidfile(const pidfile &o) throw()
-	{
-		BOOST_THROW_EXCEPTION(::std::logic_error("Invalid operation"));
-	}
-
-
-	pidfile &pidfile::operator=(const pidfile &o) throw()
-	{
-		BOOST_THROW_EXCEPTION(::std::logic_error("Invalid operation"));
 	}
 
 
@@ -162,12 +149,12 @@ namespace util {
 
 	const char *pidfile_exception::what() const throw()
 	{
-		using ::boost::exception_detail::get_info;
+		using boost::exception_detail::get_info;
 
 		if (msg.empty()) {
 			exception_base::what();
 
-			const int *const pid = ::boost::exception_detail::get_info<pid_running>::get(*this);
+			const int *const pid = boost::exception_detail::get_info<pid_running>::get(*this);
 			if (pid) {
 				if (!msg.empty()) msg += ' ';
 				((msg += "(pid=") << *pid) += ')';

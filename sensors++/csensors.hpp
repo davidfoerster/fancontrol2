@@ -16,12 +16,12 @@ namespace sensors {
 
 	bool operator==(const sensors_bus_id &a, const sensors_bus_id &b);
 
-	::std::size_t hash_value(const sensors_bus_id &);
+	std::size_t hash_value(const sensors_bus_id &);
 
 
 	bool operator==(const sensors_chip_name &a, const sensors_chip_name &b);
 
-	::std::size_t hash_value(const sensors_chip_name &);
+	std::size_t hash_value(const sensors_chip_name &);
 
 
 	namespace helper {

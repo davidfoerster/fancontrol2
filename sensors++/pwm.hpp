@@ -11,23 +11,23 @@
 
 #include "internal/common.hpp"
 #include "exceptions.hpp"
-#include "../util/self_referenced.hpp"
-#include <boost/shared_ptr.hpp>
-#include <string>
 #include "../util/static_allocator/static_allocator.hpp"
+
+#include <memory>
+#include <string>
 #include <array>
 
 
 namespace sensors {
 
-	using ::boost::shared_ptr;
-	using ::util::io_error;
+	using std::shared_ptr;
+	using util::io_error;
 
 	class chip;
 
 
 	class pwm
-		: virtual public ::util::self_referenced<pwm>
+		: virtual public std::enable_shared_from_this<pwm>
 	{
 	public:
 		typedef sensors::chip chip_t;
@@ -36,7 +36,7 @@ namespace sensors {
 
 		typedef float rate_t;
 
-		typedef ::std::ios::iostate iostate;
+		typedef std::ios::iostate iostate;
 
 		struct Item {
 			enum value {
@@ -54,7 +54,7 @@ namespace sensors {
 
 			static const string_ref &prefix();
 
-			typedef ::std::array<string_ref, _length> names_type;
+			typedef std::array<string_ref, _length> names_type;
 
 			static const names_type &names();
 
@@ -84,25 +84,23 @@ namespace sensors {
 
 		typedef Enable::EnableEnum enable_enum;
 
-		static unsigned pwm_max();
+		static constexpr unsigned pwm_max();
 
-		static rate_t pwm_max_inverse();
+		static constexpr rate_t pwm_max_inverse();
 
-		static rate_t normalize(rate_t v);
+		static constexpr rate_t normalize(rate_t v);
 
 		static rate_t *normalize(rate_t *v);
 
-		static ::std::string make_basepath(const chip_t &chip, int number);
+		static std::string make_basepath(const chip_t &chip, int number);
 
-		template <class Tag>
-		pwm(const string_ref &path, Tag);
+		pwm(const string_ref &path);
 
-		template <class Tag>
-		pwm(int number, const shared_ptr<chip_t> &chip, Tag);
+		pwm(int number, const shared_ptr<chip_t> &chip);
 
 		bool exists(item_enum item = Item::pwm) const;
 
-		bool exists(const string_ref &item, ::std::ios::open_mode mode = ::std::ios::in) const;
+		bool exists(const string_ref &item, std::ios::open_mode mode = std::ios::in) const;
 
 		value_t raw_value() const throw (io_error);
 
@@ -122,7 +120,7 @@ namespace sensors {
 
 		void value(const string_ref &item, value_t value) throw (io_error);
 
-		const ::std::string &path() const;
+		const std::string &path() const;
 
 		int number() const;
 
@@ -139,7 +137,7 @@ namespace sensors {
 
 		shared_ptr<pwm> m_associated;
 
-		::std::string m_basepath;
+		std::string m_basepath;
 
 		int m_number;
 
@@ -150,9 +148,9 @@ namespace sensors {
 
 		bool exists_internal(const string_ref &item, int open_mode) const;
 
-		const char *make_itempath(const string_ref &item, ::std::string &dst) const;
+		const char *make_itempath(const string_ref &item, std::string &dst) const;
 
-		void open(::std::fstream &file, const string_ref &item, ::std::ios::openmode mode) const;
+		void open(std::fstream &file, const string_ref &item, std::ios::openmode mode) const;
 
 		friend class sensors::chip;
 	};
@@ -162,28 +160,6 @@ namespace sensors {
 // implementations ========================================
 
 
-	template <class Tag>
-	pwm::pwm(const string_ref &path, Tag tag)
-		: selfreference_type(tag)
-		, m_chip()
-		, m_basepath(path.str())
-		, m_number(0)
-	{
-		init();
-	}
-
-
-	template <class Tag>
-	pwm::pwm(int number, const shared_ptr<chip_t> &chip, Tag tag)
-		: selfreference_type(tag)
-		, m_chip(chip)
-		, m_basepath(make_basepath(*chip, number))
-		, m_number(number)
-	{
-		init();
-	}
-
-
 	inline
 	const string_ref &pwm::Item::name(value what)
 	{
@@ -191,13 +167,13 @@ namespace sensors {
 	}
 
 
-	inline
+	inline constexpr
 	unsigned pwm::pwm_max()
 	{
 		return 255;
 	}
 
-	inline
+	inline constexpr
 	pwm::rate_t pwm::pwm_max_inverse()
 	{
 		return 1.f / static_cast<rate_t>(pwm_max());
@@ -212,8 +188,15 @@ namespace sensors {
 	}
 
 
+	inline constexpr
+	pwm::rate_t pwm::normalize(rate_t v)
+	{
+		return (v <= 1.f) ? v : (v * pwm_max_inverse());
+	}
+
+
 	inline
-	const ::std::string &pwm::path() const
+	const std::string &pwm::path() const
 	{
 		return m_basepath;
 	}

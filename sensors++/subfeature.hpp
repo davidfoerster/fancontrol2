@@ -12,18 +12,18 @@
 #include "internal/common.hpp"
 #include "internal/object_wrapper.hpp"
 #include "exceptions.hpp"
-#include "../util/self_referenced.hpp"
 #include "csensors.hpp"
 #include "feature.hpp"
 
+#include <memory>
 
 namespace sensors {
 
-	using ::boost::shared_ptr;
+	using std::shared_ptr;
 
 
 	class subfeature
-		: virtual public ::util::self_referenced<subfeature>
+		: virtual public std::enable_shared_from_this<subfeature>
 		, public object_wrapper_numbered<const sensors_subfeature, feature>
 	{
 	public:
@@ -44,8 +44,7 @@ namespace sensors {
 
 		typedef flags::value flags_enum;
 
-		template <class Tag>
-		subfeature(basic_type *subfeature, const shared_ptr<feature> &feature, Tag);
+		subfeature(basic_type *subfeature, const shared_ptr<feature> &feature);
 
 		bool test_flag(unsigned int flag) const;
 
@@ -53,7 +52,7 @@ namespace sensors {
 
 		double value() const throw(sensor_error);
 
-		void value(double) const throw(::util::null_pointer_exception, sensor_error);
+		void value(double) const throw(util::null_pointer_exception, sensor_error);
 
 		bool operator==(const super &o) const;
 	};
@@ -62,7 +61,7 @@ namespace sensors {
 
 
 template <typename Char, class Traits>
-::std::basic_ostream<Char, Traits> &operator<<(::std::basic_ostream<Char, Traits>&, const sensors::subfeature&);
+std::basic_ostream<Char, Traits> &operator<<(std::basic_ostream<Char, Traits>&, const sensors::subfeature&);
 
 
 
@@ -70,11 +69,9 @@ template <typename Char, class Traits>
 
 namespace sensors {
 
-	template <class Tag>
 	inline
-	subfeature::subfeature(basic_type *subfeature, const shared_ptr<feature> &feature, Tag tag)
-		: selfreference_type(tag)
-		, object_wrapper_numbered(subfeature, feature)
+	subfeature::subfeature(basic_type *subfeature, const shared_ptr<feature> &feature)
+		: object_wrapper_numbered(subfeature, feature)
 	{
 	}
 
@@ -96,7 +93,7 @@ namespace sensors {
 
 
 template <typename Char, class Traits>
-::std::basic_ostream<Char, Traits> &operator<<(::std::basic_ostream<Char, Traits> &out, const sensors::subfeature &sfeat)
+std::basic_ostream<Char, Traits> &operator<<(std::basic_ostream<Char, Traits> &out, const sensors::subfeature &sfeat)
 {
 	if (!!sfeat) {
 		out << *UTIL_CHECK_POINTER(sfeat.parent()) << '_' << sfeat->name;
@@ -107,6 +104,6 @@ template <typename Char, class Traits>
 }
 
 extern
-template ::std::ostream &operator<<(::std::ostream &out, const sensors::subfeature &sfeat);
+template std::ostream &operator<<(std::ostream &out, const sensors::subfeature &sfeat);
 
 #endif /* SENSORS_SUBFEATURE_HPP_ */

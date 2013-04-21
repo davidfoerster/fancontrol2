@@ -3,7 +3,7 @@ SUBFOLDERS := Debug Optimized Release
 PREFIX = /usr/local
 
 
-.PHONY: $(SUBFOLDERS) all clean install
+.PHONY: all clean install
 
 
 all: $(SUBFOLDERS)
@@ -14,6 +14,7 @@ clean:
 	done
 
 install: Release
+	install -d "$(PREFIX)/sbin"
 	install -st "$(PREFIX)/sbin" Release/fancontrol2
 	@echo "Successfully installed to \`$(PREFIX)'."
 

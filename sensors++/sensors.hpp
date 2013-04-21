@@ -14,8 +14,7 @@
 #include "exceptions.hpp"
 #include "../util/static_allocator/static_allocator.hpp"
 
-#include <boost/weak_ptr.hpp>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <boost/functional/hash.hpp>
 #include <unordered_map>
 
@@ -25,20 +24,20 @@
 
 namespace sensors {
 
-	using ::boost::shared_ptr;
+	using std::shared_ptr;
 
 
 	class sensor_container {
 	public:
 		typedef sensors::chip chip_t;
 
-		typedef ::std::unordered_map<
+		typedef std::unordered_map<
 				chip_t::basic_type, shared_ptr<chip_t>,
-				::boost::hash<chip_t::basic_type>, ::std::equal_to<chip_t::basic_type>,
-				::util::static_allocator< ::std::pair<const chip_t::basic_type, shared_ptr<chip_t> >, 8 >
+				boost::hash<chip_t::basic_type>, std::equal_to<chip_t::basic_type>,
+				util::static_allocator< std::pair<const chip_t::basic_type, shared_ptr<chip_t> >, 8 >
 			> map_type;
 
-		sensor_container(const char *config = default_config_path) throw (sensor_error, io_error, ::std::logic_error);
+		sensor_container(const char *config = default_config_path) throw (sensor_error, io_error, std::logic_error);
 
 		map_type discover_all(const sensors_chip_name *match = 0);
 
@@ -63,7 +62,7 @@ namespace sensors {
 
 		map_type m_chips;
 
-		::boost::shared_ptr<lock> m_lock;
+		std::shared_ptr<lock> m_lock;
 
 		typedef const map_type::key_type& (&get_key_t)(const map_type::value_type&);
 	};

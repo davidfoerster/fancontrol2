@@ -14,9 +14,7 @@
 
 namespace std {
 	template<typename, typename, class, class, class> class unordered_map;
-}
 
-namespace boost {
 	template<class> class shared_ptr;
 	template<class> class weak_ptr;
 }
@@ -28,12 +26,12 @@ namespace sensors {
 	struct rebind_ptr;
 
 	template <typename Key, typename T, class Hash, class Equal, class Alloc>
-	struct rebind_ptr< ::std::unordered_map<Key, ::boost::weak_ptr<T>, Hash, Equal, Alloc> > {
-		typedef ::std::unordered_map<Key, ::boost::shared_ptr<T>, Hash, Equal, Alloc> other;
+	struct rebind_ptr< std::unordered_map<Key, std::weak_ptr<T>, Hash, Equal, Alloc> > {
+		typedef std::unordered_map<Key, std::shared_ptr<T>, Hash, Equal, Alloc> other;
 	};
 
 
-	typedef ::util::stringpiece string_ref;
+	typedef util::stringpiece string_ref;
 
 	string_ref STRING_REF();
 

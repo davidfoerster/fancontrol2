@@ -23,7 +23,7 @@
 #include "util/static_allocator/static_vector.hpp"
 #include <yaml-cpp/exceptions.h>
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <vector>
 #include <iosfwd>
 
@@ -46,15 +46,15 @@ namespace fancontrol {
 
 	using std::istream;
 
-	using boost::shared_ptr;
-	using ::YAML::ParserException;
-	using ::YAML::Node;
+	using std::shared_ptr;
+	using YAML::ParserException;
+	using YAML::Node;
 
-	using ::sensors::sensor_error;
-	using ::sensors::sensor_container;
-	using ::sensors::chip;
-	using ::sensors::pwm;
-	using ::sensors::subfeature;
+	using sensors::sensor_error;
+	using sensors::sensor_container;
+	using sensors::chip;
+	using sensors::pwm;
+	using sensors::subfeature;
 
 	class fan;
 	class control;
@@ -66,7 +66,7 @@ namespace fancontrol {
 		typedef std::ios::failure ios_failure;
 
 		config(istream &source, const shared_ptr<sensor_container> &sensors, bool do_check = false)
-				throw(::util::runtime_error, ParserException, ios_failure);
+				throw(util::runtime_error, ParserException, ios_failure);
 
 		~config();
 
@@ -117,7 +117,7 @@ namespace fancontrol {
 		void reset_nothrow();
 
 #if FANCONTROL_PIDFILE
-		std::unique_ptr< ::util::pidfile > m_pidfile;
+		std::unique_ptr< util::pidfile > m_pidfile;
 #endif
 
 	};

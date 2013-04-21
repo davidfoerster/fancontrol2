@@ -9,20 +9,18 @@
 #ifndef UTIL_IN_RANGE_HPP_
 #define UTIL_IN_RANGE_HPP_
 
-#include <boost/utility/enable_if.hpp>
-#include <boost/type_traits/is_integral.hpp>
-#include <boost/type_traits/make_unsigned.hpp>
+#include "enable_if.hpp"
 #include <cstdint>
 
 
 namespace util {
 
 	template <typename T>
-	typename ::boost::disable_if< ::boost::is_integral<T>, bool>::type
+	typename std::_disable_if< std::is_integral<T>, bool>::type
 	in_range(const T &x, const T &min, const T &max);
 
 	template <typename T>
-	typename ::boost::enable_if< ::boost::is_integral<T>, bool>::type
+	typename std::_enable_if< std::is_integral<T>, bool>::type
 	in_range(const T x, const T min, const T max);
 
 	template <typename T>
@@ -34,7 +32,7 @@ namespace util {
 
 	template <typename T>
 	inline
-	typename ::boost::disable_if< ::boost::is_integral<T>, bool>::type
+	typename std::_disable_if< std::is_integral<T>, bool>::type
 	in_range(const T &x, const T &min, const T &max)
 	{
 		UTIL_ASSERT(min <= max);
@@ -43,11 +41,11 @@ namespace util {
 
 	template <typename T>
 	inline
-	typename ::boost::enable_if< ::boost::is_integral<T>, bool>::type
+	typename std::_enable_if< std::is_integral<T>, bool>::type
 	in_range(const T x, const T min, const T max)
 	{
 		UTIL_ASSERT(min <= max);
-		typedef typename ::boost::make_unsigned<T>::type unsigned_t;
+		typedef typename std::make_unsigned<T>::type unsigned_t;
 		return static_cast<unsigned_t>(x - min) < static_cast<unsigned_t>(max - min);
 	}
 

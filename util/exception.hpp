@@ -16,18 +16,18 @@
 namespace util {
 
 	class exception_base
-		: public virtual ::std::exception
-		, public virtual ::boost::exception
+		: public virtual std::exception
+		, public virtual boost::exception
 	{
 	public:
-		typedef ::boost::error_info<struct tag_what, ::std::string> what_t;
+		typedef boost::error_info<struct tag_what, std::string> what_t;
 
 		virtual ~exception_base() throw();
 
 		virtual const char *what() const throw();
 
 	protected:
-		mutable ::std::string msg;
+		mutable std::string msg;
 	};
 
 
@@ -38,7 +38,7 @@ namespace util {
 
 		virtual ~runtime_error() throw();
 
-		explicit runtime_error(const ::std::runtime_error &e);
+		explicit runtime_error(const std::runtime_error &e);
 	};
 
 
@@ -47,7 +47,7 @@ namespace util {
 		struct null_pointer_exception
 			: public virtual runtime_error
 		{
-			typedef ::boost::error_info<struct tag_var_name, const char*> var_name;
+			typedef boost::error_info<struct tag_var_name, const char*> var_name;
 
 			virtual ~null_pointer_exception() throw();
 		};
@@ -68,7 +68,7 @@ namespace util {
 	typedef ns_null_pointer_exception::null_pointer_exception null_pointer_exception;
 
 #ifndef UTIL_DISABLE_CHECK_POINTER
-#	define UTIL_CHECK_POINTER(var) (::util::ns_null_pointer_exception::check(var, #var))
+#	define UTIL_CHECK_POINTER(var) (util::ns_null_pointer_exception::check(var, #var))
 #else
 #	define UTIL_CHECK_POINTER(var) (var)
 #endif
@@ -77,8 +77,8 @@ namespace util {
 	struct io_error
 		: public virtual runtime_error
 	{
-		typedef ::boost::error_info<struct tag_errno_code, int> errno_code;
-		typedef ::boost::error_info<struct targ_filename, ::std::string> filename;
+		typedef boost::error_info<struct tag_errno_code, int> errno_code;
+		typedef boost::error_info<struct targ_filename, std::string> filename;
 
 		virtual ~io_error() throw();
 

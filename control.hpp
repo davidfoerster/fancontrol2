@@ -12,7 +12,7 @@
 #include "util/algorithm.hpp"
 #include "util/static_allocator/static_vector.hpp"
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <boost/range/size.hpp>
 #include <vector>
 #include <utility>
@@ -34,7 +34,7 @@ namespace sensors {
 
 namespace fancontrol {
 
-	using boost::shared_ptr;
+	using std::shared_ptr;
 	class config;
 
 
@@ -143,13 +143,13 @@ namespace fancontrol {
 	};
 
 
-	template <std::size_t Size = 4, class Extent = std::allocator< shared_ptr<control> > >
+	template <std::size_t Size = 4, class Extent = std::allocator<aggregated_control_base::control_ptr_t> >
 	class aggregated_control
 		: public aggregated_control_base
 	{
 	public:
 		typedef aggregated_control<Size, Extent> self_t;
-		typedef util::static_vector<shared_ptr<control>, Size, Extent> container_type;
+		typedef util::static_vector<control_ptr_t, Size, Extent> container_type;
 
 		virtual ~aggregated_control();
 
@@ -235,7 +235,7 @@ namespace fancontrol {
 				size_hint,
 				static_cast<typename container_type::size_type>(container_type::allocator_type::initial_capacity)));
 		m_sources.assign(first, last);
-		BOOST_ASSERT(std::none_of(m_sources.begin(), m_sources.end(), std::logical_not< shared_ptr<control> >()));
+		BOOST_ASSERT(std::none_of(m_sources.begin(), m_sources.end(), std::logical_not<control_ptr_t>()));
 	}
 
 
@@ -244,9 +244,7 @@ namespace fancontrol {
 	aggregated_control<S,E>::aggregated_control(const aggregated_control_base &other)
 	{
 		const const_range_type other_sources(other.sources());
-		m_sources.reserve(std::max(
-				boost::size(other_sources),
-				static_cast<typename container_type::difference_type>(container_type::allocator_type::initial_capacity)));
+		m_sources.reserve(std::max(boost::size(other_sources), container_type::allocator_type::initial_capacity));
 		m_sources.assign(other_sources.first, other_sources.second);
 	}
 

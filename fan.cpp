@@ -17,7 +17,7 @@
 
 namespace fancontrol {
 
-	using boost::shared_ptr;
+	using std::shared_ptr;
 
 	using sensors::sensor_error;
 	using sensors::io_error;
@@ -31,7 +31,7 @@ namespace fancontrol {
 		: m_min_start(0.6f)
 		, m_max_stop(0.5f)
 		, m_reset_rate(1.0f)
-		, m_last_update(-std::numeric_limits<value_t>::quiet_NaN())
+		, m_last_update(std::numeric_limits<value_t>::quiet_NaN())
 	{
 	}
 

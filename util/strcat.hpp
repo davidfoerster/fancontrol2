@@ -10,12 +10,10 @@
 #define UTIL_STRCAT_HPP_
 
 #include "assert.hpp"
-#include <boost/range/size.hpp>
-#include <boost/integer_traits.hpp>
-#include <boost/type_traits/make_unsigned.hpp>
 #include <string>
-#include <iosfwd>
-#include <cstdlib>
+#include <array>
+#include <limits>
+#include <cstdint>
 
 
 #ifndef UTIL_STRCAT_API
@@ -34,54 +32,51 @@ namespace std {
 
 // implementations ============================================================
 
-namespace std {
 
-	template <typename CharT, class Traits, class Alloc, typename IntT>
-	basic_string<CharT, Traits, Alloc> &operator<<(basic_string<CharT, Traits, Alloc> &dst, IntT n_)
-	{
-		using ::boost::end;
-		typedef numeric_limits<IntT> limits;
-		typedef typename ::boost::make_unsigned<IntT>::type UIntT;
+namespace util { namespace detail {
 
-		// digits10 is always 1 too low; plus we need one additional char for the sign
-		CharT buf[limits::digits10 + 1 + limits::is_signed];
-		CharT *p = end(buf);
-		UIntT n = static_cast<UIntT>((n >= 0) ? n_ : -n_);
+	template <typename CharT, class Traits, class Alloc>
+	std::basic_string<CharT, Traits, Alloc> &__strcat_impl(
+			std::basic_string<CharT, Traits, Alloc> &dst,
+			std::uintmax_t n,
+			bool negative
+	) {
+		// digits10 is always 1 too low
+		std::array<CharT, std::numeric_limits<std::uintmax_t>::digits10 + 1> buf;
+		auto p = buf.end();
 
 		do {
-			BOOST_ASSERT(p > buf);
+			BOOST_ASSERT(p != buf.begin());
 			*(--p) = Traits::to_char_type(static_cast<typename Traits::int_type>(n % 10) + '0');
 			n /= 10;
 		} while (n != 0);
 
-		if (n_ < 0) {
-			BOOST_ASSERT(p > buf);
-			*(--p) = static_cast<CharT>('-');
+		if (negative) {
+			dst.reserve(buf.end() - p + 1);
+			dst.push_back('-');
 		}
 
-		return dst.append(p, end(buf) - p);
+		return dst.append(p, buf.end() - p);
 	}
 
 
-	template <typename CharT, class Traits, class Alloc>
-	inline basic_string<CharT, Traits, Alloc> &operator<<(basic_string<CharT, Traits, Alloc> &dst, signed short n)
+	UTIL_STRCAT_API template std::string &__strcat_impl(std::string&, std::uintmax_t, bool);
+	UTIL_STRCAT_API template std::wstring &__strcat_impl(std::wstring&, std::uintmax_t, bool);
+
+} /* namespace detail */ } /* namespace util */
+
+
+namespace std {
+
+	template <typename CharT, class Traits, class Alloc, typename IntT>
+	inline basic_string<CharT, Traits, Alloc> &operator<<(basic_string<CharT, Traits, Alloc> &dst, IntT n)
 	{
-		return dst << static_cast<signed int>(n);
-	}
-
-	template <typename CharT, class Traits, class Alloc>
-	inline basic_string<CharT, Traits, Alloc> &operator<<(basic_string<CharT, Traits, Alloc> &dst, unsigned short n)
-	{
-		return dst << static_cast<unsigned int>(n);
+		const bool negative = n < 0;
+		if (negative) n = -n;
+		return ::util::detail::__strcat_impl(dst, static_cast<uintmax_t>(n), negative);
 	}
 
 
-	UTIL_STRCAT_API template string &operator<<(string&, signed int);
-	UTIL_STRCAT_API template string &operator<<(string&, unsigned int);
-	UTIL_STRCAT_API template string &operator<<(string&, signed long);
-	UTIL_STRCAT_API template string &operator<<(string&, unsigned long);
-	UTIL_STRCAT_API template string &operator<<(string&, signed long long);
-	UTIL_STRCAT_API template string &operator<<(string&, unsigned long long);
 
 } // namespace std
 

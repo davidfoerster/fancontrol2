@@ -90,7 +90,7 @@ namespace util {
 
 
 	template <class W>
-	::std::size_t hash_value( const ptr_wrapper<W> &k );
+	std::size_t hash_value( const ptr_wrapper<W> &k );
 
 
 
@@ -135,9 +135,9 @@ namespace util {
 
 
 	template <class W>
-	inline ::std::size_t hash_value( const ptr_wrapper<W> &k )
+	inline std::size_t hash_value( const ptr_wrapper<W> &k )
 	{
-		return ::boost::hash<typename ptr_wrapper<W>::element_type>()(k.ref());
+		return boost::hash<typename ptr_wrapper<W>::element_type>()(k.ref());
 	}
 
 

@@ -18,7 +18,7 @@
 
 namespace fancontrol {
 
-	using boost::shared_ptr;
+	using std::shared_ptr;
 
 	typedef control::value_t value_t;
 	typedef simple_bounded_control::SF SF;
@@ -34,7 +34,7 @@ namespace fancontrol {
 
 	value_t bounded_control::convert_rate(value_t raw_value) const
 	{
-		return ::util::clip<const value_t>((raw_value - m_lower_bound) / (m_upper_bound - m_lower_bound), 0, 1);
+		return util::clip<const value_t>((raw_value - m_lower_bound) / (m_upper_bound - m_lower_bound), 0, 1);
 	}
 
 

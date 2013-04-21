@@ -11,14 +11,14 @@
 
 #include "internal/common.hpp"
 #include "../util/exception.hpp"
-#include <boost/integer_traits.hpp>
 #include <string>
+#include <limits>
 
 
 namespace sensors {
 
 	class sensor_error
-		: virtual public ::util::runtime_error
+		: virtual public util::runtime_error
 	{
 	public:
 		enum type_enum {
@@ -35,12 +35,12 @@ namespace sensors {
 			io_error = 10,
 			recursion_too_deep = 11,
 			_end,
-			invalid_error = ::boost::integer_traits<int>::const_max
+			invalid_error = std::numeric_limits<int>::max()
 		};
 
-		typedef ::boost::error_info<struct tag_chip_name, ::std::string> chip_name;
-		typedef ::boost::error_info<struct tag_feature_name, ::std::string> feature_name;
-		typedef ::boost::error_info<struct tag_subfeature_name, ::std::string> subfeature_name;
+		typedef boost::error_info<struct tag_chip_name, std::string> chip_name;
+		typedef boost::error_info<struct tag_feature_name, std::string> feature_name;
+		typedef boost::error_info<struct tag_subfeature_name, std::string> subfeature_name;
 
 		static type_enum to_enum(int errnum);
 
@@ -50,15 +50,15 @@ namespace sensors {
 
 		explicit sensor_error(const char *message) throw();
 		explicit sensor_error(const string_ref &message) throw();
-		explicit sensor_error(const ::std::string &message) throw();
+		explicit sensor_error(const std::string &message) throw();
 
 		virtual ~sensor_error() throw();
 
 		const char* what() const throw();
 
-		::std::string::size_type resource_spec(::std::string &s,
-				::std::string::traits_type::int_type left = ::std::string::traits_type::eof(),
-				::std::string::traits_type::int_type right = ::std::string::traits_type::eof()) const;
+		std::string::size_type resource_spec(std::string &s,
+				std::string::traits_type::int_type left = std::string::traits_type::eof(),
+				std::string::traits_type::int_type right = std::string::traits_type::eof()) const;
 
 		int errnum() const;
 
@@ -71,12 +71,12 @@ namespace sensors {
 
 	class pwm_error
 		: virtual public sensor_error
-		, virtual public ::util::io_error
+		, virtual public util::io_error
 	{
 	public:
 		pwm_error(const char *message) throw();
 		pwm_error(const string_ref &message) throw();
-		pwm_error(const ::std::string &message) throw();
+		pwm_error(const std::string &message) throw();
 
 		virtual ~pwm_error() throw();
 

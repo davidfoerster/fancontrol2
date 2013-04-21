@@ -14,7 +14,6 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/range/size.hpp>
 #include <boost/assert.hpp>
-#include <boost/static_assert.hpp>
 #include <istream>
 #include <utility>
 
@@ -26,17 +25,17 @@
 
 namespace util {
 
-	typedef ::std::pair< ::std::ios::iostate, ::std::streampos > streamstate;
+	typedef std::pair< std::ios::iostate, std::streampos > streamstate;
 
 
 	namespace detail {
 
 		template <typename Iterator>
 		class stringpiece_streambuf
-			: public ::std::basic_streambuf<typename ::std::iterator_traits<Iterator>::value_type>
+			: public std::basic_streambuf<typename std::iterator_traits<Iterator>::value_type>
 		{
 		private:
-			typedef ::std::basic_streambuf<typename ::std::iterator_traits<Iterator>::value_type> super;
+			typedef std::basic_streambuf<typename std::iterator_traits<Iterator>::value_type> super;
 
 			basic_stringpiece<Iterator> str;
 			typename super::off_type pos;
@@ -57,16 +56,16 @@ namespace util {
 
 			virtual int_type uflow();
 
-			virtual pos_type seekoff(off_type offset, ::std::ios::seekdir which, ::std::ios::openmode mode);
+			virtual pos_type seekoff(off_type offset, std::ios::seekdir which, std::ios::openmode mode);
 		};
 
 
 		template <typename CharT>
 		struct stringpiece_streambuf<const CharT*>
-			: ::std::basic_streambuf<CharT>
+			: std::basic_streambuf<CharT>
 		{
 		private:
-			typedef ::std::basic_streambuf<CharT> super;
+			typedef std::basic_streambuf<CharT> super;
 
 		public:
 			typedef typename super::char_type char_type;
@@ -80,9 +79,9 @@ namespace util {
 			virtual ~stringpiece_streambuf();
 
 		protected:
-			virtual pos_type seekoff(off_type offset, ::std::ios::seekdir which, ::std::ios::openmode mode);
+			virtual pos_type seekoff(off_type offset, std::ios::seekdir which, std::ios::openmode mode);
 
-			virtual pos_type seekpos(pos_type pos, ::std::ios::openmode mode);
+			virtual pos_type seekpos(pos_type pos, std::ios::openmode mode);
 		};
 
 	} // namespace detail
@@ -92,21 +91,21 @@ namespace util {
 namespace boost {
 
 	template <typename Target, typename Iterator>
-	Target lexical_cast(const ::util::basic_stringpiece<Iterator> &src,
-			::std::basic_istream<typename ::util::basic_stringpiece<Iterator>::value_type> &istream,
-			::util::streamstate *streamstate = NULL)
+	Target lexical_cast(const util::basic_stringpiece<Iterator> &src,
+			std::basic_istream<typename util::basic_stringpiece<Iterator>::value_type> &istream,
+			util::streamstate *streamstate = nullptr)
 		throw (bad_lexical_cast);
 
 
 	template <typename Target, typename Iterator>
-	Target lexical_cast(const ::util::basic_stringpiece<Iterator> &src, ::util::streamstate *streamstate = NULL)
+	Target lexical_cast(const util::basic_stringpiece<Iterator> &src, util::streamstate *streamstate = nullptr)
 		throw (bad_lexical_cast);
 
 } // namespace boost
 
 
 namespace util {
-	using ::boost::lexical_cast;
+	using boost::lexical_cast;
 }
 
 
@@ -154,13 +153,13 @@ namespace util {
 
 		template <typename It>
 		typename stringpiece_streambuf<It>::pos_type
-		stringpiece_streambuf<It>::seekoff(off_type offset, ::std::ios::seekdir which, ::std::ios::openmode mode)
+		stringpiece_streambuf<It>::seekoff(off_type offset, std::ios::seekdir which, std::ios::openmode mode)
 		{
-			using ::std::ios;
+			using std::ios;
 			if (offset == 0 && which == ios::cur && mode == ios::in) {
-				return pos_type(pos);
+				return static_cast<pos_type>(pos);
 			}
-			return pos_type(off_type(-1));
+			return static_cast<pos_type>(static_cast<off_type>(-1));
 		}
 
 
@@ -182,11 +181,11 @@ namespace util {
 
 		template <typename CharT>
 		typename stringpiece_streambuf<const CharT*>::pos_type
-		stringpiece_streambuf<const CharT*>::seekoff(off_type offset, ::std::ios::seekdir which, ::std::ios::openmode mode)
+		stringpiece_streambuf<const CharT*>::seekoff(off_type offset, std::ios::seekdir which, std::ios::openmode mode)
 		{
-			using ::std::ios;
-			using ::util::in_range;
-			using ::boost::size;
+			using std::ios;
+			using util::in_range;
+			using boost::size;
 			BOOST_STATIC_ASSERT(ios::beg == 0 && ios::cur == 1 && ios::end == 2);
 
 			if (offset == 0) {
@@ -202,20 +201,20 @@ namespace util {
 				}
 			}
 
-			return pos_type(off_type(-1));
+			return static_cast<pos_type>(static_cast<off_type>(-1));
 		}
 
 
 		template <typename CharT>
 		typename stringpiece_streambuf<const CharT*>::pos_type
-		stringpiece_streambuf<const CharT*>::seekpos(pos_type pos, ::std::ios::openmode mode)
+		stringpiece_streambuf<const CharT*>::seekpos(pos_type pos, std::ios::openmode mode)
 		{
-			using ::std::ios;
-			using ::util::in_range;
+			using std::ios;
+			using util::in_range;
 
-			if (pos == 0) {
-				return pos;
-			}
+			if (pos == 0)
+				return 0;
+
 			if (mode == ios::in) {
 				char_type *first = this->eback(),
 					*new_next = first + pos,
@@ -227,7 +226,7 @@ namespace util {
 				}
 			}
 
-			return pos_type(off_type(-1));
+			return static_cast<pos_type>(static_cast<off_type>(-1));
 		}
 
 
@@ -242,16 +241,16 @@ namespace boost {
 
 	template <typename Target, typename Iterator>
 	Target
-	lexical_cast(const ::util::basic_stringpiece<Iterator> &src,
-			::std::basic_istream<typename ::util::basic_stringpiece<Iterator>::value_type> &istream,
-			::util::streamstate *streamstate)
-		throw (::boost::bad_lexical_cast)
+	lexical_cast(const util::basic_stringpiece<Iterator> &src,
+			std::basic_istream<typename util::basic_stringpiece<Iterator>::value_type> &istream,
+			util::streamstate *streamstate)
+		throw (boost::bad_lexical_cast)
 	{
-		using ::std::ios;
-		typedef typename ::util::basic_stringpiece<Iterator>::value_type char_type;
+		using std::ios;
+		typedef typename util::basic_stringpiece<Iterator>::value_type char_type;
 
-		::util::detail::stringpiece_streambuf<Iterator> streambuf(src);
-		::std::basic_streambuf<char_type> *const previous_streambuf = istream.rdbuf(&streambuf);
+		util::detail::stringpiece_streambuf<Iterator> streambuf(src);
+		std::basic_streambuf<char_type> *const previous_streambuf = istream.rdbuf(&streambuf);
 		istream.exceptions(
 #ifdef NDEBUG
 				ios::badbit
@@ -285,10 +284,10 @@ namespace boost {
 	template <typename Target, typename Iterator>
 	inline
 	Target
-	lexical_cast(const ::util::basic_stringpiece<Iterator> &src, ::util::streamstate *streamstate)
+	lexical_cast(const util::basic_stringpiece<Iterator> &src, util::streamstate *streamstate)
 		throw (bad_lexical_cast)
 	{
-		::std::basic_istream<typename ::util::basic_stringpiece<Iterator>::value_type> istream(nullptr);
+		std::basic_istream<typename util::basic_stringpiece<Iterator>::value_type> istream(nullptr);
 		return lexical_cast<Target, Iterator>(src, istream, streamstate);
 	}
 

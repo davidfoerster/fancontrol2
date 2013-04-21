@@ -16,9 +16,10 @@
 #include <ctime>
 #include <cstdio>
 
+
 namespace fancontrol {
 
-	using ::sensors::sensor_error;
+	using sensors::sensor_error;
 
 
 	void strerror_wrapper(const char *msg = 0, error_t e = 0);
@@ -27,7 +28,7 @@ namespace fancontrol {
 	int handle_exception(std::exception &e, bool cfg_ok);
 
 
-	int handle_exception(::util::exception_base &e, bool cfg_ok);
+	int handle_exception(util::exception_base &e, bool cfg_ok);
 
 
 	void register_signal_handlers();
@@ -40,12 +41,12 @@ namespace fancontrol {
 	public:
 		config_wrapper(
 			std::ifstream &config_file,
-			const boost::shared_ptr< ::sensors::sensor_container > &sensors,
+			const std::shared_ptr< sensors::sensor_container > &sensors,
 			bool do_check)
-				throw(::util::runtime_error, ::YAML::ParserException, std::ios::failure);
+				throw(util::runtime_error, YAML::ParserException, std::ios::failure);
 
 		static std::unique_ptr<config_wrapper> make_config(int argc, char *argv[])
-				throw(::util::runtime_error, ::YAML::ParserException);
+				throw(util::runtime_error, YAML::ParserException);
 
 		config cfg;
 

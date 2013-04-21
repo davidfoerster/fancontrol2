@@ -46,7 +46,7 @@ namespace sensors {
 	}
 
 
-	sensor_error::sensor_error(const ::std::string &message) throw()
+	sensor_error::sensor_error(const std::string &message) throw()
 		: m_errnum(invalid_error)
 	{
 		*this << what_t(message);
@@ -61,7 +61,7 @@ namespace sensors {
 	{
 		if (msg.empty()) {
 			exception_base::what();
-			::std::string &msg = const_cast<sensor_error*>(this)->msg;
+			std::string &msg = const_cast<sensor_error*>(this)->msg;
 
 			type_enum type = to_enum(m_errnum);
 			if (type != invalid_error) {
@@ -75,35 +75,35 @@ namespace sensors {
 	}
 
 
-	::std::string::size_type sensor_error::resource_spec(::std::string &s,
-			::std::string::traits_type::int_type left,
-			::std::string::traits_type::int_type right)
+	std::string::size_type sensor_error::resource_spec(std::string &s,
+			std::string::traits_type::int_type left,
+			std::string::traits_type::int_type right)
 		const
 	{
-		using ::boost::exception_detail::get_info;
-		::std::string::size_type old_length = s.length();
+		using boost::exception_detail::get_info;
+		std::string::size_type old_length = s.length();
 
-		const ::std::string *chip_name = get_info<sensor_error::chip_name>::get(*this);
+		const std::string *chip_name = get_info<sensor_error::chip_name>::get(*this);
 		if (chip_name) {
 			if (!s.empty())
 				s += ' ';
-			if (left != ::std::string::traits_type::eof())
-				s += ::std::string::traits_type::to_char_type(left);
+			if (left != std::string::traits_type::eof())
+				s += std::string::traits_type::to_char_type(left);
 
 			(s += "on ") += *chip_name;
 
-			const ::std::string *feature_name = get_info<sensor_error::feature_name>::get(*this);
+			const std::string *feature_name = get_info<sensor_error::feature_name>::get(*this);
 			if (feature_name) {
 				(s += '/') += *feature_name;
 
-				const ::std::string *subfeature_name = get_info<sensor_error::subfeature_name>::get(*this);
+				const std::string *subfeature_name = get_info<sensor_error::subfeature_name>::get(*this);
 				if (subfeature_name) {
 					(s += '/') += *subfeature_name;
 				}
 			}
 
-			if (right != ::std::string::traits_type::eof())
-				s += ::std::string::traits_type::to_char_type(right);
+			if (right != std::string::traits_type::eof())
+				s += std::string::traits_type::to_char_type(right);
 		}
 
 		return s.length() - old_length;
@@ -113,7 +113,7 @@ namespace sensors {
 	sensor_error::type_enum sensor_error::to_enum(int errnum)
 	{
 		if (errnum < 0) errnum = -errnum;
-		return ::util::in_range<int>(errnum, 0, _end) ? static_cast<type_enum>(errnum) : invalid_error;
+		return util::in_range<int>(errnum, 0, _end) ? static_cast<type_enum>(errnum) : invalid_error;
 	}
 
 
@@ -129,7 +129,7 @@ namespace sensors {
 	}
 
 
-	pwm_error::pwm_error(const ::std::string &message) throw()
+	pwm_error::pwm_error(const std::string &message) throw()
 		: sensor_error(message)
 	{
 	}

@@ -15,22 +15,22 @@
 
 namespace util {
 
-	template <typename CharT, ::std::size_t Size, class Extent = ::std::allocator<CharT> >
+	template <typename CharT, std::size_t Size, class Extent = std::allocator<CharT> >
 	class static_basic_string
 		: public statically_allocated_container_wrapper<
-			::std::basic_string< CharT, ::std::char_traits<CharT>, static_allocator<CharT, Size> >
+			std::basic_string< CharT, std::char_traits<CharT>, static_allocator<CharT, Size> >
 		  >
 	{
 	public:
-		typedef ::std::basic_string< CharT, ::std::char_traits<CharT>, static_allocator<CharT, Size> > nested_type;
+		typedef std::basic_string< CharT, std::char_traits<CharT>, static_allocator<CharT, Size> > nested_type;
 
-		inline operator ::std::basic_string<CharT>() const {
-			return ::std::basic_string<CharT>(this->begin(), this->end());
+		inline operator std::basic_string<CharT>() const {
+			return std::basic_string<CharT>(this->begin(), this->end());
 		}
 	};
 
 
-	template < ::std::size_t Size, class Extent = ::std::allocator<char> >
+	template < std::size_t Size, class Extent = std::allocator<char> >
 	class static_string
 		: public static_basic_string<char, Size>
 	{ };

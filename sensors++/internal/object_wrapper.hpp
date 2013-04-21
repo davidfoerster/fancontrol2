@@ -10,21 +10,18 @@
 #define SENSORS_OBJECTWRAPPER_HPP_
 
 #include "common.hpp"
-#include <boost/shared_ptr.hpp>
-#include <boost/weak_ptr.hpp>
-
-#include <boost/utility/enable_if.hpp>
-#include <boost/type_traits/is_void.hpp>
+#include <memory>
+#include <type_traits>
 
 
 namespace sensors {
 
-	using ::boost::shared_ptr;
-	using ::boost::weak_ptr;
+	using std::shared_ptr;
+	using std::weak_ptr;
 
-	using ::boost::enable_if;
-	using ::boost::disable_if;
-	using ::boost::is_void;
+	using std::enable_if;
+	using std::disable_if;
+	using std::is_void;
 
 	class lock;
 
@@ -229,7 +226,7 @@ namespace sensors {
 	template <typename T, typename P>
 	inline bool object_wrapper<T,P>::has_parent() const
 	{
-		return m_parent;
+		return static_cast<bool>(m_parent);
 	}
 
 	template <typename T, typename P>
