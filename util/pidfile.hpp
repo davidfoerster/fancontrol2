@@ -43,16 +43,23 @@ namespace util {
 
 		~pidfile();
 
+		static ::pid_t read(std::FILE* f);
 	private:
 		pidfile(const pidfile&) = delete;
 
 		pidfile &operator=(const pidfile&) = delete;
 
-		void close();
+		int open_exclusively(const char *&perror_msg);
 
-		void unlink();
+		bool delete_stale();
 
-		void cleanup();
+		::pid_t read();
+
+		bool close();
+
+		bool unlink(bool always = false);
+
+		bool cleanup();
 
 		std::FILE *m_file;
 
