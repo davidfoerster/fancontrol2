@@ -26,6 +26,7 @@ namespace fancontrol {
 			if (!cfg_wrap->do_check) {
 				register_signal_handlers();
 
+				r = -SIGCONT; // force update on first run
 				do {
 					BOOST_FOREACH(shared_ptr<fan> &f, fans){
 						const bool force = r == -SIGCONT;

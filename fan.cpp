@@ -82,7 +82,8 @@ namespace fancontrol {
 
 	void fan::update_valve(bool force, value_t value)
 	{
-		if (force || !(std::abs(value - m_last_update) < (2.f / static_cast<value_t>(pwm::pwm_max())))) {
+		if (force || !(std::abs(value - m_last_update) < (2.f * static_cast<value_t>(pwm::pwm_max_inverse()))))
+		{
 			m_valve.write(value);
 			m_last_update = value;
 		}
