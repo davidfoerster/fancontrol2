@@ -24,7 +24,10 @@ namespace sensors {
 
 	size_t hash_value(const sensors_bus_id &k)
 	{
-		return static_cast<size_t>(k.nr);
+		size_t seed = 0;
+		boost::hash_combine(seed, k.type);
+		boost::hash_combine(seed, k.nr);
+		return seed;
 	}
 
 
