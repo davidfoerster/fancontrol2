@@ -11,8 +11,20 @@
 
 
 namespace YAML {
+
 	class Iterator;
-}
+	class Node;
+
+	template <
+		typename CharT,
+		class TraitsIn, class AllocIn,
+		class TraitsOut, class AllocOut
+	>
+	bool Convert( std::basic_string<CharT, TraitsIn, AllocIn> &in,
+			std::basic_string<CharT, TraitsOut, AllocOut> &out );
+
+} // namespace YAML
+
 
 namespace std {
 
@@ -29,4 +41,25 @@ namespace std {
 	};
 
 } // namespace std
+
+
+
+// implementations ========================================
+
+namespace YAML {
+
+	template <
+		typename CharT,
+		class TraitsIn, class AllocIn,
+		class TraitsOut, class AllocOut
+	>
+	inline bool Convert( std::basic_string<CharT, TraitsIn, AllocIn> &in,
+			std::basic_string<CharT, TraitsOut, AllocOut> &out )
+	{
+		out.assign( in.begin(), in.end() );
+		return true;
+	}
+
+} // namespace YAML
+
 #endif /* UTIL_YAML_HPP_ */
