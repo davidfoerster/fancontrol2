@@ -9,7 +9,7 @@
 #include "chip.hpp"
 #include "../util/strcat.hpp"
 #include "../util/algorithm.hpp"
-#include "../util/static_allocator/static_allocator.hpp"
+#include "../util/yaml.hpp"
 #include <boost/range/algorithm/copy.hpp>
 #include <boost/integer/static_log2.hpp>
 #include <boost/assert.hpp>
@@ -99,7 +99,8 @@ namespace sensors {
 			BOOST_THROW_EXCEPTION(std::logic_error("'number' must be positive"));
 
 		const string_ref &path = chip.path(), &prefix = Item::prefix();
-		std::string str; str.reserve(path.size() + prefix.size() + 4);
+		std::string str;
+		str.reserve(path.size() + prefix.size() + 4);
 		path.str(str);
 		if (str.back() != '/')
 			str += '/';
@@ -200,7 +201,7 @@ namespace sensors {
 	}
 
 
-	const char *pwm::make_itempath(const string_ref &item, std::string &dst) const
+	const char *pwm::make_itempath(const string_ref &item, itempath_buffer_type &dst) const
 	{
 		if (item.empty()) {
 			return m_basepath.c_str();
@@ -217,7 +218,7 @@ namespace sensors {
 
 	void pwm::open(std::fstream &file, const string_ref &item, std::ios::openmode mode) const
 	{
-		std::string buf;
+		itempath_buffer_type buf;
 		file.open(make_itempath(item, buf), mode);
 	}
 
@@ -228,7 +229,7 @@ namespace sensors {
 			EACCES, ELOOP, ENAMETOOLONG, ENOENT, ENOTDIR, EROFS
 		};
 
-		std::string buf;
+		itempath_buffer_type buf;
 		const char *const path = make_itempath(item, buf);
 		if (::euidaccess(path, mode) == 0)
 			return true;

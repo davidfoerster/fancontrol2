@@ -17,8 +17,8 @@
 
 #include "util/strcat.hpp"
 #include "util/algorithm.hpp"
-#include "util/static_allocator/static_string.hpp"
 #include "util/yaml.hpp"
+#include "util/static_allocator/static_string.hpp"
 
 #include <boost/format.hpp>
 #include <boost/range/begin.hpp>
@@ -82,12 +82,14 @@ namespace fancontrol {
 
 	typedef config::ios_failure ios_failure;
 
+	typedef util::static_string<24> name_buffer_type;
+
 
 	shared_ptr<chip>
 	config::parse_chip(const Node &node)
 			throw(sensor_error, ParserException)
 	{
-		std::string name;
+		name_buffer_type name;
 		node["name"] >> name;
 		shared_ptr<chip> chip(sensors->chip(name));
 		if (chip)
@@ -103,7 +105,7 @@ namespace fancontrol {
 	{
 		shared_ptr<chip> chip(parse_chip(node["chip"]));
 
-		std::string name_buf;
+		name_buffer_type name_buf;
 		node["input"] >> name_buf;
 		string_ref name(name_buf);
 

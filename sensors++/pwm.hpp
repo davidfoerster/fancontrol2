@@ -10,8 +10,8 @@
 #define SENSORS_PWM_HPP_
 
 #include "internal/common.hpp"
+#include "../util/static_allocator/static_string.hpp"
 #include "exceptions.hpp"
-#include "../util/static_allocator/static_allocator.hpp"
 
 #include <memory>
 #include <string>
@@ -148,7 +148,8 @@ namespace sensors {
 
 		bool exists_internal(const string_ref &item, int open_mode) const;
 
-		const char *make_itempath(const string_ref &item, std::string &dst) const;
+		typedef util::static_string<1 << 8> itempath_buffer_type;
+		const char *make_itempath(const string_ref &item, itempath_buffer_type &dst) const;
 
 		void open(std::fstream &file, const string_ref &item, std::ios::openmode mode) const;
 
