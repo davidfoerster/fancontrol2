@@ -773,11 +773,10 @@ namespace util {
 	void statically_allocated_container_wrapper<C>::clear()
 	{
 		if( outgrown() ){
-			this->swap(C());
+			C(std::move(*this));
 		} else {
 			C::clear();
-	}
-
+		}
 	}
 
 } // namespace util
