@@ -21,6 +21,7 @@ namespace sensors {
 	using util::io_error;
 	using std::weak_ptr;
 	using std::shared_ptr;
+	using std::make_shared;
 
 
 	namespace helper {

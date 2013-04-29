@@ -21,6 +21,7 @@ namespace sensors {
 
 	using std::weak_ptr;
 	using std::shared_ptr;
+	using std::make_shared;
 
 
 	chip::chip(const basic_type *chip)
@@ -56,7 +57,7 @@ namespace sensors {
 		if (!!*this) {
 			const feat_t::basic_type *ft_basic;
 			int nr = 0;
-			while ((ft_basic = sensors_get_features(get(), &nr)) != 0) {
+			while ((ft_basic = sensors_get_features(get(), &nr)) != nullptr) {
 				const feature_map_type::key_type key(ft_basic->type, ft_basic->number);
 				shared_ptr<feat_t> &dst = map[key];
 				weak_ptr<feat_t> &src = m_features[key];
@@ -97,7 +98,7 @@ namespace sensors {
 						shared_ptr<pwm_t> p(pwm(index));
 						if (p) {
 							BOOST_ASSERT(map.count(index) == 0);
-							map[index].swap(p);
+							map[index] = std::move(p);
 						}
 					}
 				}
@@ -114,7 +115,7 @@ namespace sensors {
 			if (!p.expired())
 				return p.lock();
 
-			shared_ptr<pwm_t> p_new(new pwm_t(number, shared_from_this()));
+			shared_ptr<pwm_t> p_new(make_shared<pwm_t>(number, shared_from_this()));
 			if (p_new->exists()) {
 				p = p_new;
 				return p_new;
@@ -149,7 +150,7 @@ namespace sensors {
 						BOOST_ASSERT(streamstate.first & std::ios::eofbit);
 
 						if (number == key.second) {
-							shared_ptr<feat_t> ft_new(new feat_t(
+							shared_ptr<feat_t> ft_new(make_shared<feat_t>(
 								ft_basic, string_ref(ft_basic->name, number_str.end()),
 								shared_from_this(), feat_t::key1()));
 							ft = ft_new;

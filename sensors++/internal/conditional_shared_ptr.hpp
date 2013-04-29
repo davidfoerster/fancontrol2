@@ -136,7 +136,7 @@ namespace sensors {
 	template <typename T>
 	conditional_shared_ptr<T>::conditional_shared_ptr()
 		: internal::conditional_shared_ptr_base(nullptr)
-		, m_ptr(0)
+		, m_ptr(nullptr)
 	{
 	}
 
@@ -290,14 +290,14 @@ namespace sensors {
 
 		template <typename T>
 		conditional_shared_ptr_base::conditional_shared_ptr_base(T *ptr __attribute__((unused)))
-			: m_reference_counter(0)
+			: m_reference_counter(nullptr)
 		{
 		}
 
 
 		template <typename T, class D>
 		conditional_shared_ptr_base::conditional_shared_ptr_base(T *ptr, D deleter)
-			: m_reference_counter(ptr ? new shared_reference_counter_impl_deleter<T,D>(ptr, deleter) : 0)
+			: m_reference_counter(ptr ? new shared_reference_counter_impl_deleter<T,D>(ptr, deleter) : nullptr)
 		{
 		}
 
