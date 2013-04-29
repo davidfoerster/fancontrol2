@@ -160,7 +160,6 @@ namespace fancontrol {
 					make_shared<simple_bounded_control>(source, min, max)));
 			it_ctrl = controls.end() - 1;
 		}
-		//assert(dynamic_cast<simple_bounded_control*>(it_ctrl->get()));
 		return *it_ctrl;
 	}
 
@@ -177,9 +176,8 @@ namespace fancontrol {
 
 			controls.push_back(static_pointer_cast<control>(
 					make_shared< aggregated_control<> >(
-					parse_dependency_iterator(node.begin(),
-									bind(&config::parse_dependencies, ref(*this), _1)),
-					parse_dependency_iterator(node.end()),
+						parse_dependency_iterator(node.begin(), bind(&config::parse_dependencies, ref(*this), _1)),
+						parse_dependency_iterator(node.end()),
 					node.size())));
 			return controls.back();
 

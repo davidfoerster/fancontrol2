@@ -185,14 +185,16 @@ namespace util {
 		{
 			using std::ios;
 			using util::in_range;
-			using boost::size;
-			BOOST_STATIC_ASSERT(ios::beg == 0 && ios::cur == 1 && ios::end == 2);
 
 			if (offset == 0) {
 				return pos_type(this->gptr() - this->eback());
 			}
 			if (mode == ios::in) {
-				char_type *ept[3] = { this->eback(), this->gptr(), this->egptr() };
+				char_type *ept[3];
+				ept[ios::beg] = this->eback();
+				ept[ios::cur] = this->gptr();
+				ept[ios::end] = this->egptr();
+
 				ept[ios::cur] = ept[which] + offset;
 				if (in_range(ept[ios::cur], ept[ios::beg], ept[ios::end] + 1)) {
 					const off_type pos = ept[ios::cur] - ept[ios::beg];

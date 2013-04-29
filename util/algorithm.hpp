@@ -60,10 +60,7 @@ namespace util {
 	T (&zero(T (&a)[Size]))[Size];
 
 
-	template <typename R>
-	bool has_prefix(const R &range, const R &prefix);
-
-	template <typename R1, typename R2>
+	template <typename R1, typename R2 = R1>
 	bool has_prefix(const R1 &range, const R2 &prefix);
 
 	template <typename R1, typename R2, typename Predicate>
@@ -166,13 +163,6 @@ namespace util {
 	}
 
 
-	template <typename R>
-	inline bool has_prefix(const R &range, const R &prefix)
-	{
-		return has_prefix<R, R>(range, prefix);
-	}
-
-
 	template <typename R1, typename R2>
 	bool has_prefix(const R1 &range, const R2 &prefix)
 	{
@@ -184,8 +174,6 @@ namespace util {
 	template <typename R1, typename R2, typename Predicate>
 	bool has_prefix(const R1 &range, const R2 &prefix, Predicate pred)
 	{
-		using boost::begin;
-		using boost::end;
 		using boost::size;
 		return size(range) >= size(prefix) &&
 			std::equal(begin(prefix), end(prefix), begin(range), pred);

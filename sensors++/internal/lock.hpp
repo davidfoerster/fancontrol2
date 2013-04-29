@@ -42,8 +42,6 @@ namespace sensors {
 		public:
 			auto_lock() throw (sensor_error, io_error);
 
-			auto_lock &operator=(const auto_lock &o);
-
 		private:
 			shared_ptr<lock> mLock;
 		};

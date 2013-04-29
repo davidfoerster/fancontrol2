@@ -129,14 +129,6 @@ namespace sensors {
 
 	lock::auto_lock::auto_lock() throw (sensor_error, io_error)
 		: mLock(lock::instance(true))
-	{
-	}
-
-
-	lock::auto_lock &lock::auto_lock::operator=(const auto_lock &o)
-	{
-		shared_ptr<lock>(o.mLock).swap(this->mLock);
-		return *this;
-	}
+	{ }
 
 } /* namespace sensors */

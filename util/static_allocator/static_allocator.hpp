@@ -24,12 +24,8 @@ namespace util {
 
 	namespace helper {
 
-		template< std::size_t Numerator, std::size_t Denominator>
-		struct static_divide_ceil;
-
-
 		template <typename Integer>
-		Integer divide_ceil( Integer numerator, Integer denominator );
+		constexpr Integer divide_ceil( Integer numerator, Integer denominator );
 
 	} // namespace helper
 
@@ -39,8 +35,6 @@ namespace util {
 		template <typename T, std::size_t Size>
 		class static_container_base
 		{
-			BOOST_STATIC_ASSERT( Size > 0 );
-
 		public:
 			typedef char memory_type;
 			typedef std::size_t size_type;
@@ -55,33 +49,35 @@ namespace util {
 
 			size_type max_size() const;
 
-			//inline T &operator[](size_type i) { return data()[i]; }
-			//inline const T &operator[](size_type i) const { return data()[i]; }
-
 			T *data();
 			const T *data() const;
 
 			T *data_end();
 			const T *data_end() const;
 
-			bool in_range( const void *p, difference_type offset_begin = 0, difference_type offset_end = 0 ) const;
+			bool in_range( const void *p, difference_type offset_begin = 0,
+					difference_type offset_end = 0 ) const;
 
 			static_container_base();
 
 			template < std::size_t SizeU>
-			explicit static_container_base( const static_container_base<T, SizeU> &other );
+			explicit static_container_base(
+					const static_container_base<T, SizeU> &other );
 
 			template < std::size_t SizeU>
-			static_container_base<T, Size> &operator=( const static_container_base<T, SizeU> &other );
+			static_container_base<T, Size> &operator=(
+					const static_container_base<T, SizeU> &other );
 
 		private:
 			template < std::size_t SizeU>
 			void assign( const static_container_base<T, SizeU> &other,
-				typename boost::enable_if_c< Size >= SizeU, const void*>::type unused = nullptr );
+					typename std::enable_if< Size >= SizeU,
+					const void*>::type unused = nullptr );
 
 			size_type m_size;
 
-			memory_type m_data[ helper::static_divide_ceil<capacity * sizeof(T), sizeof(memory_type)>::value  ];
+			memory_type m_data[ helper::divide_ceil(
+					capacity * sizeof(T), sizeof(memory_type) ) ];
 		};
 
 
@@ -106,7 +102,8 @@ namespace util {
 
 			T *data_end() const;
 
-			bool in_range( const void *p, difference_type offset_begin = 0, difference_type offset_end = 0 ) const;
+			bool in_range( const void *p, difference_type offset_begin = 0,
+					difference_type offset_end = 0 ) const;
 
 			void assign( const static_container_base<T, 0> &other );
 		};
@@ -139,8 +136,8 @@ namespace util {
 		std::size_t Size,
 		class Extent = std::allocator<T>
 	> class static_allocator
-		: private Extent
-		, protected detail::static_container<T, boost::static_unsigned_min<Size, STATIC_ALLOCATOR_CAPACITY_MAX/sizeof(T)>::value>
+		: protected detail::static_container<T, boost::static_unsigned_min<Size, STATIC_ALLOCATOR_CAPACITY_MAX/sizeof(T)>::value>
+		, private Extent
 	{
 	public:
 		typedef T value_type;
@@ -203,6 +200,9 @@ namespace util {
 	class static_allocator<T, Size, void>
 		: protected detail::static_container<T, Size>
 	{
+		static_assert( Size <= STATIC_ALLOCATOR_CAPACITY_MAX / sizeof(T),
+				"Static allocator exceeds pre-defined maximum size; use a dynamic allocator instead." );
+
 	public:
 		typedef T value_type;
 		typedef T* pointer;
@@ -215,9 +215,6 @@ namespace util {
 	protected:
 		typedef static_allocator<value_type, Size, extent_allocator_type> self_t;
 		typedef detail::static_container<value_type, Size> static_container_type;
-
-	private:
-		BOOST_STATIC_ASSERT( STATIC_ALLOCATOR_CAPACITY_MAX/sizeof(value_type) >= Size );
 
 	public:
 		typedef typename static_container_type::size_type size_type;
@@ -292,12 +289,12 @@ namespace util {
 
 	template <class>
 	struct is_static_allocator
-		: boost::false_type
+		: std::false_type
 	{ };
 
 	template <typename T, std::size_t Size, class Extent>
 	struct is_static_allocator< static_allocator<T, Size, Extent> >
-		: boost::true_type
+		: std::true_type
 	{ };
 
 
@@ -314,16 +311,10 @@ namespace util {
 
 	namespace helper {
 
-		template< std::size_t Numerator, std::size_t Denominator> struct static_divide_ceil
-			: boost::integral_constant< std::size_t,
-				(Numerator != 0) ? (Numerator - 1) / Denominator + 1 : 0 >
-		{ };
-
-
 		template <typename Integer>
-		inline Integer divide_ceil( Integer numerator, Integer denominator )
+		inline constexpr Integer divide_ceil( Integer numerator, Integer denominator )
 		{
-			return (numerator != 0) ? (numerator -1) / denominator + 1 : 0;
+			return (numerator != 0) ? (numerator - 1) / denominator + 1 : 0;
 		}
 
 	} // namespace helper
@@ -413,16 +404,18 @@ namespace util {
 
 		template <typename T, std::size_t S>
 		template < std::size_t SizeU>
-		inline static_container_base<T,S>::static_container_base( const static_container_base<T, SizeU> &other )
-		{
+		inline static_container_base<T,S>::static_container_base(
+				const static_container_base<T, SizeU> &other
+		) {
 			assign( other );
 		}
 
 
 		template <typename T, std::size_t S>
 		template < std::size_t SizeU>
-		static_container_base<T,S> &static_container_base<T,S>::operator=( const static_container_base<T, SizeU> &other )
-		{
+		static_container_base<T,S> &static_container_base<T,S>::operator=(
+				const static_container_base<T, SizeU> &other
+		) {
 			if( &other != this )
 				assign( other );
 			return *this;
@@ -433,7 +426,7 @@ namespace util {
 		template < std::size_t SizeU>
 		void static_container_base<T, Size>::assign(
 			const static_container_base<T, SizeU> &other,
-			typename boost::enable_if_c< Size >= SizeU, const void*>::type
+			typename std::enable_if< Size >= SizeU, const void*>::type
 		){
 			T *out = this->data();
 			const T *in = other.data();
@@ -530,9 +523,10 @@ namespace util {
 
 	template <typename T, std::size_t Size, class Extent>
 	inline
-	static_allocator<T, Size, Extent>::static_allocator( const static_allocator<T, Size, Extent> &other )
-		: Extent( other )
-		, static_container_type( other )
+	static_allocator<T, Size, Extent>::static_allocator(
+			const static_allocator<T, Size, Extent> &other
+	)	: static_container_type( other )
+		, Extent( other )
 	{ }
 
 
@@ -548,7 +542,8 @@ namespace util {
 
 	template <typename T, std::size_t Size, class Extent>
 	inline
-	typename static_allocator<T, Size, Extent>::size_type static_allocator<T, Size, Extent>::max_size() const
+	typename static_allocator<T, Size, Extent>::size_type
+	static_allocator<T, Size, Extent>::max_size() const
 	{
 		return std::max( static_container_type::max_size(), Extent::max_size() );
 	}
@@ -627,15 +622,17 @@ namespace util {
 
 	template <typename T, std::size_t Size, class Extent>
 	inline
-	bool static_allocator<T, Size, Extent>::operator==( const static_allocator<T, Size, Extent> &other ) const
-	{
+	bool static_allocator<T, Size, Extent>::operator==(
+			const static_allocator<T, Size, Extent> &other
+	) const {
 		return this == &other;
 	}
 
 	template <typename T, std::size_t Size, class Extent>
 	inline
-	bool static_allocator<T, Size, Extent>::operator!=( const static_allocator<T, Size, Extent> &other ) const
-	{
+	bool static_allocator<T, Size, Extent>::operator!=(
+			const static_allocator<T, Size, Extent> &other
+	) const {
 		return !operator==( other );
 	}
 
@@ -648,15 +645,17 @@ namespace util {
 
 	template <typename T, std::size_t Size>
 	inline
-	static_allocator<T, Size, void>::static_allocator( const static_allocator<T, Size, void> &other )
-		: static_container_type( other )
+	static_allocator<T, Size, void>::static_allocator(
+			const static_allocator<T, Size, void> &other
+	)	: static_container_type( other )
 	{ }
 
 
 	template <typename T, std::size_t Size>
 	template <typename U, std::size_t SizeU, class ExtentU>
 	inline
-	static_allocator<T, Size, void>::static_allocator( const static_allocator<U, SizeU, ExtentU> &other )
+	static_allocator<T, Size, void>::static_allocator(
+		const static_allocator<U, SizeU, ExtentU> &other )
 	{ }
 
 
@@ -671,7 +670,8 @@ namespace util {
 
 	template <typename T, std::size_t Size>
 	inline
-	typename static_allocator<T, Size, void>::size_type static_allocator<T, Size, void>::max_size() const
+	typename static_allocator<T, Size, void>::size_type
+	static_allocator<T, Size, void>::max_size() const
 	{
 		return static_container_type::max_size();
 	}
