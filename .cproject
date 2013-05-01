@@ -82,14 +82,14 @@
 				</extensions>
 			</storageModule>
 			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
-				<configuration artifactName="${ProjName}" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.exe" buildProperties="org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.release,org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.exe" cleanCommand="rm -rf" description="" id="cdt.managedbuild.config.gnu.exe.release.1072239587" name="Release" parent="cdt.managedbuild.config.gnu.exe.release">
+				<configuration artifactName="${ProjName}" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.exe" buildProperties="org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.release,org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.exe" cleanCommand="rm -rf" description="" id="cdt.managedbuild.config.gnu.exe.release.1072239587" name="Release" parent="cdt.managedbuild.config.gnu.exe.release" postbuildStep="">
 					<folderInfo id="cdt.managedbuild.config.gnu.exe.release.1072239587." name="/" resourcePath="">
 						<toolChain id="cdt.managedbuild.toolchain.gnu.exe.release.510794258" name="Linux GCC" nonInternalBuilderId="cdt.managedbuild.target.gnu.builder.exe.release" resourceTypeBasedDiscovery="true" superClass="cdt.managedbuild.toolchain.gnu.exe.release">
 							<targetPlatform id="cdt.managedbuild.target.gnu.platform.exe.release.1542336482" name="Debug Platform" superClass="cdt.managedbuild.target.gnu.platform.exe.release"/>
 							<builder arguments="-D -n 10 -e make" buildPath="${workspace_loc:/fancontrol2/Release}" command="schedtool" id="cdt.managedbuild.target.gnu.builder.exe.release.2026169947" keepEnvironmentInBuildfile="false" name="Gnu Make Builder" parallelBuildOn="true" parallelizationNumber="optimal" superClass="cdt.managedbuild.target.gnu.builder.exe.release"/>
 							<tool id="cdt.managedbuild.tool.gnu.archiver.base.1740497734" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.base"/>
 							<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.exe.release.1576096646" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.exe.release">
-								<option id="gnu.cpp.compiler.exe.release.option.optimization.level.2029816532" name="Optimization Level" superClass="gnu.cpp.compiler.exe.release.option.optimization.level" value="gnu.cpp.compiler.optimization.level.more" valueType="enumerated"/>
+								<option id="gnu.cpp.compiler.exe.release.option.optimization.level.2029816532" name="Optimization Level" superClass="gnu.cpp.compiler.exe.release.option.optimization.level" value="gnu.cpp.compiler.optimization.level.most" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.exe.release.option.debugging.level.731440607" name="Debug Level" superClass="gnu.cpp.compiler.exe.release.option.debugging.level" value="gnu.cpp.compiler.debugging.level.none" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.other.other.171634695" name="Other flags" superClass="gnu.cpp.compiler.option.other.other" value="-c -fmessage-length=0 -pipe -fmax-errors=10 -std=c++11 -Wstrict-overflow=3 -Wno-missing-field-initializers" valueType="string"/>
 								<option id="gnu.cpp.compiler.option.optimization.flags.657956493" name="Other optimization flags" superClass="gnu.cpp.compiler.option.optimization.flags" value="-march=native -flto -ffast-math -frepo" valueType="string"/>
@@ -104,7 +104,7 @@
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.161587028" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.c.compiler.exe.release.1469583875" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.exe.release">
-								<option defaultValue="gnu.c.optimization.level.most" id="gnu.c.compiler.exe.release.option.optimization.level.1330129718" name="Optimization Level" superClass="gnu.c.compiler.exe.release.option.optimization.level" value="gnu.c.optimization.level.more" valueType="enumerated"/>
+								<option defaultValue="gnu.c.optimization.level.most" id="gnu.c.compiler.exe.release.option.optimization.level.1330129718" name="Optimization Level" superClass="gnu.c.compiler.exe.release.option.optimization.level" value="gnu.c.optimization.level.most" valueType="enumerated"/>
 								<option id="gnu.c.compiler.exe.release.option.debugging.level.535368408" name="Debug Level" superClass="gnu.c.compiler.exe.release.option.debugging.level" value="gnu.c.debugging.level.none" valueType="enumerated"/>
 								<option id="gnu.c.compiler.option.misc.other.1658735530" name="Other flags" superClass="gnu.c.compiler.option.misc.other" value="-c -fmessage-length=0 -pipe -fmax-errors=10 -Wstrict-overflow=3" valueType="string"/>
 								<option id="gnu.c.compiler.option.optimization.flags.1249986001" name="Other optimization flags" superClass="gnu.c.compiler.option.optimization.flags" value="-march=native -flto -ffast-math" valueType="string"/>
@@ -123,7 +123,7 @@
 								<option id="gnu.cpp.link.option.other.612412341" name="Other options (-Xlinker [option])" superClass="gnu.cpp.link.option.other" valueType="stringList">
 									<listOptionValue builtIn="false" value="--as-needed"/>
 								</option>
-								<option id="gnu.cpp.link.option.flags.477459270" name="Linker flags" superClass="gnu.cpp.link.option.flags" value="-flto -O2 -ffast-math -march=native" valueType="string"/>
+								<option id="gnu.cpp.link.option.flags.477459270" name="Linker flags" superClass="gnu.cpp.link.option.flags" value="-flto -O3 -ffast-math -march=native" valueType="string"/>
 								<option id="gnu.cpp.link.option.strip.1381347586" name="Omit all symbol information (-s)" superClass="gnu.cpp.link.option.strip" value="false" valueType="boolean"/>
 								<option id="gnu.cpp.link.option.libs.1967015788" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" srcPrefixMapping="" srcRootPath="" value="sensors"/>
@@ -266,6 +266,9 @@
 		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.exe.release.1072239587;cdt.managedbuild.config.gnu.exe.release.1072239587.;cdt.managedbuild.tool.gnu.c.compiler.exe.release.1469583875;cdt.managedbuild.tool.gnu.c.compiler.input.435507910">
 			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileC"/>
 		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.exe.release.1072239587.2078456834;cdt.managedbuild.config.gnu.exe.release.1072239587.2078456834.;cdt.managedbuild.tool.gnu.cpp.compiler.exe.release.39022212;cdt.managedbuild.tool.gnu.cpp.compiler.input.824002135">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		</scannerConfigBuildInfo>
 		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.exe.debug.2046506812;cdt.managedbuild.config.gnu.exe.debug.2046506812.;cdt.managedbuild.tool.gnu.cpp.compiler.exe.debug.51307226;cdt.managedbuild.tool.gnu.cpp.compiler.input.1497414375">
 			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileCPP"/>
 			<profile id="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileCPP">
@@ -294,6 +297,9 @@
 					<parser enabled="true"/>
 				</scannerInfoProvider>
 			</profile>
+		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.exe.release.1072239587.2078456834;cdt.managedbuild.config.gnu.exe.release.1072239587.2078456834.;cdt.managedbuild.tool.gnu.c.compiler.exe.release.691415250;cdt.managedbuild.tool.gnu.c.compiler.input.332679456">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
 		</scannerConfigBuildInfo>
 		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.exe.release.1072239587">
 			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>

@@ -5,7 +5,9 @@ target_link_libraries(fancontrol2 sensors boost_filesystem boost_system yaml-cpp
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pipe -std=c++11 -Wall -Wextra -Wconversion -Wstrict-overflow=3 -Wno-missing-field-initializers -fmessage-length=0 -fmax-errors=10")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 -DFANCONTROL_PIDFILE_ROOTONLY=0")
-set(CMAKE_CXX_FLAGS_RELEASE "-DNDEBUG -frepo -flto -O2 -ffast-math")
-set(CMAKE_LINK_FLAGS_RELEASE "-flto -O2 -ffast-math")
+
+set(C_OPTIM_FLAGS_RELEASE "-flto -ffast-math")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} ${C_OPTIM_FLAGS_RELEASE} -frepo")
+set(CMAKE_LINK_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} ${C_OPTIM_FLAGS_RELEASE}")
 
 install(TARGETS fancontrol2 RUNTIME DESTINATION sbin)
