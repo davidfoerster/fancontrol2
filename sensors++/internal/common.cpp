@@ -17,4 +17,4 @@ namespace sensors {
 		return !s.empty() && util::in_range<char>(s.front(), '1', '9' + 1);
 	}
 
-} /// namespace sensrors
+} /// namespace sensors
