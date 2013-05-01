@@ -7,9 +7,9 @@
 
 #include "pwm.hpp"
 #include "chip.hpp"
-#include "../util/strcat.hpp"
-#include "../util/algorithm.hpp"
-#include "../util/yaml.hpp"
+#include "util/strcat.hpp"
+#include "util/algorithm.hpp"
+#include "util/yaml.hpp"
 #include <boost/range/algorithm/copy.hpp>
 #include <boost/integer/static_log2.hpp>
 #include <boost/assert.hpp>

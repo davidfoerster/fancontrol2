@@ -9,8 +9,8 @@
 #ifndef UTIL_STRINGPIECE_LEXICAL_CAST_HPP_
 #define UTIL_STRINGPIECE_LEXICAL_CAST_HPP_
 
-#include "../stringpiece/stringpiece.hpp"
-#include "../in_range.hpp"
+#include "util/stringpiece/stringpiece.hpp"
+#include "util/in_range.hpp"
 #include <boost/lexical_cast.hpp>
 #include <boost/range/size.hpp>
 #include <boost/assert.hpp>

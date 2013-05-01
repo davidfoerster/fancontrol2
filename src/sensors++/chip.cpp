@@ -8,8 +8,8 @@
 #include "chip.hpp"
 #include "feature.hpp"
 #include "pwm.hpp"
-#include "../util/algorithm.hpp"
-#include "../util/stringpiece/lexical_cast.hpp"
+#include "util/algorithm.hpp"
+#include "util/stringpiece/lexical_cast.hpp"
 
 #include <boost/filesystem.hpp>
 #include <boost/foreach.hpp>

@@ -9,8 +9,8 @@
 #ifndef UTIL_STRINGPIECE_HPP_
 #define UTIL_STRINGPIECE_HPP_
 
-#include "../algorithm.hpp"
-#include "../enable_if.hpp"
+#include "util/algorithm.hpp"
+#include "util/enable_if.hpp"
 #include <boost/range/begin.hpp>
 #include <boost/range/end.hpp>
 #include <boost/range/size.hpp>

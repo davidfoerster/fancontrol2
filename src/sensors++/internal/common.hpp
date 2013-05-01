@@ -9,7 +9,7 @@
 #ifndef SENSORS_COMMON_HPP_
 #define SENSORS_COMMON_HPP_
 
-#include "../../util/stringpiece/stringpiece.hpp"
+#include "util/stringpiece/stringpiece.hpp"
 
 
 namespace std {

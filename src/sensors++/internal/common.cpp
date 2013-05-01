@@ -6,7 +6,7 @@
  */
 
 #include "common.hpp"
-#include "../../util/in_range.hpp"
+#include "util/in_range.hpp"
 #include <cstring>
 
 

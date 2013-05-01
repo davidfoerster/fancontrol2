@@ -14,7 +14,7 @@
 #include "csensors.hpp"
 #include "chip.hpp"
 
-#include "../util/exception.hpp"
+#include "util/exception.hpp"
 #include <boost/functional/hash.hpp>
 #include <boost/assert.hpp>
 #include <array>

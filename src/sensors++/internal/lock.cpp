@@ -6,7 +6,7 @@
  */
 
 #include "lock.hpp"
-#include "../../util/assert.hpp"
+#include "util/assert.hpp"
 #include <cerrno>
 
 

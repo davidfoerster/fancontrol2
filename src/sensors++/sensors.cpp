@@ -7,7 +7,7 @@
 
 #include "sensors.hpp"
 
-#include "../util/algorithm.hpp"
+#include "util/algorithm.hpp"
 #include <boost/range/algorithm/find_if.hpp>
 #include <boost/assert.hpp>
 #include <algorithm>

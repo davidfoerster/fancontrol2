@@ -12,7 +12,7 @@
 #include "chip.hpp"
 #include "internal/lock.hpp"
 #include "exceptions.hpp"
-#include "../util/static_allocator/static_allocator.hpp"
+#include "util/static_allocator/static_allocator.hpp"
 
 #include <memory>
 #include <boost/functional/hash.hpp>

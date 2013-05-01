@@ -6,9 +6,9 @@
  */
 
 #include "exceptions.hpp"
-#include "../util/algorithm.hpp"
-#include "../util/in_range.hpp"
-#include "../util/assert.hpp"
+#include "util/algorithm.hpp"
+#include "util/in_range.hpp"
+#include "util/assert.hpp"
 #include <cstring>
 
 namespace sensors {

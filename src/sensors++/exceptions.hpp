@@ -10,7 +10,7 @@
 #define SENSORS_EXCEPTIONS_HPP_
 
 #include "internal/common.hpp"
-#include "../util/exception.hpp"
+#include "util/exception.hpp"
 #include <string>
 #include <limits>
 

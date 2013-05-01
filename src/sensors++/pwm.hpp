@@ -10,7 +10,7 @@
 #define SENSORS_PWM_HPP_
 
 #include "internal/common.hpp"
-#include "../util/static_allocator/static_string.hpp"
+#include "util/static_allocator/static_string.hpp"
 #include "exceptions.hpp"
 
 #include <memory>

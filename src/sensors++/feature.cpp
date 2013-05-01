@@ -10,8 +10,8 @@
 #include "subfeature.hpp"
 #include "chip.hpp"
 
-#include "../util/algorithm.hpp"
-#include "../util/stringpiece/lexical_cast.hpp"
+#include "util/algorithm.hpp"
+#include "util/stringpiece/lexical_cast.hpp"
 #include <boost/range/algorithm/find_if.hpp>
 #include <boost/assert.hpp>
 #include <algorithm>

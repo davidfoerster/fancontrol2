@@ -9,7 +9,7 @@
 #include "feature.hpp"
 #include "chip.hpp"
 #include "exceptions.hpp"
-#include "../util/assert.hpp"
+#include "util/assert.hpp"
 #include <cstring>
 
 #ifndef NDEBUG
