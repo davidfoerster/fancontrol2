@@ -8,6 +8,7 @@
 #include "utils.hpp"
 #include "fan.hpp"
 #include <boost/foreach.hpp>
+#include <memory>
 #include <cstdlib>
 #include <csignal>
 

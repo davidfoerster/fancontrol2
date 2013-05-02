@@ -159,7 +159,7 @@ namespace fancontrol {
 
 
 	config_wrapper::config_wrapper(
-		std::ifstream &config_file, const std::shared_ptr<sensor_container> &sens, bool do_check)
+		std::ifstream &config_file, const util::shared_ptr<sensor_container> &sens, bool do_check)
 			throw(util::runtime_error, YAML::ParserException, std::ios::failure)
 		: cfg(config_file, sens, do_check)
 		, do_check(do_check)
@@ -199,7 +199,7 @@ namespace fancontrol {
 			cfg_file.open(cfg_filename);
 
 			return std::unique_ptr<config_wrapper>(
-					new config_wrapper(cfg_file, std::make_shared<sensor_container>(), do_check));
+					new config_wrapper(cfg_file, util::make_shared<sensor_container>(), do_check));
 		} catch (std::ios::failure &e) {
 			using util::io_error;
 			BOOST_THROW_EXCEPTION(io_error()

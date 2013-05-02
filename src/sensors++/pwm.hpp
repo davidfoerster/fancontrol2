@@ -13,21 +13,21 @@
 #include "util/static_allocator/static_string.hpp"
 #include "exceptions.hpp"
 
-#include <memory>
+#include "util/memory.hpp"
 #include <string>
 #include <array>
 
 
 namespace sensors {
 
-	using std::shared_ptr;
+	using util::shared_ptr;
 	using util::io_error;
 
 	class chip;
 
 
 	class pwm
-		: virtual public std::enable_shared_from_this<pwm>
+		: virtual public util::enable_shared_from_this<pwm>
 	{
 	public:
 		typedef sensors::chip chip_t;

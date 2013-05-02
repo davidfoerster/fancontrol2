@@ -21,6 +21,7 @@
 #include "sensors++/exceptions.hpp"
 #include "util/ptr_wrapper.hpp"
 #include "util/static_allocator/static_vector.hpp"
+#include "util/memory.hpp"
 #include <yaml-cpp/exceptions.h>
 
 #include <memory>
@@ -46,7 +47,7 @@ namespace fancontrol {
 
 	using std::istream;
 
-	using std::shared_ptr;
+	using util::shared_ptr;
 	using YAML::ParserException;
 	using YAML::Node;
 

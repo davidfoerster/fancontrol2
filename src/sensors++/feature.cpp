@@ -21,9 +21,7 @@
 
 namespace sensors {
 
-	using std::shared_ptr;
-	using std::weak_ptr;
-	using std::make_shared;
+	using util::make_shared;
 
 
 	feature::feature(basic_type *feature, const shared_ptr<chip> &chip)
@@ -50,7 +48,8 @@ namespace sensors {
 		if (!!*this && parent() && !!*parent()) {
 			const SF::basic_type *sf_basic = sensors_get_subfeature(parent()->get(), get(), type);
 			if (sf_basic) {
-				shared_ptr<SF> sf_new(make_shared<SF>(sf_basic, shared_from_this()));
+				shared_ptr<SF> sf_new(util::make_shared<SF>(
+						sf_basic, shared_from_this()));
 				sf = sf_new;
 				return sf_new;
 			}

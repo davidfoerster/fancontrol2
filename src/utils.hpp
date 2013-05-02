@@ -10,8 +10,8 @@
 #define FANCONTROL_UTILS_HPP_
 
 #include "config.hpp"
+#include "util/memory.hpp"
 #include <exception>
-
 #include <memory>
 #include <ctime>
 #include <cstdio>
@@ -41,7 +41,7 @@ namespace fancontrol {
 	public:
 		config_wrapper(
 			std::ifstream &config_file,
-			const std::shared_ptr< sensors::sensor_container > &sensors,
+			const util::shared_ptr< sensors::sensor_container > &sensors,
 			bool do_check)
 				throw(util::runtime_error, YAML::ParserException, std::ios::failure);
 

@@ -18,8 +18,6 @@
 
 namespace fancontrol {
 
-	using std::shared_ptr;
-
 	typedef control::value_t value_t;
 	typedef simple_bounded_control::SF SF;
 

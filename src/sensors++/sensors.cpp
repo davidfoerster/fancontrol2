@@ -13,18 +13,17 @@
 #include <algorithm>
 #include <iterator>
 #include <functional>
-#include <memory>
 
 
 namespace sensors {
 
-	using std::weak_ptr;
-	using std::shared_ptr;
+	using util::weak_ptr;
 	using std::bind;
 	using std::cref;
 	using namespace std::placeholders;
 
 	using util::io_error;
+
 
 	sensor_container::sensor_container(const char *config) throw (sensor_error, io_error, std::logic_error)
 		: m_chips(map_type::allocator_type::initial_capacity)
@@ -130,7 +129,7 @@ namespace sensors {
 
 		if (it_chip == m_chips.end()) {
 			std::pair<map_type::iterator, bool> r =
-					m_chips.emplace(*basic_chip, std::make_shared<chip_t>(basic_chip));
+					m_chips.emplace(*basic_chip, util::make_shared<chip_t>(basic_chip));
 			BOOST_ASSERT(r.second);
 			it_chip = r.first;
 		}

@@ -19,19 +19,19 @@
 #include <boost/assert.hpp>
 #include <array>
 #include <unordered_map>
-#include <memory>
+#include "util/memory.hpp"
 
 
 namespace sensors {
 
-	using std::shared_ptr;
-	using std::weak_ptr;
+	using util::shared_ptr;
+	using util::weak_ptr;
 
 	class subfeature;
 
 
 	class feature
-		: virtual public std::enable_shared_from_this<feature>
+		: virtual public util::enable_shared_from_this<feature>
 		, public object_wrapper_numbered<const sensors_feature, chip>
 	{
 	public:

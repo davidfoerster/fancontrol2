@@ -15,15 +15,15 @@
 #include "csensors.hpp"
 #include "feature.hpp"
 
-#include <memory>
+#include "util/memory.hpp"
 
 namespace sensors {
 
-	using std::shared_ptr;
+	using util::shared_ptr;
 
 
 	class subfeature
-		: virtual public std::enable_shared_from_this<subfeature>
+		: virtual public util::enable_shared_from_this<subfeature>
 		, public object_wrapper_numbered<const sensors_subfeature, feature>
 	{
 	public:

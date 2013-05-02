@@ -17,8 +17,6 @@
 
 namespace fancontrol {
 
-	using std::shared_ptr;
-
 	using sensors::sensor_error;
 	using sensors::io_error;
 	using sensors::subfeature;

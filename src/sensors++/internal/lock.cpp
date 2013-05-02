@@ -19,9 +19,8 @@ static bool operator==(const struct timespec &a, const struct timespec &b)
 namespace sensors {
 
 	using util::io_error;
-	using std::weak_ptr;
-	using std::shared_ptr;
-	using std::make_shared;
+	using util::weak_ptr;
+	using util::make_shared;
 
 
 	namespace helper {

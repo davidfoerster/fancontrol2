@@ -12,14 +12,14 @@
 #include "../csensors.hpp"
 #include "../exceptions.hpp"
 #include <stdexcept>
-#include <memory>
+#include "util/memory.hpp"
 #include <cstdio>
 #include <sys/stat.h>
 
 
 namespace sensors {
 
-	using std::shared_ptr;
+	using util::shared_ptr;
 	using util::io_error;
 
 

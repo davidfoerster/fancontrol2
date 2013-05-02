@@ -10,14 +10,14 @@
 #define SENSORS_OBJECTWRAPPER_HPP_
 
 #include "common.hpp"
-#include <memory>
+#include "util/memory.hpp"
 #include <type_traits>
 
 
 namespace sensors {
 
-	using std::shared_ptr;
-	using std::weak_ptr;
+	using util::shared_ptr;
+	using util::weak_ptr;
 
 	using std::enable_if;
 	using std::disable_if;

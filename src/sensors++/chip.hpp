@@ -14,7 +14,7 @@
 #include "internal/lock.hpp"
 #include "exceptions.hpp"
 
-#include <memory>
+#include "util/memory.hpp"
 #include <boost/functional/hash.hpp>
 #include <unordered_map>
 #include <bitset>
@@ -25,8 +25,8 @@
 
 namespace sensors {
 
-	using std::shared_ptr;
-	using std::weak_ptr;
+	using util::shared_ptr;
+	using util::weak_ptr;
 
 	using util::io_error;
 
@@ -36,7 +36,7 @@ namespace sensors {
 
 
 	class chip
-		: virtual public std::enable_shared_from_this<chip>
+		: virtual public util::enable_shared_from_this<chip>
 		, public conditional_shared_ptr<sensors_chip_name>
 	{
 	public:

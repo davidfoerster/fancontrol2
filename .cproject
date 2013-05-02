@@ -26,7 +26,9 @@
 								<option id="gnu.cpp.compiler.exe.debug.option.optimization.level.266273469" name="Optimization Level" superClass="gnu.cpp.compiler.exe.debug.option.optimization.level" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.exe.debug.option.debugging.level.1144064494" name="Debug Level" superClass="gnu.cpp.compiler.exe.debug.option.debugging.level" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.other.other.2018141592" name="Other flags" superClass="gnu.cpp.compiler.option.other.other" value="-c -fmessage-length=0 -pipe -fmax-errors=10 -std=c++11 -Wno-missing-field-initializers" valueType="string"/>
-								<option id="gnu.cpp.compiler.option.preprocessor.def.760583157" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def"/>
+								<option id="gnu.cpp.compiler.option.preprocessor.def.760583157" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
+									<listOptionValue builtIn="false" value="BOOST_DISABLE_THREADS"/>
+								</option>
 								<option id="gnu.cpp.compiler.option.warnings.extrawarn.1490031050" name="Extra warnings (-Wextra)" superClass="gnu.cpp.compiler.option.warnings.extrawarn" value="true" valueType="boolean"/>
 								<option id="gnu.cpp.compiler.option.include.paths.1907685014" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src}&quot;"/>
@@ -98,6 +100,7 @@
 								<option id="gnu.cpp.compiler.option.optimization.flags.657956493" name="Other optimization flags" superClass="gnu.cpp.compiler.option.optimization.flags" value="-march=native -flto -ffast-math -frepo" valueType="string"/>
 								<option id="gnu.cpp.compiler.option.preprocessor.def.675954012" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="NDEBUG"/>
+									<listOptionValue builtIn="false" value="BOOST_DISABLE_THREADS"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.warnings.extrawarn.1840208004" name="Extra warnings (-Wextra)" superClass="gnu.cpp.compiler.option.warnings.extrawarn" value="true" valueType="boolean"/>
 								<option id="gnu.cpp.compiler.option.include.paths.1876082323" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
@@ -180,6 +183,7 @@
 								<option id="gnu.cpp.compiler.option.preprocessor.def.1639904852" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="NDEBUG"/>
 									<listOptionValue builtIn="false" value="FANCONTROL_PIDFILE_ROOTONLY=0"/>
+									<listOptionValue builtIn="false" value="BOOST_DISABLE_THREADS"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.warnings.extrawarn.1896008044" name="Extra warnings (-Wextra)" superClass="gnu.cpp.compiler.option.warnings.extrawarn" value="true" valueType="boolean"/>
 								<option id="gnu.cpp.compiler.option.include.paths.2085770850" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">

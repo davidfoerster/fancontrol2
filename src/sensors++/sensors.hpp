@@ -14,7 +14,7 @@
 #include "exceptions.hpp"
 #include "util/static_allocator/static_allocator.hpp"
 
-#include <memory>
+#include "util/memory.hpp"
 #include <boost/functional/hash.hpp>
 #include <unordered_map>
 
@@ -24,7 +24,7 @@
 
 namespace sensors {
 
-	using std::shared_ptr;
+	using util::shared_ptr;
 
 
 	class sensor_container {
@@ -62,7 +62,7 @@ namespace sensors {
 
 		map_type m_chips;
 
-		std::shared_ptr<lock> m_lock;
+		util::shared_ptr<lock> m_lock;
 
 		typedef const map_type::key_type& (&get_key_t)(const map_type::value_type&);
 	};

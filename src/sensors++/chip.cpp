@@ -19,9 +19,7 @@
 
 namespace sensors {
 
-	using std::weak_ptr;
-	using std::shared_ptr;
-	using std::make_shared;
+	using util::make_shared;
 
 
 	chip::chip(const basic_type *chip)
@@ -115,7 +113,8 @@ namespace sensors {
 			if (!p.expired())
 				return p.lock();
 
-			shared_ptr<pwm_t> p_new(make_shared<pwm_t>(number, shared_from_this()));
+			shared_ptr<pwm_t> p_new(util::make_shared<pwm_t>(
+					number, shared_from_this()));
 			if (p_new->exists()) {
 				p = p_new;
 				return p_new;
@@ -150,7 +149,7 @@ namespace sensors {
 						BOOST_ASSERT(streamstate.first & std::ios::eofbit);
 
 						if (number == key.second) {
-							shared_ptr<feat_t> ft_new(make_shared<feat_t>(
+							shared_ptr<feat_t> ft_new(util::make_shared<feat_t>(
 								ft_basic, string_ref(ft_basic->name, number_str.end()),
 								shared_from_this(), feat_t::key1()));
 							ft = ft_new;

@@ -12,7 +12,7 @@
 #include "sensors++/exceptions.hpp"
 
 #include "util/property_wrapper.hpp"
-#include <memory>
+#include "util/memory.hpp"
 
 #include <string>
 
@@ -24,7 +24,7 @@ namespace sensors {
 
 namespace fancontrol {
 
-	using std::shared_ptr;
+	using util::shared_ptr;
 
 	using sensors::sensor_error;
 	using util::io_error;

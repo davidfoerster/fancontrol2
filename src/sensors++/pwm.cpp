@@ -25,7 +25,6 @@
 
 namespace sensors {
 
-	using std::shared_ptr;
 	using util::io_error;
 
 

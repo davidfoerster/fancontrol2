@@ -11,8 +11,7 @@
 
 #include "util/algorithm.hpp"
 #include "util/static_allocator/static_vector.hpp"
-
-#include <memory>
+#include "util/memory.hpp"
 #include <boost/range/size.hpp>
 #include <vector>
 #include <utility>
@@ -34,7 +33,7 @@ namespace sensors {
 
 namespace fancontrol {
 
-	using std::shared_ptr;
+	using util::shared_ptr;
 	class config;
 
 

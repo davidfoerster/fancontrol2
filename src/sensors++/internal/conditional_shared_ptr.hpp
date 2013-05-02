@@ -9,7 +9,9 @@
 #ifndef SENSORS_CONDITIONAL_SHARED_PTR_HPP_
 #define SENSORS_CONDITIONAL_SHARED_PTR_HPP_
 
-#include <boost/smart_ptr/detail/sp_counted_base.hpp>
+#if defined(BOOST_DISABLE_THREADS) || defined(BOOST_SP_DISABLE_THREADS)
+#include <atomic>
+#endif
 #include <memory>
 #include <cstddef>
 #include <boost/assert.hpp>
@@ -34,7 +36,12 @@ namespace sensors {
 			shared_reference_counter_base();
 
 		private:
-			counter_t m_counter;
+		#if defined(BOOST_DISABLE_THREADS) || defined(BOOST_SP_DISABLE_THREADS)
+			counter_t
+		#else
+			std::atomic<counter_t>
+		#endif
+					m_counter;
 		};
 
 
@@ -237,10 +244,10 @@ namespace sensors {
 		void shared_reference_counter_base::ref()
 		{
 			BOOST_ASSERT(m_counter > 0);
-		#ifdef BOOST_DISABLE_THREADS
+		#if defined(BOOST_DISABLE_THREADS) || defined(BOOST_SP_DISABLE_THREADS)
 			++m_counter;
 		#else
-			boost::detail::atomic_increment(&m_counter);
+			m_counter.fetch_add(1);
 		#endif
 		}
 
@@ -249,10 +256,10 @@ namespace sensors {
 		bool shared_reference_counter_base::unref()
 		{
 			BOOST_ASSERT(m_counter > 0);
-		#ifdef BOOST_DISABLE_THREADS
+		#if defined(BOOST_DISABLE_THREADS) || defined(BOOST_SP_DISABLE_THREADS)
 			return --m_counter != 0;
 		#else
-			return boost::detail::atomic_exchange_and_add(&m_counter, -1) != 1;
+			return m_counter.fetch_sub(1) != 1;
 		#endif
 		}
 

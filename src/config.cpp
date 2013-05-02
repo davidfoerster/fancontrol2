@@ -66,8 +66,7 @@ namespace fancontrol {
 	using std::string;
 	using std::istream;
 
-	using std::shared_ptr;
-	using std::make_shared;
+	using util::make_shared;
 	using std::static_pointer_cast;
 	using std::bind;
 	using std::ref;
@@ -159,7 +158,7 @@ namespace fancontrol {
 			node["min"] >> min;
 			node["max"] >> max;
 			controls.push_back(static_pointer_cast<control>(
-					make_shared<simple_bounded_control>(source, min, max)));
+					util::make_shared<simple_bounded_control>(source, min, max)));
 			it_ctrl = controls.end() - 1;
 		}
 		return *it_ctrl;
@@ -177,7 +176,7 @@ namespace fancontrol {
 				> parse_dependency_iterator;
 
 			controls.push_back(static_pointer_cast<control>(
-					make_shared< aggregated_control<> >(
+					util::make_shared< aggregated_control<> >(
 						parse_dependency_iterator(node.begin(), bind(&config::parse_dependencies, ref(*this), _1)),
 						parse_dependency_iterator(node.end()),
 					node.size())));
