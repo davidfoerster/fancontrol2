@@ -1,5 +1,5 @@
 SUBFOLDERS := Debug Optimized Release
-
+EXE = fancontrol2
 PREFIX = /usr/local
 
 
@@ -13,11 +13,10 @@ clean:
 		$(MAKE) -C "$$sub" clean; \
 	done
 
-install: Release
+install: Release/$(EXE)
 	install -d "$(PREFIX)/sbin"
-	install -st "$(PREFIX)/sbin" Release/fancontrol2
+	install -st "$(PREFIX)/sbin" $<
 	@echo "Successfully installed to \`$(PREFIX)'."
-
 
 $(SUBFOLDERS):
 	$(MAKE) -C "$@" all
