@@ -1,0 +1,46 @@
+---
+interval: 0.5
+
+chips:
+    hwmon2: &hwmon2
+        name: w83667hg
+    coretemp: &coretemp
+        name: coretemp
+
+temperatures:
+    cpu: &cpu
+        source:
+            chip: *hwmon2
+            input: temp2_input
+        min: 26
+        max: 35
+    core0: &core0
+        source:
+            chip: *coretemp
+            input: temp2_input
+        min: 38
+        max: 50
+    core1: &core1
+        source:
+            chip: *coretemp
+            input: temp3_input
+        min: 38
+        max: 50
+
+pwms:
+    pwm2: &pwm2
+        chip: *hwmon2
+        output: 2
+
+
+fans:
+    fan2:
+        gauge:
+            chip: *hwmon2
+            input: fan2_input
+        valve: *pwm2
+        start: 0.35
+        stop:  0.31
+        reset: 0.75
+        dependencies: [*core0, *core1, *cpu]
+

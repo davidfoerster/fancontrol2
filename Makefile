@@ -1,4 +1,4 @@
-SUBFOLDERS := Debug Optimized Release
+SUBFOLDERS := Debug Optimized Profile Release
 EXE = fancontrol2
 PREFIX = /usr/local
 
@@ -20,3 +20,10 @@ install: Release/$(EXE)
 
 $(SUBFOLDERS):
 	$(MAKE) -C "$@" all
+
+#Release/$(EXE): Profile/src/$(EXE).gcda
+#	$(MAKE) -C Release $(EXE)
+
+#Profile/src/$(EXE).gcda: Profile/$(EXE)
+#	$(MAKE) -C Profile $(EXE)
+#	$< $(EXE).yaml || { find Profile -name \*.gcda -delete; false; }
