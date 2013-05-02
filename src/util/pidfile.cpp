@@ -52,7 +52,7 @@ namespace util {
 
 		} else {
 			// don't try to write, if we are not allowed to anyway
-			// instead, try to open fo reading
+			// instead, try to open for reading
 			perrno = 0;
 			m_file = std::fopen(m_filename.c_str(), "r");
 			if (m_file) {

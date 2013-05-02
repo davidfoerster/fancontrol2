@@ -249,7 +249,7 @@ namespace fancontrol {
 		, sensors(sensors)
 	{
 		if (!do_check) {
-	#if FANCONTROL_PIDFILE
+#if FANCONTROL_PIDFILE
 			m_pidfile.reset(new util::pidfile(
 					string_ref(BOOST_PP_STRINGIZE(FANCONTROL_PIDFILE_PATH)),
 					FANCONTROL_PIDFILE_ROOTONLY));
