@@ -12,11 +12,13 @@
 #include <boost/range/begin.hpp>
 #include <boost/range/end.hpp>
 #include <boost/range/size.hpp>
+#include <boost/integer/static_log2.hpp>
 #include <functional>
 #include <algorithm>
 #include <utility>
 #include <cstring>
 #include <cstddef>
+#include <cstdint>
 
 
 #if defined BOOST_ASSERT
@@ -105,6 +107,14 @@ namespace util {
 	template <typename T1, typename T2 = T1> struct equal_to;
 
 	template <typename T1, typename T2 = T1> struct not_equal_to;
+
+
+	template <int N, typename Integer>
+	constexpr Integer shift_left(Integer x);
+
+
+	template <typename SourceType, SourceType Source, typename DestType, DestType Dest>
+	constexpr DestType convert_flagbit(SourceType src);
 
 }
 
@@ -264,6 +274,25 @@ namespace util {
 			return !(a == b);
 		}
 	};
+
+
+	template <int N, typename Integer>
+	inline constexpr Integer shift_left(Integer x)
+	{
+		return ( N >= 0 ) ?
+			x << N :
+			static_cast<Integer>(static_cast<typename std::make_unsigned<Integer>::type>(x) >> -N);
+	}
+
+	template <typename SourceType, SourceType Source, typename DestType, DestType Dest>
+	inline constexpr DestType convert_flagbit(SourceType src)
+	{
+		using boost::static_log2;
+		return shift_left<
+					static_log2<Dest>::value - static_log2<Source>::value,
+					DestType
+				>(src & Source);
+	}
 
 }
 

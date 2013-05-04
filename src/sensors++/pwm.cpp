@@ -11,15 +11,12 @@
 #include "util/algorithm.hpp"
 #include "util/yaml.hpp"
 #include <boost/range/algorithm/copy.hpp>
-#include <boost/integer/static_log2.hpp>
 #include <boost/assert.hpp>
 #include <fstream>
 #include <algorithm>
 #include <limits>
-#include <type_traits>
 #include <stdexcept>
 #include <cstring>
-#include <cstdint>
 #include <unistd.h>
 
 
@@ -243,41 +240,12 @@ namespace sensors {
 	}
 
 
-	namespace helper {
-
-		template <int N, typename Integer>
-		inline static typename std::enable_if< N >= 0, Integer>::type shift_left(const Integer &x)
-		{
-			return x << N;
-		}
-
-		template <int N, typename Integer>
-		inline static typename std::disable_if< N >= 0, Integer>::type shift_left(const Integer &x)
-		{
-			typedef typename std::make_unsigned<Integer>::type Unsigned;
-			return static_cast<Integer>(static_cast<Unsigned>(x) >> -N);
-		}
-
-
-		template <uintmax_t Source, uintmax_t Dest, typename Integer>
-		inline static Integer convert_flagbit(const Integer &src)
-		{
-			using boost::static_log2;
-			return shift_left<static_log2<Dest>::value - static_log2<Source>::value>(src & static_cast<Integer>(Source));
-		}
-
-	}
-
-
-	bool pwm::exists(const string_ref &item, std::ios::open_mode mode_) const
+	bool pwm::exists(const string_ref &item, std::ios::openmode mode_) const
 	{
-		#if F_OK != 0
-		#	error "Assumption violated"
-		#endif
-
-		const int mode = F_OK
-			| helper::convert_flagbit< std::ios::in, R_OK, int >(mode_)
-			| helper::convert_flagbit< std::ios::out, W_OK, int >(mode_)
+		using std::ios;
+		const int mode = 0
+			| util::convert_flagbit< ios::openmode, ios::in , int, R_OK >(mode_)
+			| util::convert_flagbit< ios::openmode, ios::out, int, W_OK >(mode_)
 			;
 
 		return exists_internal(item, mode);

@@ -100,7 +100,7 @@ namespace sensors {
 
 		bool exists(item_enum item = Item::pwm) const;
 
-		bool exists(const string_ref &item, std::ios::open_mode mode = std::ios::in) const;
+		bool exists(const string_ref &item, std::ios::openmode mode = std::ios::in) const;
 
 		value_t raw_value() const throw (io_error);
 
