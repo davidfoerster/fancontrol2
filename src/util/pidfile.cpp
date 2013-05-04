@@ -11,51 +11,49 @@
 #include "preprocessor.hpp"
 
 #include <limits>
+#include <boost/assert.hpp>
 #include <cerrno>
-#include <cctype>
-
-#include <fcntl.h>
 #include <unistd.h>
 #include <signal.h>
+
 
 namespace util {
 
 	pidfile::pidfile(const stringpiece &filename, bool root_only)
 			throw (pidfile_exception, io_error)
-		: m_file(nullptr)
+		: m_file()
 		, m_filename(filename)
 	{
-		using namespace std;
+		using std::ios;
 
 		int &perrno = errno;
+		perrno = 0;
 		BOOST_ASSERT(!filename.empty());
-
 
 		if (!root_only || ::geteuid() == 0) {
 			// try to open exclusively
-			const char *perror_msg = nullptr;
-			int r;
-			if ((r = open_exclusively(perror_msg)) == 1) {
+			open_exclusively();
+			if ((m_file.rdstate() & ios::failbit) && perrno == EEXIST) {
 				// delete PID file and try again
-				r = delete_stale() ? open_exclusively(perror_msg) : -1;
+				m_file.clear();
+				if (delete_stale()) {
+					open_exclusively();
+				} else {
+					perrno = EEXIST;
+				}
 			}
-			switch (r) {
-			case 0:
-						return;
-			case 1:
-				perrno = EEXIST;
-				break;
-			default:
-				UTIL_DEBUG(std::perror(perror_msg));
-				break;
+
+			if (m_file.is_open() && m_file.good()) {
+				return;
+			} else if (!m_file && perrno != EEXIST) {
+				UTIL_DEBUG(std::perror(nullptr));
 			}
 
 		} else {
 			// don't try to write, if we are not allowed to anyway
 			// instead, try to open for reading
-			perrno = 0;
-			m_file = std::fopen(m_filename.c_str(), "r");
-			if (m_file) {
+			m_file.open(m_filename.c_str(), ios::in, 0, 0, 16);
+			if (m_file.good()) {
 				perrno = EEXIST;
 			} else if (perrno == ENOENT) {
 				// the file does not exist; this is good
@@ -65,66 +63,55 @@ namespace util {
 			// don't unlink and close yet, we may still want to read the content in pidfile_exception()
 		}
 
-		int errnum = perrno;
-		if (errnum == EEXIST) {
-			pidfile_exception ex(*this);
-			cleanup();
-			BOOST_THROW_EXCEPTION(ex);
+		std::unique_ptr<exception_base> ex;
+		if (perrno == EEXIST) {
+			ex.reset(new pidfile_exception(*this));
 		} else {
-			cleanup();
-			BOOST_THROW_EXCEPTION(io_error()
-					<< io_error::what_t("Could not access the PID file")
-					<< io_error::errno_code(errnum)
-					<< io_error::filename(m_filename.str()));
+			ex.reset(new io_error());
+			*ex << io_error::what_t("Could not access the PID file")
+					<< io_error::errno_code(perrno)
+					<< io_error::filename(m_filename.str());
 		}
+		cleanup();
+		BOOST_THROW_EXCEPTION(*ex);
 	}
 
 
-	int pidfile::open_exclusively(const char *&errmsg)
+	void pidfile::open_exclusively()
 	{
-		int fd;
-		if ((fd = ::open(m_filename.c_str(), O_WRONLY|O_CREAT|O_EXCL, S_IRUSR|S_IRGRP|S_IROTH)) < 0) {
-			errmsg = "exclusively open PID file for writing";
-			if (errno == EEXIST)
-				return 1;
-		} else if (!(m_file = ::fdopen(fd, "w"))) {
-			errmsg = "initialize PID file buffer structure";
-			::close(fd);
-		} else if (std::fprintf(m_file, "%i\n", ::getpid()) < 2) {
-			errmsg = "write to PID file";
-		} else if (std::fflush(m_file) != 0) {
-			errmsg = "flush PID file";
-		} else {
-			return 0;
+		using std::ios;
+		m_file.open(m_filename.c_str(), std::ios::out, O_CREAT|O_EXCL,
+				S_IRUSR|S_IRGRP|S_IROTH, 16);
+		if (m_file.good()) {
+			m_file.exceptions(ios::failbit | ios::badbit | ios::eofbit);
+			( m_file << ::getpid() << std::endl ).flush();
 		}
-
-		return -1;
 	}
 
 
 	::pid_t pidfile::read()
 	{
-		std::FILE *const f = m_file ? m_file : std::fopen(m_filename.c_str(), "r");
-		::pid_t pid = pidfile::read(f);
-		if (f != m_file) std::fclose(f);
+		std::basic_istream<char> *const f =
+				m_file.is_open() ?
+					static_cast<std::basic_istream<char>*>(&m_file) :
+					new std::ifstream(m_filename.c_str(), std::ios::in);
+		::pid_t pid = pidfile::read(*f);
+		if (f != &m_file)
+			delete f;
 		return pid;
 	}
 
 
-	::pid_t pidfile::read(std::FILE *f)
+	::pid_t pidfile::read(std::basic_istream<char> &f)
 	{
-		if (!f)
-			return -1;
-		//std::rewind(f);
-
-		unsigned long pid;
-		if (std::fscanf(f, "%lu", &pid) == 1) {
-			if (pid > 0 && pid <= std::numeric_limits<::pid_t>::max()) {
-				return static_cast<::pid_t>(pid);
-			}
+		::pid_t pid = -1;
+		if (!!f) {
+			f.seekg(0);
+			f >> pid;
+			if (!f || pid < 0)
+				pid = 0;
 		}
-
-		return 0;
+		return pid;
 	}
 
 
@@ -134,71 +121,40 @@ namespace util {
 		if (pid < 0)
 			return true;
 		if (pid == 0 || (::kill(pid, 0) != 0 && errno == ESRCH)) {
-			this->close();
+			m_file.close();
 			return this->unlink(true);
 		}
 		return false;
-	}
-	pidfile::pidfile(pidfile &o)
-	{
-		operator=(o);
-	}
-
-
-	pidfile &pidfile::operator=(pidfile &o)
-	{
-		cleanup();
-		m_file = o.m_file;
-		o.m_file = nullptr;
-		m_filename = o.m_filename;
-		return *this;
 	}
 
 
 	pidfile::~pidfile()
 	{
-		cleanup();
+		this->unlink(false);
 	}
 
 
 	bool pidfile::unlink(bool always)
 	{
-		if (always || m_file) {
+		if (always || (m_file.mode() & std::ios::out)) {
 			if (::unlink(m_filename.c_str()) != 0) {
 				UTIL_DEBUG(std::perror("unlink PID file"));
 				return false;
-		}
-	}
-		return true;
-	}
-
-
-	bool pidfile::close()
-	{
-		if (m_file) {
-			bool success = std::fclose(m_file) == 0;
-			if (!success)
-				UTIL_DEBUG(std::perror("close PID file"));
-			m_file = nullptr;
-			return success;
+			}
 		}
 		return true;
 	}
 
 
-	bool pidfile::cleanup()
+	void pidfile::cleanup()
 	{
-		bool b;
-		b  = unlink();
-		b &= close();
-		return b;
+		unlink(false);
+		m_file.close();
 	}
 
 
 	pidfile_exception::pidfile_exception(pidfile &src) throw()
 	{
-		using namespace std;
-
 		*this << what_t("An instance of fancontrol is running already");
 
 		const ::pid_t pid = src.read();
