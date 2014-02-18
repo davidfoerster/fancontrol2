@@ -116,6 +116,10 @@ constexpr Integer shift_left(Integer x);
 template <typename SourceType, SourceType Source, typename DestType, DestType Dest>
 constexpr DestType convert_flagbit(SourceType src);
 
+
+template <typename Integer>
+constexpr Integer divide_ceil( Integer numerator, Integer denominator );
+
 }
 
 
@@ -292,6 +296,13 @@ inline constexpr DestType convert_flagbit(SourceType src)
 				static_log2<Dest>::value - static_log2<Source>::value,
 				DestType
 			>(src & Source);
+}
+
+
+template <typename Integer>
+inline constexpr Integer divide_ceil( Integer numerator, Integer denominator )
+{
+	return (numerator != 0) ? (numerator - 1) / denominator + 1 : 0;
 }
 
 }

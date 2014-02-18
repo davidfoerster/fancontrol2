@@ -3,6 +3,7 @@
 #define UTIL_STATIC_ALLOCATOR_HPP_
 
 #include "util/in_range.hpp"
+#include "util/algorithm.hpp"
 #include <memory>
 #include <algorithm>
 #include <utility>
@@ -27,12 +28,6 @@
  */
 namespace util {
 
-namespace helper {
-
-	template <typename Integer>
-	constexpr Integer divide_ceil( Integer numerator, Integer denominator );
-
-} // namespace helper
 
 
 namespace detail {
@@ -86,7 +81,7 @@ namespace detail {
 
 		size_type m_size;
 
-		memory_type m_data[ helper::divide_ceil(
+		memory_type m_data[ util::divide_ceil(
 				capacity * sizeof(T), sizeof(memory_type) ) ];
 	};
 
@@ -281,17 +276,6 @@ struct has_static_allocator
 
 
 // implementation =============================================================
-
-namespace helper {
-
-	template <typename Integer>
-	inline constexpr Integer divide_ceil( Integer numerator, Integer denominator )
-	{
-		return (numerator != 0) ? (numerator - 1) / denominator + 1 : 0;
-	}
-
-} // namespace helper
-
 
 namespace detail {
 
