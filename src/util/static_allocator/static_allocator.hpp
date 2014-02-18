@@ -7,7 +7,6 @@
 #include <memory>
 #include <algorithm>
 #include <utility>
-#include <type_traits>
 #include <cstddef>
 #include <boost/integer/static_min_max.hpp>
 #include <boost/assert.hpp>
@@ -28,6 +27,12 @@
  */
 namespace util {
 
+template <
+	typename T,
+	std::size_t Size,
+	class Extent = std::allocator<T>
+>
+class static_allocator;
 
 
 namespace detail {
@@ -83,40 +88,6 @@ namespace detail {
 
 		memory_type m_data[ util::divide_ceil(
 				capacity * sizeof(T), sizeof(memory_type) ) ];
-	};
-
-
-	template <typename T>
-	class static_container<T, 0>
-	{
-	public:
-		typedef T value_type;
-		typedef char memory_t;
-		typedef std::size_t size_type;
-		typedef std::ptrdiff_t difference_type;
-
-		static const size_type capacity = 0;
-
-		size_type size() const;
-		void size( size_type n );
-
-		size_type free() const;
-
-		size_type max_size() const;
-
-		T *data() const;
-
-		T *data_end() const;
-
-		bool in_range( const void *p, difference_type offset_begin = 0,
-				difference_type offset_end = 0 ) const;
-
-		void assign( const static_container<T, 0> &other );
-
-		inline bool operator==( const static_container<T, 0> & ) const {
-			return true;
-		}
-
 	};
 
 
@@ -185,14 +156,18 @@ namespace detail {
 
 	};
 
+
+	template <typename U, std::size_t SizeU, class Extent>
+	struct static_allocator_rebind {
+		typedef util::static_allocator< U, SizeU,
+				typename Extent::template rebind<U>::other
+			> other;
+	};
+
 } // namespace detail
 
 
-template <
-	typename T,
-	std::size_t Size,
-	class Extent = std::allocator<T>
->
+template <typename T, std::size_t Size, class Extent>
 class static_allocator
 	: public detail::static_allocator_base<
 		  T,
@@ -220,11 +195,19 @@ public:
 	{ }
 
 	template <typename U, std::size_t SizeU = Size>
-	struct rebind {
-		typedef static_allocator< U, SizeU,
-				typename Extent::template rebind<U>::other
-			> other;
-	};
+	using rebind = detail::static_allocator_rebind<U, SizeU, Extent>;
+
+};
+
+
+template <typename T, class Extent>
+class static_allocator<T, 0, Extent>
+	: public Extent
+{
+	// untested
+
+	template <typename U, std::size_t SizeU = 0>
+	using rebind = detail::static_allocator_rebind<U, SizeU, Extent>;
 
 };
 
@@ -399,46 +382,6 @@ namespace detail {
 
 		this->size( other.size() );
 	}
-
-
-	template <typename T>
-	inline
-	typename static_container<T,0>::size_type static_container<T,0>::size() const
-	{
-		return 0;
-	}
-
-
-	template <typename T>
-	inline
-	void static_container<T,0>::size( size_type n )
-	{
-		BOOST_ASSERT( n <= max_size() );
-	}
-
-
-	template <typename T>
-	inline
-	T *static_container<T,0>::data() const
-	{
-		return nullptr;
-	}
-
-
-	template <typename T>
-	inline
-	bool static_container<T,0>::in_range(
-		const void *p, difference_type offset_begin, difference_type offset_end
-	) const {
-		// offsets are ignored on purpose
-		return p == data();
-	}
-
-
-	template <typename T>
-	inline
-	void static_container<T,0>::assign( const static_container<T, 0> &other )
-	{ }
 
 
 	template <class C>
