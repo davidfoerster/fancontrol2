@@ -7,6 +7,7 @@
 
 #include "exception.hpp"
 #include "strcat.hpp"
+#include <cstring>
 
 namespace util {
 
