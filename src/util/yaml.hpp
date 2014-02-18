@@ -8,22 +8,7 @@
 #pragma once
 #ifndef UTIL_YAML_HPP_
 #define UTIL_YAML_HPP_
-
-
-namespace YAML {
-
-	class Iterator;
-	class Node;
-
-	template <
-		typename CharT,
-		class TraitsIn, class AllocIn,
-		class TraitsOut, class AllocOut
-	>
-	bool Convert( std::basic_string<CharT, TraitsIn, AllocIn> &in,
-			std::basic_string<CharT, TraitsOut, AllocOut> &out );
-
-} // namespace YAML
+#include <yaml-cpp/yaml.h>
 
 
 namespace std {
@@ -48,15 +33,9 @@ namespace std {
 
 namespace YAML {
 
-	template <
-		typename CharT,
-		class TraitsIn, class AllocIn,
-		class TraitsOut, class AllocOut
-	>
-	inline bool Convert( std::basic_string<CharT, TraitsIn, AllocIn> &in,
-			std::basic_string<CharT, TraitsOut, AllocOut> &out )
+	inline bool Convert( std::string &in, std::string &out )
 	{
-		out.assign( in.begin(), in.end() );
+		out.assign(std::move(in));
 		return true;
 	}
 

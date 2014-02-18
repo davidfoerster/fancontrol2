@@ -18,7 +18,7 @@
 #include "util/strcat.hpp"
 #include "util/algorithm.hpp"
 #include "util/yaml.hpp"
-#include "util/static_allocator/static_string.hpp"
+//#include "util/static_allocator/static_string.hpp"
 
 #include <boost/format.hpp>
 #include <boost/range/begin.hpp>
@@ -81,7 +81,8 @@ namespace fancontrol {
 
 	typedef config::ios_failure ios_failure;
 
-	typedef util::static_string<24> name_buffer_type;
+	//typedef util::static_string<24> name_buffer_type;
+	typedef std::string name_buffer_type;
 
 
 	shared_ptr<chip>
