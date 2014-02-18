@@ -11,13 +11,13 @@ namespace util {
 		template <typename T>
 		struct ptr_traits {
 			typedef typename T::element_type element_type;
-			static const bool is_raw_ptr = false;
+			static constexpr bool is_raw_ptr = false;
 		};
 
 		template <typename T>
 		struct ptr_traits<T*> {
 			typedef T element_type;
-			static const bool is_raw_ptr = true;
+			static constexpr bool is_raw_ptr = true;
 		};
 
 

@@ -41,7 +41,7 @@ namespace detail {
 		typedef std::size_t size_type;
 		typedef std::ptrdiff_t difference_type;
 
-		static const size_type capacity = Size;
+		static constexpr size_type capacity = Size;
 
 		size_type size() const;
 		void size( size_type n );
@@ -163,7 +163,7 @@ namespace detail {
 				const ExtentU &extent = ExtentU() );
 
 	public:
-		static const size_type initial_capacity = static_container_type::capacity;
+		static constexpr size_type initial_capacity = static_container_type::capacity;
 
 		size_type max_size() const;
 
