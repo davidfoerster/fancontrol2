@@ -9,13 +9,13 @@
 #ifndef UTIL_ASSERT_HPP_
 #define UTIL_ASSERT_HPP_
 
+#include <cstdio>
 #include <boost/current_function.hpp>
 #include <boost/assert.hpp>
 
 
 #ifndef BOOST_ASSERT_MSG_FILE
-#	include <cstdio>
-#	define BOOST_ASSERT_MSG_FILE stderr
+	#define BOOST_ASSERT_MSG_FILE stderr
 #endif
 
 
@@ -75,5 +75,14 @@ void assert_perror_fail(
 }
 
 #endif // defined(BOOST_DISABLE_ASSERTS) || defined(NDEBUG)
+
+
+namespace util {
+	namespace assertion {
+
+void print_backtrace( std::FILE *dst, int skip = 0 );
+
+	}
+}
 
 #endif /* UTIL_ASSERT_HPP_ */

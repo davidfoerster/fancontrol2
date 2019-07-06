@@ -1,7 +1,7 @@
 include_directories(BEFORE .)
 file(GLOB_RECURSE fancontrol2_SOURCES "*.cpp")
 add_executable(fancontrol2 ${fancontrol2_SOURCES})
-target_link_libraries(fancontrol2 sensors boost_filesystem boost_system yaml-cpp)
+target_link_libraries(fancontrol2 sensors boost_filesystem boost_system yaml-cpp dl)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
 -DBOOST_DISABLE_THREADS -DBOOST_SP_DISABLE_THREADS \
@@ -15,6 +15,6 @@ set(C_OPTIM_FLAGS_RELEASE "-flto -ffast-math")
 set(CMAKE_CXX_FLAGS_RELEASE
 	"${CMAKE_CXX_FLAGS_RELEASE} ${C_OPTIM_FLAGS_RELEASE} -frepo")
 set(CMAKE_LINK_FLAGS_RELEASE
-	"${CMAKE_CXX_FLAGS_RELEASE} ${C_OPTIM_FLAGS_RELEASE}")
+	"${CMAKE_CXX_FLAGS_RELEASE} ${C_OPTIM_FLAGS_RELEASE} -Wl,--as-needed")
 
 install(TARGETS fancontrol2 RUNTIME DESTINATION sbin)
