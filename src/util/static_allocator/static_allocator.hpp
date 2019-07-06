@@ -427,13 +427,16 @@ inline bool is_inside_static_container( const C &c, const void *p )
 
 template <class C>
 inline bool is_inside_static_container( const C &c, const void *p,
-		typename C::size_type n __attribute__((unused))
-) {
+		typename C::size_type n __attribute__((unused)) )
+{
 	const bool b = c.in_range(p, 0, 2);
-	if( b ){
-		BOOST_ASSERT_MSG( p == c.data() || (p == c.data_end() && n == 0),
+	if (b)
+	{
+		BOOST_ASSERT_MSG( c.data() <= p && p < c.data_end(),
 			"Trying to deallocate an unallocated memory region" );
-		BOOST_ASSERT_MSG( p != c.data() || n == c.size(),
+		BOOST_ASSERT_MSG(
+			reinterpret_cast< ::uintptr_t>(p) + n
+				<= reinterpret_cast< ::uintptr_t>(c.data_end()),
 			"Trying to deallocate with an unexpected size" );
 	}
 	return b;
