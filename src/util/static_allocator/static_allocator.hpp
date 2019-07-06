@@ -4,6 +4,7 @@
 
 #include "util/in_range.hpp"
 #include "util/algorithm.hpp"
+#include <type_traits>
 #include <memory>
 #include <algorithm>
 #include <utility>
@@ -42,7 +43,6 @@ namespace detail {
 	{
 	public:
 		typedef T value_type;
-		typedef char memory_type;
 		typedef std::size_t size_type;
 		typedef std::ptrdiff_t difference_type;
 
@@ -86,8 +86,7 @@ namespace detail {
 
 		size_type m_size;
 
-		memory_type m_data[ util::divide_ceil(
-				capacity * sizeof(T), sizeof(memory_type) ) ];
+		typename std::aligned_storage<sizeof(T), alignof(T)>::type m_data[capacity];
 	};
 
 
