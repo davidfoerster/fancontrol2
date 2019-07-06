@@ -6,20 +6,19 @@ PREFIX = /usr/local
 .PHONY: all clean install
 
 
-all: $(SUBFOLDERS)
+all: Release
 
 clean:
 	for sub in $(SUBFOLDERS); do \
-		$(MAKE) -C "$$sub" clean; \
+		[ ! -d "$$sub" ] || $(MAKE) -C "$$sub" "$@"; \
 	done
 
-install: Release/$(EXE)
-	install -d "$(PREFIX)/sbin"
-	install -st "$(PREFIX)/sbin" $<
+install: Release/src/$(EXE) | Release
+	install -Dst '$(PREFIX)/sbin' -- '$<'
 	@echo "Successfully installed to \`$(PREFIX)'."
 
 $(SUBFOLDERS):
-	$(MAKE) -C "$@" all
+	$(MAKE) -C '$@' all
 
 #Release/$(EXE): Profile/src/$(EXE).gcda
 #	$(MAKE) -C Release $(EXE)
