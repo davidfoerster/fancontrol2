@@ -55,6 +55,10 @@ public:
 
 	size_type max_size() const;
 
+	T &operator[]( size_type n );
+
+	const T &operator[]( size_type n ) const;
+
 	T *data();
 	const T *data() const;
 
@@ -297,6 +301,24 @@ typename static_container<T,S>::size_type static_container<T,S>::max_size() cons
 
 template <typename T, std::size_t S>
 inline
+T &static_container<T,S>::operator[](
+	typename static_container<T,S>::size_type n )
+{
+	return *reinterpret_cast<T*>(m_data + n);
+}
+
+
+template <typename T, std::size_t S>
+inline
+const T &static_container<T,S>::operator[](
+	typename static_container<T,S>::size_type n ) const
+{
+	return *reinterpret_cast<const T*>(m_data + n);
+}
+
+
+template <typename T, std::size_t S>
+inline
 T *static_container<T,S>::data()
 {
 	return reinterpret_cast<T*>(m_data);
@@ -314,14 +336,14 @@ template <typename T, std::size_t S>
 inline
 T *static_container<T,S>::data_end()
 {
-	return data() + max_size();
+	return reinterpret_cast<T*>(m_data + max_size());
 }
 
 template <typename T, std::size_t S>
 inline
 const T *static_container<T,S>::data_end() const
 {
-	return data() + max_size();
+	return reinterpret_cast<const T*>(m_data + max_size());
 }
 
 
@@ -366,19 +388,25 @@ template <typename T, std::size_t Size>
 template < std::size_t SizeU>
 void static_container<T, Size>::assign(
 	const static_container<T, SizeU> &other,
-	typename std::enable_if< Size >= SizeU, const void*>::type
-){
-	T *out = this->data();
-	const T *in = other.data();
+	typename std::enable_if< Size >= SizeU, const void*>::type )
+{
+	size_type out = 0, in = 0;
 
-	for( const T *const last = this->data() + std::min(this->size(), other.size()); out < last; ++out, ++in )
-		*out = *in;
+	for( const size_type last = std::min(this->size(), other.size());
+		out < last; ++out, ++in )
+	{
+		(*this)[out] = other[in];
+	}
 
-	for( const T *const last = this->data() + other.size(); out < last; ++out, ++in )
-		new (out) T(*in);
+	for( ; out < other.size(); ++out, ++in )
+	{
+		new (&(*this)[out]) T(other[in]);
+	}
 
-	for( const T *const last = this->data() + this->size(); out < last; ++out )
-		(out++)->~T();
+	for( ; out < this->size(); ++out )
+	{
+		(*this)[out].~T();
+	}
 
 	this->size( other.size() );
 }
