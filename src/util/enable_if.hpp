@@ -14,22 +14,22 @@
 
 namespace std {
 
-	template <class C, typename T>
-	struct _enable_if
-		: enable_if<C::value, T>
-	{ };
+template <class C, typename T>
+struct _enable_if
+	: enable_if<C::value, T>
+{ };
 
 
-	template <bool C, typename T>
-	struct disable_if
-		: enable_if<!C, T>
-	{ };
+template <bool C, typename T>
+struct disable_if
+	: enable_if<!C, T>
+{ };
 
 
-	template <class C, typename T>
-	struct _disable_if
-		: disable_if<C::value, T>
-	{ };
+template <class C, typename T>
+struct _disable_if
+	: disable_if<C::value, T>
+{ };
 
 }
 

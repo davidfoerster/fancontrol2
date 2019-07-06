@@ -19,43 +19,43 @@
 
 namespace sensors {
 
-	using util::shared_ptr;
+using util::shared_ptr;
 
 
-	class subfeature
-		: virtual public util::enable_shared_from_this<subfeature>
-		, public object_wrapper_numbered<const sensors_subfeature, feature>
-	{
-	public:
-		typedef object_wrapper_numbered<const sensors_subfeature, feature> super;
+class subfeature
+	: virtual public util::enable_shared_from_this<subfeature>
+	, public object_wrapper_numbered<const sensors_subfeature, feature>
+{
+public:
+	typedef object_wrapper_numbered<const sensors_subfeature, feature> super;
 
-		typedef sensors_subfeature_type type_enum;
+	typedef sensors_subfeature_type type_enum;
 
-		static type_enum type_from_name(sensors_feature_type feature, const string_ref &name);
+	static type_enum type_from_name(sensors_feature_type feature, const string_ref &name);
 
-		struct flags {
-			enum value {
-				readable,
-				writable,
-				compute_mapping,
-				_size
-			};
+	struct flags {
+		enum value {
+			readable,
+			writable,
+			compute_mapping,
+			_size
 		};
-
-		typedef flags::value flags_enum;
-
-		subfeature(basic_type *subfeature, const shared_ptr<feature> &feature);
-
-		bool test_flag(unsigned int flag) const;
-
-		bool test_flag(flags_enum flag) const;
-
-		double value() const;
-
-		void value(double) const;
-
-		bool operator==(const super &o) const;
 	};
+
+	typedef flags::value flags_enum;
+
+	subfeature(basic_type *subfeature, const shared_ptr<feature> &feature);
+
+	bool test_flag(unsigned int flag) const;
+
+	bool test_flag(flags_enum flag) const;
+
+	double value() const;
+
+	void value(double) const;
+
+	bool operator==(const super &o) const;
+};
 
 } /* namespace sensors */
 
@@ -69,25 +69,25 @@ std::basic_ostream<Char, Traits> &operator<<(std::basic_ostream<Char, Traits>&, 
 
 namespace sensors {
 
-	inline
-	subfeature::subfeature(basic_type *subfeature, const shared_ptr<feature> &feature)
-		: object_wrapper_numbered(subfeature, feature)
-	{
-	}
+inline
+subfeature::subfeature(basic_type *subfeature, const shared_ptr<feature> &feature)
+	: object_wrapper_numbered(subfeature, feature)
+{
+}
 
 
-	inline
-	bool subfeature::test_flag(flags_enum flag) const
-	{
-		return test_flag(1U << flag);
-	}
+inline
+bool subfeature::test_flag(flags_enum flag) const
+{
+	return test_flag(1U << flag);
+}
 
 
-	inline
-	bool subfeature::operator==(const super &o) const
-	{
-		return super::operator==(o);
-	}
+inline
+bool subfeature::operator==(const super &o) const
+{
+	return super::operator==(o);
+}
 
 } /* namespace sensors */
 

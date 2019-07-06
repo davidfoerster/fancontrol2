@@ -14,11 +14,11 @@
 
 namespace YAML {
 
-	template<class T>
-	inline T& operator>>(const Node &node, T &field) {
-		field = node.as<T>();
-		return field;
-	}
+template<class T>
+inline T& operator>>(const Node &node, T &field) {
+	field = node.as<T>();
+	return field;
+}
 
 } // namespace YAML
 

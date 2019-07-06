@@ -22,239 +22,239 @@
 
 namespace sensors {
 
-	using util::io_error;
+using util::io_error;
 
 
-	pwm::pwm(const string_ref &path)
-		: m_chip()
-		, m_basepath(path.str())
-		, m_number(0)
-	{
-		init();
+pwm::pwm(const string_ref &path)
+	: m_chip()
+	, m_basepath(path.str())
+	, m_number(0)
+{
+	init();
+}
+
+
+pwm::pwm(int number, const shared_ptr<chip_t> &chip)
+	: m_chip(chip)
+	, m_basepath(make_basepath(*chip, number))
+	, m_number(number)
+{
+	init();
+}
+
+
+const pwm::Item::names_type &pwm::Item::names()
+{
+	static names_type &a = *new names_type({{
+			STRING_REF(""),
+			STRING_REF("enable"),
+			STRING_REF("mode"),
+			STRING_REF("freq"),
+			STRING_REF("start_output"),
+			STRING_REF("stop_output"),
+			STRING_REF("target"),
+			STRING_REF("tolerance"),
+			STRING_REF("auto_channels_temp")
+		}});
+	return a;
+}
+
+
+const string_ref &pwm::Item::prefix()
+{
+	const static string_ref &pwm = *new string_ref(STRING_REF("pwm"));
+	return pwm;
+}
+
+
+/*
+pwm::pwm(const std::string &path, int number, const shared_ptr<chip_t> &chip)
+	: selfreference_type(false)
+	, m_chip(chip)
+	, m_basepath(!path.empty() ? path : make_basepath(*chip, number))
+	, m_number(number)
+{
+	init();
+}
+*/
+
+
+void pwm::init()
+{
+	m_expeption_mask = std::ios::badbit;
+
+	if (m_number == 2 && m_chip && m_chip->quirks()[chip::Quirks::pwm2_alters_pwm1]) {
+		m_associated = m_chip->pwm(1);
+	}
+}
+
+
+std::string pwm::make_basepath(const chip_t &chip, int number)
+{
+	if (number <= 0)
+		BOOST_THROW_EXCEPTION(std::logic_error("'number' must be positive"));
+
+	const string_ref &path = chip.path(), &prefix = Item::prefix();
+	std::string str;
+	str.reserve(path.size() + prefix.size() + 4);
+	path.str(str);
+	if (str.back() != '/')
+		str += '/';
+	return (str += prefix) << static_cast<unsigned int>(number);
+}
+
+
+pwm::value_t pwm::raw_value() const
+{
+	const pwm *p = (m_number == 2 && m_chip && m_chip->quirks()[chip::Quirks::pwm2_alters_pwm1]) ?
+			UTIL_CHECK_POINTER(m_associated) : this;
+
+	return p->value_read(Item::name(Item::pwm));
+}
+
+
+pwm::rate_t pwm::value() const
+{
+	return static_cast<rate_t>(raw_value()) * pwm_max_inverse();
+}
+
+
+pwm::enable_enum pwm::enable(value_t *raw) const
+{
+	value_t value = this->value(Item::enable);
+	if (raw)
+		*raw = value;
+	return static_cast<enable_enum>(std::min<value_t>(value, Enable::automatic));
+}
+
+
+pwm::value_t pwm::value(item_enum item) const
+{
+	return (item != Item::pwm) ? value_read(Item::name(item)) : raw_value();
+}
+
+
+pwm::value_t pwm::value(const string_ref &item) const
+{
+	return !item.empty() ? value_read(item) : raw_value();
+}
+
+
+pwm::value_t pwm::value_read(const string_ref &item, bool ignore_value) const
+{
+	std::fstream f;
+	f.exceptions(m_expeption_mask);
+	open(f, item, std::ios::in);
+
+	value_t value;
+	if (!ignore_value) {
+		f >> value;
+	} else {
+		f.ignore(std::numeric_limits< std::streamsize>::max(), '\n');
+		value = 0;
 	}
 
+	return value;
+}
 
-	pwm::pwm(int number, const shared_ptr<chip_t> &chip)
-		: m_chip(chip)
-		, m_basepath(make_basepath(*chip, number))
-		, m_number(number)
-	{
-		init();
+
+void pwm::raw_value(value_t value)
+{
+	const string_ref &item = Item::name(Item::pwm);
+
+	if (m_chip && m_chip->quirks()[chip::Quirks::pwm_read_before_write]) {
+		value_read(item, true);
 	}
 
+	value_write(item, std::min(value, pwm_max()));
+}
 
-	const pwm::Item::names_type &pwm::Item::names()
-	{
-		static names_type &a = *new names_type({{
-				STRING_REF(""),
-				STRING_REF("enable"),
-				STRING_REF("mode"),
-				STRING_REF("freq"),
-				STRING_REF("start_output"),
-				STRING_REF("stop_output"),
-				STRING_REF("target"),
-				STRING_REF("tolerance"),
-				STRING_REF("auto_channels_temp")
-			}});
-		return a;
+
+void pwm::value(rate_t value)
+{
+	this->raw_value(static_cast<value_t>(std::max<rate_t>(value, 0) * static_cast<rate_t>(pwm_max()) + 0.5f));
+}
+
+
+void pwm::value(item_enum item, value_t value)
+{
+	return (item != Item::pwm) ? value_write(Item::name(item), value) : raw_value(value);
+}
+
+
+void pwm::value(const string_ref &item, value_t value)
+{
+	return !item.empty() ? value_write(item, value) : raw_value(value);
+}
+
+
+void pwm::value_write(const string_ref &item, value_t value)
+{
+	std::fstream f;
+	f.exceptions(m_expeption_mask);
+	open(f, item, std::ios::out);
+	f << value;
+}
+
+
+const char *pwm::make_itempath(const string_ref &item, itempath_buffer_type &dst) const
+{
+	if (item.empty()) {
+		return m_basepath.c_str();
+	} else {
+		const std::size_t required = m_basepath.length() + item.length() + 1;
+		dst.reserve(required + 1);
+		dst = m_basepath;
+		(dst += '_') += item;
+		BOOST_ASSERT(dst.length() == required);
+		return dst.c_str();
 	}
+}
 
 
-	const string_ref &pwm::Item::prefix()
-	{
-		const static string_ref &pwm = *new string_ref(STRING_REF("pwm"));
-		return pwm;
-	}
+void pwm::open(std::fstream &file, const string_ref &item, std::ios::openmode mode) const
+{
+	itempath_buffer_type buf;
+	file.open(make_itempath(item, buf), mode);
+}
 
 
-	/*
-	pwm::pwm(const std::string &path, int number, const shared_ptr<chip_t> &chip)
-		: selfreference_type(false)
-		, m_chip(chip)
-		, m_basepath(!path.empty() ? path : make_basepath(*chip, number))
-		, m_number(number)
-	{
-		init();
-	}
-	*/
+bool pwm::exists_internal(const string_ref &item, int mode) const
+{
+	static const int acceptable_errnos[] = {
+		EACCES, ELOOP, ENAMETOOLONG, ENOENT, ENOTDIR, EROFS
+	};
+
+	itempath_buffer_type buf;
+	const char *const path = make_itempath(item, buf);
+	if (::euidaccess(path, mode) == 0)
+		return true;
+
+	if (util::any_of_equal(acceptable_errnos, errno))
+		return false;
+
+	BOOST_THROW_EXCEPTION(io_error()
+		<< io_error::what_t("::access() failed")
+		<< io_error::filename(path)
+		<< io_error::errno_code(errno));
+}
 
 
-	void pwm::init()
-	{
-		m_expeption_mask = std::ios::badbit;
+bool pwm::exists(const string_ref &item, std::ios::openmode mode_) const
+{
+	using std::ios;
+	const int mode = 0
+		| util::convert_flagbit< ios::openmode, ios::in , int, R_OK >(mode_)
+		| util::convert_flagbit< ios::openmode, ios::out, int, W_OK >(mode_)
+		;
 
-		if (m_number == 2 && m_chip && m_chip->quirks()[chip::Quirks::pwm2_alters_pwm1]) {
-			m_associated = m_chip->pwm(1);
-		}
-	}
-
-
-	std::string pwm::make_basepath(const chip_t &chip, int number)
-	{
-		if (number <= 0)
-			BOOST_THROW_EXCEPTION(std::logic_error("'number' must be positive"));
-
-		const string_ref &path = chip.path(), &prefix = Item::prefix();
-		std::string str;
-		str.reserve(path.size() + prefix.size() + 4);
-		path.str(str);
-		if (str.back() != '/')
-			str += '/';
-		return (str += prefix) << static_cast<unsigned int>(number);
-	}
+	return exists_internal(item, mode);
+}
 
 
-	pwm::value_t pwm::raw_value() const
-	{
-		const pwm *p = (m_number == 2 && m_chip && m_chip->quirks()[chip::Quirks::pwm2_alters_pwm1]) ?
-				UTIL_CHECK_POINTER(m_associated) : this;
-
-		return p->value_read(Item::name(Item::pwm));
-	}
-
-
-	pwm::rate_t pwm::value() const
-	{
-		return static_cast<rate_t>(raw_value()) * pwm_max_inverse();
-	}
-
-
-	pwm::enable_enum pwm::enable(value_t *raw) const
-	{
-		value_t value = this->value(Item::enable);
-		if (raw)
-			*raw = value;
-		return static_cast<enable_enum>(std::min<value_t>(value, Enable::automatic));
-	}
-
-
-	pwm::value_t pwm::value(item_enum item) const
-	{
-		return (item != Item::pwm) ? value_read(Item::name(item)) : raw_value();
-	}
-
-
-	pwm::value_t pwm::value(const string_ref &item) const
-	{
-		return !item.empty() ? value_read(item) : raw_value();
-	}
-
-
-	pwm::value_t pwm::value_read(const string_ref &item, bool ignore_value) const
-	{
-		std::fstream f;
-		f.exceptions(m_expeption_mask);
-		open(f, item, std::ios::in);
-
-		value_t value;
-		if (!ignore_value) {
-			f >> value;
-		} else {
-			f.ignore(std::numeric_limits< std::streamsize>::max(), '\n');
-			value = 0;
-		}
-
-		return value;
-	}
-
-
-	void pwm::raw_value(value_t value)
-	{
-		const string_ref &item = Item::name(Item::pwm);
-
-		if (m_chip && m_chip->quirks()[chip::Quirks::pwm_read_before_write]) {
-			value_read(item, true);
-		}
-
-		value_write(item, std::min(value, pwm_max()));
-	}
-
-
-	void pwm::value(rate_t value)
-	{
-		this->raw_value(static_cast<value_t>(std::max<rate_t>(value, 0) * static_cast<rate_t>(pwm_max()) + 0.5f));
-	}
-
-
-	void pwm::value(item_enum item, value_t value)
-	{
-		return (item != Item::pwm) ? value_write(Item::name(item), value) : raw_value(value);
-	}
-
-
-	void pwm::value(const string_ref &item, value_t value)
-	{
-		return !item.empty() ? value_write(item, value) : raw_value(value);
-	}
-
-
-	void pwm::value_write(const string_ref &item, value_t value)
-	{
-		std::fstream f;
-		f.exceptions(m_expeption_mask);
-		open(f, item, std::ios::out);
-		f << value;
-	}
-
-
-	const char *pwm::make_itempath(const string_ref &item, itempath_buffer_type &dst) const
-	{
-		if (item.empty()) {
-			return m_basepath.c_str();
-		} else {
-			const std::size_t required = m_basepath.length() + item.length() + 1;
-			dst.reserve(required + 1);
-			dst = m_basepath;
-			(dst += '_') += item;
-			BOOST_ASSERT(dst.length() == required);
-			return dst.c_str();
-		}
-	}
-
-
-	void pwm::open(std::fstream &file, const string_ref &item, std::ios::openmode mode) const
-	{
-		itempath_buffer_type buf;
-		file.open(make_itempath(item, buf), mode);
-	}
-
-
-	bool pwm::exists_internal(const string_ref &item, int mode) const
-	{
-		static const int acceptable_errnos[] = {
-			EACCES, ELOOP, ENAMETOOLONG, ENOENT, ENOTDIR, EROFS
-		};
-
-		itempath_buffer_type buf;
-		const char *const path = make_itempath(item, buf);
-		if (::euidaccess(path, mode) == 0)
-			return true;
-
-		if (util::any_of_equal(acceptable_errnos, errno))
-			return false;
-
-		BOOST_THROW_EXCEPTION(io_error()
-			<< io_error::what_t("::access() failed")
-			<< io_error::filename(path)
-			<< io_error::errno_code(errno));
-	}
-
-
-	bool pwm::exists(const string_ref &item, std::ios::openmode mode_) const
-	{
-		using std::ios;
-		const int mode = 0
-			| util::convert_flagbit< ios::openmode, ios::in , int, R_OK >(mode_)
-			| util::convert_flagbit< ios::openmode, ios::out, int, W_OK >(mode_)
-			;
-
-		return exists_internal(item, mode);
-	}
-
-
-	bool pwm::exists(item_enum item) const
-	{
-		return exists_internal(Item::name(item), R_OK|W_OK);
-	}
+bool pwm::exists(item_enum item) const
+{
+	return exists_internal(Item::name(item), R_OK|W_OK);
+}
 
 } /* namespace sensors */

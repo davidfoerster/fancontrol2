@@ -45,83 +45,83 @@ namespace sensors {
 
 namespace fancontrol {
 
-	using std::istream;
+using std::istream;
 
-	using util::shared_ptr;
-	using YAML::ParserException;
-	using YAML::Node;
+using util::shared_ptr;
+using YAML::ParserException;
+using YAML::Node;
 
-	using sensors::sensor_error;
-	using sensors::sensor_container;
-	using sensors::chip;
-	using sensors::pwm;
-	using sensors::subfeature;
+using sensors::sensor_error;
+using sensors::sensor_container;
+using sensors::chip;
+using sensors::pwm;
+using sensors::subfeature;
 
-	class fan;
-	class control;
+class fan;
+class control;
 
 
-	class config
-	{
-	public:
-		typedef std::ios::failure ios_failure;
+class config
+{
+public:
+	typedef std::ios::failure ios_failure;
 
-		config(istream &source, const shared_ptr<sensor_container> &sensors, bool do_check = false);
+	config(istream &source, const shared_ptr<sensor_container> &sensors, bool do_check = false);
 
-		~config();
+	~config();
 
-		void reset();
+	void reset();
 
-		bool auto_reset;
+	bool auto_reset;
 
-		double m_interval;
+	double m_interval;
 
-		double interval() const;
-		void interval(struct timespec *t) const;
+	double interval() const;
+	void interval(struct timespec *t) const;
 
-		shared_ptr<sensor_container> sensors;
+	shared_ptr<sensor_container> sensors;
 
-		typedef util::ptr_wrapper< shared_ptr<control> > control_type;
-		typedef util::static_vector<control_type, 16> controls_container;
-		controls_container controls;
+	typedef util::ptr_wrapper< shared_ptr<control> > control_type;
+	typedef util::static_vector<control_type, 16> controls_container;
+	controls_container controls;
 
-		typedef shared_ptr<fan> fan_type;
-		typedef util::static_vector<fan_type, 8> fans_container;
-		fans_container fans;
+	typedef shared_ptr<fan> fan_type;
+	typedef util::static_vector<fan_type, 8> fans_container;
+	fans_container fans;
 
-	private:
-		shared_ptr<chip> parse_chip(const Node &node);
+private:
+	shared_ptr<chip> parse_chip(const Node &node);
 
-		shared_ptr<subfeature> parse_subfeature(const Node &node);
+	shared_ptr<subfeature> parse_subfeature(const Node &node);
 
-		shared_ptr<pwm> parse_pwm(const Node &node);
+	shared_ptr<pwm> parse_pwm(const Node &node);
 
-		shared_ptr<control> parse_simple_control(const Node &node);
+	shared_ptr<control> parse_simple_control(const Node &node);
 
-		shared_ptr<control> parse_aggregated_control(const Node &node);
+	shared_ptr<control> parse_aggregated_control(const Node &node);
 
-		shared_ptr<control> parse_dependencies(const Node &node);
+	shared_ptr<control> parse_dependencies(const Node &node);
 
-		const shared_ptr<fan> &parse_fan(const Node &node);
+	const shared_ptr<fan> &parse_fan(const Node &node);
 
-		fans_container::size_type parse_fans(const Node &node);
+	fans_container::size_type parse_fans(const Node &node);
 
-		void reset_nothrow();
+	void reset_nothrow();
 
 #if FANCONTROL_PIDFILE
-		std::unique_ptr< util::pidfile > m_pidfile;
+	std::unique_ptr< util::pidfile > m_pidfile;
 #endif
 
-	};
+};
 
 
 
 // implementation =============================================================
 
-	inline double config::interval() const
-	{
-		return m_interval;
-	}
+inline double config::interval() const
+{
+	return m_interval;
+}
 
 } /* namespace fancontrol */
 #endif /* FANCONTROL_CONFIG_HPP_ */

@@ -17,50 +17,50 @@
 
 namespace util {
 
-	class pidfile;
+class pidfile;
 
 
-	struct pidfile_exception
-		: virtual public runtime_error
-	{
-		typedef boost::error_info<struct tag_pid_running, ::pid_t> pid_running;
+struct pidfile_exception
+	: virtual public runtime_error
+{
+	typedef boost::error_info<struct tag_pid_running, ::pid_t> pid_running;
 
-		explicit pidfile_exception(pidfile &src);
+	explicit pidfile_exception(pidfile &src);
 
-		virtual const char *what() const noexcept;
-	};
+	virtual const char *what() const noexcept;
+};
 
 
-	class pidfile
-	{
-	public:
-		explicit pidfile(const stringpiece &filename, bool root_only = false);
+class pidfile
+{
+public:
+	explicit pidfile(const stringpiece &filename, bool root_only = false);
 
-		~pidfile();
+	~pidfile();
 
-	private:
-		pidfile(const pidfile&) = delete;
+private:
+	pidfile(const pidfile&) = delete;
 
-		pidfile &operator=(const pidfile&) = delete;
+	pidfile &operator=(const pidfile&) = delete;
 
-		void open_exclusively();
+	void open_exclusively();
 
-		bool delete_stale();
+	bool delete_stale();
 
-		::pid_t read();
+	::pid_t read();
 
-		static ::pid_t read(std::basic_istream<char> &f);
+	static ::pid_t read(std::basic_istream<char> &f);
 
-		bool unlink(bool always = false);
+	bool unlink(bool always = false);
 
-		void cleanup();
+	void cleanup();
 
-		stdio_fstream m_file;
+	stdio_fstream m_file;
 
-		stringpiece_alloc m_filename;
+	stringpiece_alloc m_filename;
 
-		friend class pidfile_exception;
-	};
+	friend class pidfile_exception;
+};
 
 } /* namespace util */
 

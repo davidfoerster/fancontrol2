@@ -12,9 +12,9 @@
 
 namespace sensors {
 
-	bool starts_with_nonzero_digit(const string_ref &s)
-	{
-		return !s.empty() && util::in_range<char>(s.front(), '1', '9' + 1);
-	}
+bool starts_with_nonzero_digit(const string_ref &s)
+{
+	return !s.empty() && util::in_range<char>(s.front(), '1', '9' + 1);
+}
 
 } /// namespace sensors

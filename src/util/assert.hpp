@@ -29,10 +29,10 @@ namespace util {
 	namespace assertion {
 		namespace detail {
 
-			void assert_printf_fail(
-					const char *expr,
-					const char *function, const char *file, unsigned int line,
-					std::FILE *dst, const char *format, ...) __attribute__ ((__noreturn__));
+void assert_printf_fail(
+		const char *expr,
+		const char *function, const char *file, unsigned int line,
+		std::FILE *dst, const char *format, ...) __attribute__ ((__noreturn__));
 
 		}
 	}
@@ -65,10 +65,10 @@ namespace util {
 	namespace assertion {
 		namespace detail {
 
-			void assert_perror_fail(
-					const char *expr,
-					const char *function, const char *file, unsigned int line,
-					std::FILE *dst, int errnum) __attribute__ ((__noreturn__));
+void assert_perror_fail(
+		const char *expr,
+		const char *function, const char *file, unsigned int line,
+		std::FILE *dst, int errnum) __attribute__ ((__noreturn__));
 
 		}
 	}

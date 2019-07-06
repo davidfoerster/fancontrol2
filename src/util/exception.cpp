@@ -11,92 +11,92 @@
 
 namespace util {
 
-	using boost::exception_detail::get_info;
+using boost::exception_detail::get_info;
 
 
-	exception_base::~exception_base()
-	{ }
+exception_base::~exception_base()
+{ }
 
 
-	const char *exception_base::what() const noexcept
-	{
-		if (msg.empty()) {
+const char *exception_base::what() const noexcept
+{
+	if (msg.empty()) {
+		const std::string *const what = get_info<what_t>::get(*this);
+		if (what && !what->empty()) {
+			msg = *what;
+		} else {
+			msg = "<null>";
+		}
+	}
+	return msg.c_str();
+}
+
+
+runtime_error::runtime_error()
+{ }
+
+
+runtime_error::runtime_error(const std::runtime_error &e)
+{
+	*this << what_t(e.what());
+}
+
+
+runtime_error::~runtime_error()
+{ }
+
+
+io_error::~io_error()
+{ }
+
+
+const char *io_error::what() const noexcept
+{
+	if (msg.empty()) {
+		{
 			const std::string *const what = get_info<what_t>::get(*this);
 			if (what && !what->empty()) {
 				msg = *what;
 			} else {
-				msg = "<null>";
+				msg = "I/O error";
 			}
 		}
-		return msg.c_str();
-	}
 
-
-	runtime_error::runtime_error()
-	{ }
-
-
-	runtime_error::runtime_error(const std::runtime_error &e)
-	{
-		*this << what_t(e.what());
-	}
-
-
-	runtime_error::~runtime_error()
-	{ }
-
-
-	io_error::~io_error()
-	{ }
-
-
-	const char *io_error::what() const noexcept
-	{
-		if (msg.empty()) {
-			{
-				const std::string *const what = get_info<what_t>::get(*this);
-				if (what && !what->empty()) {
-					msg = *what;
-				} else {
-					msg = "I/O error";
-				}
-			}
-
-			{
-				const int *const errnum = get_info<errno_code>::get(*this);
-				if (errnum) {
-					const char *const errmsg = std::strerror(*errnum);
-					BOOST_ASSERT(errmsg && *errmsg);
-					((msg += ':') += ' ') += errmsg;
-					msg += " (errno=";
-					(msg << *errnum) += ')';
-				}
-			}
-
-			{
-				const std::string *const filename =
-					get_info<io_error::filename>::get(*this);
-				if (filename && !filename->empty()) {
-					((msg += " on `") += *filename) += '\'';
-				}
-			}
-		}
-		return msg.c_str();
-	}
-
-
-	namespace ns_null_pointer_exception {
-
-		null_pointer_exception::~null_pointer_exception()
-		{ }
-
-
-		void check(const void *p, const char *var_name)
 		{
-			if (!p) {
-				BOOST_THROW_EXCEPTION(null_pointer_exception() << null_pointer_exception::var_name(var_name));
+			const int *const errnum = get_info<errno_code>::get(*this);
+			if (errnum) {
+				const char *const errmsg = std::strerror(*errnum);
+				BOOST_ASSERT(errmsg && *errmsg);
+				((msg += ':') += ' ') += errmsg;
+				msg += " (errno=";
+				(msg << *errnum) += ')';
 			}
 		}
 
-	} // namespace ns_null_pointer_exception
+		{
+			const std::string *const filename =
+				get_info<io_error::filename>::get(*this);
+			if (filename && !filename->empty()) {
+				((msg += " on `") += *filename) += '\'';
+			}
+		}
+	}
+	return msg.c_str();
+}
+
+
+namespace ns_null_pointer_exception {
+
+	null_pointer_exception::~null_pointer_exception()
+	{ }
+
+
+	void check(const void *p, const char *var_name)
+	{
+		if (!p) {
+			BOOST_THROW_EXCEPTION(null_pointer_exception() << null_pointer_exception::var_name(var_name));
+		}
+	}
+
+} // namespace ns_null_pointer_exception
 } // namespace util

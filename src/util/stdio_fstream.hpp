@@ -92,16 +92,16 @@ namespace util {
 
 namespace detail {
 
-	constexpr
-	int get_stdio_openmode( std::ios::openmode mode, int additional_flags )
-	{
-		using std::ios;
-		return (additional_flags & ~static_cast<int>(O_ACCMODE))
-			| ((mode & ios::out) ? ((mode & ios::in) ? O_RDWR : O_WRONLY) : O_RDONLY)
-			| util::convert_flagbit< ios::openmode, ios::app, int, O_APPEND >(mode)
-			| util::convert_flagbit< ios::openmode, ios::trunc, int, O_TRUNC >(mode)
-			;
-	}
+constexpr
+int get_stdio_openmode( std::ios::openmode mode, int additional_flags )
+{
+	using std::ios;
+	return (additional_flags & ~static_cast<int>(O_ACCMODE))
+		| ((mode & ios::out) ? ((mode & ios::in) ? O_RDWR : O_WRONLY) : O_RDONLY)
+		| util::convert_flagbit< ios::openmode, ios::app, int, O_APPEND >(mode)
+		| util::convert_flagbit< ios::openmode, ios::trunc, int, O_TRUNC >(mode)
+		;
+}
 
 }
 

@@ -11,57 +11,57 @@ namespace sensors {
 #include <sensors/sensors.h>
 
 
-	extern const char *const default_config_path;
+extern const char *const default_config_path;
 
 
-	bool operator==(const sensors_bus_id &a, const sensors_bus_id &b);
+bool operator==(const sensors_bus_id &a, const sensors_bus_id &b);
 
-	std::size_t hash_value(const sensors_bus_id &);
-
-
-	bool operator==(const sensors_chip_name &a, const sensors_chip_name &b);
-
-	std::size_t hash_value(const sensors_chip_name &);
+std::size_t hash_value(const sensors_bus_id &);
 
 
-	namespace helper {
+bool operator==(const sensors_chip_name &a, const sensors_chip_name &b);
 
-		bool equals(const char *a, const char *b);
+std::size_t hash_value(const sensors_chip_name &);
 
-	}
+
+namespace helper {
+
+	bool equals(const char *a, const char *b);
+
+}
 
 
 
 // implementations ========================================
 
-	namespace helper {
+namespace helper {
 
-		inline bool equals(const sensors_bus_id &a, const sensors_bus_id &b)
-		{
-			return a.nr == b.nr;
-		}
+	inline bool equals(const sensors_bus_id &a, const sensors_bus_id &b)
+	{
+		return a.nr == b.nr;
+	}
 
 
-		inline bool equals(const sensors_chip_name &a, const sensors_chip_name &b)
-		{
-			return a.addr == b.addr && a.bus == b.bus;
-		}
+	inline bool equals(const sensors_chip_name &a, const sensors_chip_name &b)
+	{
+		return a.addr == b.addr && a.bus == b.bus;
+	}
 
-	} // namespace helper
+} // namespace helper
 
 
 #ifdef NDEBUG
 
-	inline bool operator==(const sensors_bus_id &a, const sensors_bus_id &b)
-	{
-		return helper::equals(a, b);
-	}
+inline bool operator==(const sensors_bus_id &a, const sensors_bus_id &b)
+{
+	return helper::equals(a, b);
+}
 
 
-	inline bool operator==(const sensors_chip_name &a, const sensors_chip_name &b)
-	{
-		return helper::equals(a, b);
-	}
+inline bool operator==(const sensors_chip_name &a, const sensors_chip_name &b)
+{
+	return helper::equals(a, b);
+}
 
 #endif
 
