@@ -10,7 +10,7 @@
 #include <utility>
 #include <cstddef>
 #include <boost/integer/static_min_max.hpp>
-#include "util/assert.hpp"
+#include <boost/assert.hpp>
 
 
 #ifndef STATIC_ALLOCATOR_CAPACITY_MAX
@@ -416,16 +416,10 @@ template <class C>
 inline bool is_inside_static_container( const C &c, const void *p )
 {
 	const bool b = c.in_range( p, 0, 2 );
-	if( b ){
+	if (b)
+	{
 		BOOST_ASSERT_MSG( p < c.data_end(),
 			"Trying to access an unallocated region" );
-		typedef typename C::value_type value_type;
-		assert_printf(
-			(reinterpret_cast< ::uintptr_t>(p) -
-					reinterpret_cast< ::uintptr_t>(c.data()))
-				% sizeof(value_type) == 0,
-			"Object access at unaligned address %p (offset=%p, sizeof(%s)=%zu)",
-			p, c.data(), typeid(value_type).name(), sizeof(value_type));
 	}
 	return b;
 }
