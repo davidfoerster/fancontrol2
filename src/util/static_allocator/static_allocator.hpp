@@ -134,7 +134,8 @@ namespace detail {
 				const ExtentU &extent = ExtentU() );
 
 	public:
-		static constexpr size_type initial_capacity = static_container_type::capacity;
+		static constexpr size_type initial_capacity =
+			static_container_type::capacity;
 
 		size_type max_size() const;
 
@@ -469,19 +470,24 @@ namespace detail {
 	template <typename T, class SC, class Extent>
 	T *static_allocator_base<T, SC, Extent>::allocate( size_type n, const void *hint )
 	{
-		if( n != 0 ){
-			if( hint == static_container_type::data() && n <= static_container_type::max_size() ){ // TODO
-				static_container_type::size( n );
-				return static_container_type::data();
-			} else if( static_container_type::size() == 0 && n <= static_container_type::free() ){
-				static_container_type::size( n );
-				return static_container_type::data();
-			} else {
-				return std::allocator_traits<Extent>::allocate( *this, n, hint );
-			}
-		} else {
+		if( n == 0 )
 			return static_container_type::data_end();
+
+		if( hint == static_container_type::data()
+			&& n <= static_container_type::max_size() )
+		{ // TODO
+			static_container_type::size( n );
+			return static_container_type::data();
 		}
+
+		if( static_container_type::size() == 0
+			&& n <= static_container_type::free() )
+		{
+			static_container_type::size( n );
+			return static_container_type::data();
+		}
+
+		return std::allocator_traits<Extent>::allocate( *this, n, hint );
 	}
 
 
@@ -489,7 +495,9 @@ namespace detail {
 	void
 	static_allocator_base<T, SC, Extent>::deallocate( T *p, size_type n )
 	{
-		if( detail::is_inside_static_container(static_cast<const static_container_type&>(*this), p, n) ){
+		if( detail::is_inside_static_container(
+			static_cast<const static_container_type&>(*this), p, n) )
+		{
 			static_container_type::size( 0 );
 		} else {
 			Extent::deallocate( p, n );
@@ -502,10 +510,13 @@ namespace detail {
 	void
 	static_allocator_base<T, SC, Extent>::construct( U *p, Args&&... args )
 	{
-		if( detail::is_inside_static_container(static_cast<const static_container_type&>(*this), p) ){
+		if( detail::is_inside_static_container(
+			static_cast<const static_container_type&>(*this), p) )
+		{
 			new (static_cast<void*>(p)) U(std::forward<Args>(args)...);
 		} else {
-			std::allocator_traits<Extent>::construct( *this, p, std::forward<Args>(args)... );
+			std::allocator_traits<Extent>::construct(
+				*this, p, std::forward<Args>(args)... );
 		}
 	}
 
@@ -514,7 +525,9 @@ namespace detail {
 	void
 	static_allocator_base<T, SC, Extent>::destroy( T* p )
 	{
-		if( detail::is_inside_static_container(static_cast<const static_container_type&>(*this), p) ){
+		if( detail::is_inside_static_container(
+			static_cast<const static_container_type&>(*this), p) )
+		{
 			p->~T();
 		} else {
 			std::allocator_traits<Extent>::destroy( *this, p );

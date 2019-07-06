@@ -103,13 +103,13 @@ namespace fancontrol {
 
 	void register_signal_handlers()
 	{
-		static const struct sigaction *signal_action_definition = get_signal_action_definition();
+		static const struct sigaction *const signal_action_definition = get_signal_action_definition();
 		static const int signals[] = { SIGHUP, SIGINT, SIGQUIT, SIGPIPE, SIGTERM, SIGCONT };
 
 		last_signal = -1;
 
 		BOOST_FOREACH(const int signal, signals) {
-			BOOST_VERIFY_P(::sigaction(signal, signal_action_definition, 0) == 0);
+			BOOST_VERIFY_P(::sigaction(signal, signal_action_definition, nullptr) == 0);
 		}
 	}
 
@@ -124,37 +124,38 @@ namespace fancontrol {
 
 	int sleep(const struct timespec *duration)
 	{
-		if (::nanosleep(duration, 0) != 0) {
-			if (errno == EINTR) {
-				errno = 0;
-				BOOST_ASSERT(last_signal >= 0);
-				switch (last_signal) {
-					case SIGHUP:
-					case SIGINT:
-					case SIGQUIT:
-					case SIGTERM:
-						// no error, but request reset and leave
-						return EXIT_SUCCESS;
-
-					case SIGCONT:
-						// request to poll now (instead of waiting a whole interval)
-						return sleep_reset();
-
-					default:  // i.e. SIGPIPE
-						UTIL_DEBUG(std::cerr << "Interrupted by signal " << last_signal << std::endl);
-						break;
-				}
-				// reset and leave with non-zero return value
-				return 2;
-
-			} else {
-				strerror_wrapper("'nanosleep' error");
-				return EXIT_FAILURE;
-			}
-		} else {
+		if (::nanosleep(duration, nullptr) == 0) {
 			// continue normally
 			return -1;
 		}
+
+		if (errno != EINTR) {
+			strerror_wrapper("'nanosleep' error");
+			return EXIT_FAILURE;
+		}
+
+		errno = 0;
+		BOOST_ASSERT(last_signal >= 0);
+		switch (last_signal) {
+			case SIGHUP:
+			case SIGINT:
+			case SIGQUIT:
+			case SIGTERM:
+				// no error, but request reset and leave
+				return EXIT_SUCCESS;
+
+			case SIGCONT:
+				// request to poll now (instead of waiting a whole interval)
+				return sleep_reset();
+
+			default:  // e.g. SIGPIPE
+				UTIL_DEBUG(std::cerr
+					<< "Interrupted by signal " << last_signal << std::endl);
+				break;
+		}
+
+		// reset and leave with non-zero return value
+		return 2;
 	}
 
 
@@ -176,7 +177,7 @@ namespace fancontrol {
 		bool do_check = false;
 
 		if (argp < argc && std::strcmp(argv[argp], "--check") == 0) {
-			argp += 1;
+			argp++;
 			do_check = true;
 		}
 
@@ -186,9 +187,9 @@ namespace fancontrol {
 
 		if (argp < argc) {
 			cerr << "Ignoring " << (argc - argp) << " superflous command line arguments:";
-			do {
+			for (; argp < argc; argp++) {
 				cerr << ' ' << argv[argp];
-			} while (++argp < argc);
+			}
 			cerr << endl;
 		}
 
