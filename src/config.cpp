@@ -249,9 +249,7 @@ namespace fancontrol {
 #endif
 		}
 
-		YAML::Parser parser(source);
-		Node doc;
-		while (parser.GetNextDocument(doc) && doc.Type() != NodeType::Null) {
+		Node doc = YAML::Load(source);
 		const Node &interval_node = doc["interval"];
 		if (interval_node.Type() != NodeType::Null) {
 			interval_node >> m_interval;
@@ -261,7 +259,6 @@ namespace fancontrol {
 		}
 
 		parse_fans(doc["fans"]);
-	}
 	}
 
 
