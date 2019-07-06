@@ -1,0 +1,9 @@
+[Unit]
+Description=A thermal fan controller
+
+[Service]
+Type=simple
+ExecStart=/usr/local/sbin/fancontrol2 /etc/fancontrol2.yaml
+
+[Install]
+WantedBy=default.target rescue.target

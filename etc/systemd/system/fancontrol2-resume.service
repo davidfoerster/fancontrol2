@@ -1,0 +1,10 @@
+[Unit]
+Description=Wake up fancontrol after suspension
+Requisite=fancontrol2.service
+After=suspend.target
+
+[Service]
+ExecStart=-/bin/systemctl kill -s CONT fancontrol2.service
+
+[Install]
+WantedBy=suspend.target
