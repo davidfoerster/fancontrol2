@@ -75,15 +75,15 @@ namespace fancontrol {
 
 		class gauge_wrapper: public util::property_wrapper<shared_ptr<SF>, gauge_type_guard> {
 		public:
-			double read() const throw (sensor_error);
+			double read() const;
 			friend class config;
 		}
 		m_gauge;
 
 		class valve_wrapper: public util::property_wrapper<shared_ptr<pwm>, valve_type_guard> {
 		public:
-			value_t read() throw(io_error);
-			void write(value_t value) throw(io_error);
+			value_t read();
+			void write(value_t value);
 			friend class config;
 		}
 		m_valve;

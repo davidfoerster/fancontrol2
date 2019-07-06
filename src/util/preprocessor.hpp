@@ -6,7 +6,7 @@
 #ifdef NDEBUG
 #	define UTIL_DEBUG(x) (static_cast<void>(0))
 #else
-#	define UTIL_DEBUG(x) (x)
+#	define UTIL_DEBUG(x) (static_cast<void>(x))
 #endif
 
 

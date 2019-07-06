@@ -23,7 +23,6 @@ namespace sensors {
 
 
 	chip::chip(const basic_type *chip)
-	throw (sensor_error, io_error)
 		: super(chip)
 		, m_prefix(chip->prefix), m_path(chip->path)
 		, m_autolock()
@@ -33,7 +32,6 @@ namespace sensors {
 
 
 	chip::chip(std::unique_ptr<basic_type> &chip)
-	throw (sensor_error, io_error)
 		: super(chip)
 		, m_prefix(chip->prefix), m_path(chip->path)
 		, m_autolock()
@@ -42,7 +40,7 @@ namespace sensors {
 	}
 
 
-	void chip::init() throw (sensor_error)
+	void chip::init()
 	{
 		check_wildcard();
 		guess_quirks();
@@ -213,7 +211,7 @@ namespace sensors {
 	}
 
 
-	void chip::check_wildcard() const throw (sensor_error)
+	void chip::check_wildcard() const
 	{
 		if (!!*this && is_wildcard(*get()))
 			BOOST_THROW_EXCEPTION(sensor_error(sensor_error::misplaced_wildcard));

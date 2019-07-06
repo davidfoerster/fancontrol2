@@ -87,7 +87,6 @@ namespace fancontrol {
 
 	shared_ptr<chip>
 	config::parse_chip(const Node &node)
-			throw(sensor_error, ParserException)
 	{
 		name_buffer_type name;
 		node["name"] >> name;
@@ -101,7 +100,6 @@ namespace fancontrol {
 
 	shared_ptr<subfeature>
 	config::parse_subfeature(const Node &node)
-			throw(sensor_error, ParserException)
 	{
 		shared_ptr<chip> chip(parse_chip(node["chip"]));
 
@@ -127,7 +125,6 @@ namespace fancontrol {
 
 	shared_ptr<pwm>
 	config::parse_pwm(const Node &node)
-			throw(sensor_error, ParserException, ios_failure)
 	{
 		shared_ptr<chip> chip(parse_chip(node["chip"]));
 
@@ -148,7 +145,6 @@ namespace fancontrol {
 
 	shared_ptr<control>
 	config::parse_simple_control(const Node &node)
-			throw(sensor_error, ParserException)
 	{
 		shared_ptr<subfeature> source(parse_subfeature(node["source"]));
 		controls_container::const_iterator it_ctrl = boost::find_if(controls,
@@ -168,17 +164,17 @@ namespace fancontrol {
 
 	shared_ptr<control>
 	config::parse_aggregated_control(const Node &node)
-			throw(sensor_error, ParserException)
 	{
 		if (node.size() != 0) {
 			typedef boost::transform_iterator<
 						std::function<shared_ptr<control>(const Node&)>,
-						YAML::Iterator
+						YAML::const_iterator
 				> parse_dependency_iterator;
 
 			controls.push_back(static_pointer_cast<control>(
 					util::make_shared< aggregated_control<> >(
-						parse_dependency_iterator(node.begin(), bind(&config::parse_dependencies, ref(*this), _1)),
+						parse_dependency_iterator(node.begin(),
+							bind(&config::parse_dependencies, ref(*this), _1)),
 						parse_dependency_iterator(node.end()),
 					node.size())));
 			return controls.back();
@@ -191,7 +187,6 @@ namespace fancontrol {
 
 	shared_ptr<control>
 	config::parse_dependencies(const Node &node)
-			throw(sensor_error, ParserException)
 	{
 		return (node.Type() == NodeType::Sequence) ?
 				parse_aggregated_control(node) :
@@ -201,7 +196,6 @@ namespace fancontrol {
 
 	const shared_ptr<fan> &
 	config::parse_fan(const Node &node)
-			throw(sensor_error, ParserException, ios_failure)
 	{
 		shared_ptr<fan> fan(make_shared<fan>());
 
@@ -225,11 +219,10 @@ namespace fancontrol {
 
 	config::fans_container::size_type
 	config::parse_fans(const Node &node)
-			throw(sensor_error, ParserException, ios_failure)
 	{
-		for (YAML::Iterator it = node.begin(); it != node.end(); ++it) {
-			shared_ptr<fan> fan(parse_fan(it.second()));
-			it.first() >> fan->m_label.m_value;
+		for (YAML::const_iterator it = node.begin(); it != node.end(); ++it) {
+			shared_ptr<fan> fan(parse_fan(it->second));
+			it->first >> fan->m_label.m_value;
 		}
 		return node.size();
 	}
@@ -243,8 +236,8 @@ namespace fancontrol {
 	}
 
 
-	config::config(istream &source, const shared_ptr<sensor_container> &sensors, bool do_check)
-			throw(util::runtime_error, ParserException, ios_failure)
+	config::config(istream &source, const shared_ptr<sensor_container> &sensors,
+		bool do_check)
 		: auto_reset(true)
 		, sensors(sensors)
 	{
@@ -259,16 +252,16 @@ namespace fancontrol {
 		YAML::Parser parser(source);
 		Node doc;
 		while (parser.GetNextDocument(doc) && doc.Type() != NodeType::Null) {
-			const Node &interval_node = doc["interval"];
-			if (interval_node.Type() != NodeType::Null) {
-				interval_node >> m_interval;
-				BOOST_ASSERT(m_interval > 0);
-			} else {
-				m_interval = 10;
-			}
-
-			parse_fans(doc["fans"]);
+		const Node &interval_node = doc["interval"];
+		if (interval_node.Type() != NodeType::Null) {
+			interval_node >> m_interval;
+			BOOST_ASSERT(m_interval > 0);
+		} else {
+			m_interval = 10;
 		}
+
+		parse_fans(doc["fans"]);
+	}
 	}
 
 

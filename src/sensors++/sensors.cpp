@@ -25,7 +25,7 @@ namespace sensors {
 	using util::io_error;
 
 
-	sensor_container::sensor_container(const char *config) throw (sensor_error, io_error, std::logic_error)
+	sensor_container::sensor_container(const char *config)
 		: m_chips(map_type::allocator_type::initial_capacity)
 		, m_lock(lock::instance(false))
 	{
@@ -59,7 +59,7 @@ namespace sensors {
 			shared_ptr<chip_t> &chip,
 			const chip_t::basic_type *match,
 			bool ignore_duplicate_matches
-	) throw (sensor_error)
+	)
 	{
 		if (!chip || !ignore_duplicate_matches) {
 			int nr = 0;
@@ -78,7 +78,7 @@ namespace sensors {
 	shared_ptr<chip> sensor_container::chip(
 			const chip_t::basic_type &match,
 			bool ignore_duplicate_matches
-	) throw (sensor_error)
+	)
 	{
 		return chip_internal(m_chips[match], &match, ignore_duplicate_matches);
 	}
@@ -96,7 +96,7 @@ namespace sensors {
 	shared_ptr<chip> sensor_container::chip(
 			const string_ref &name,
 			bool ignore_duplicate_matches
-	) throw (sensor_error)
+	)
 	{
 		// do we know that chip already?
 		map_type::iterator it_chip = boost::find_if(m_chips,

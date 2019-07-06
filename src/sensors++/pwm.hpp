@@ -102,23 +102,23 @@ namespace sensors {
 
 		bool exists(const string_ref &item, std::ios::openmode mode = std::ios::in) const;
 
-		value_t raw_value() const throw (io_error);
+		value_t raw_value() const;
 
-		rate_t value() const throw (io_error);
+		rate_t value() const;
 
-		enable_enum enable(value_t *raw = 0) const throw (io_error);
+		enable_enum enable(value_t *raw = 0) const;
 
-		value_t value(item_enum item) const throw (io_error);
+		value_t value(item_enum item) const;
 
-		value_t value(const string_ref &item) const throw (io_error);
+		value_t value(const string_ref &item) const;
 
-		void raw_value(value_t raw_value) throw (io_error);
+		void raw_value(value_t raw_value);
 
-		void value(rate_t value) throw (io_error);
+		void value(rate_t value);
 
-		void value(item_enum item, value_t value) throw (io_error);
+		void value(item_enum item, value_t value);
 
-		void value(const string_ref &item, value_t value) throw (io_error);
+		void value(const string_ref &item, value_t value);
 
 		const std::string &path() const;
 
@@ -142,9 +142,9 @@ namespace sensors {
 		int m_number;
 
 	private:
-		value_t value_read(const string_ref &item, bool ignore_value = false) const throw (io_error);
+		value_t value_read(const string_ref &item, bool ignore_value = false) const;
 
-		void value_write(const string_ref &item, value_t value) throw (io_error);
+		void value_write(const string_ref &item, value_t value);
 
 		bool exists_internal(const string_ref &item, int open_mode) const;
 

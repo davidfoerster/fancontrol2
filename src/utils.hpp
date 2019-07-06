@@ -42,11 +42,9 @@ namespace fancontrol {
 		config_wrapper(
 			std::ifstream &config_file,
 			const util::shared_ptr< sensors::sensor_container > &sensors,
-			bool do_check)
-				throw(util::runtime_error, YAML::ParserException, std::ios::failure);
+			bool do_check);
 
-		static std::unique_ptr<config_wrapper> make_config(int argc, char *argv[])
-				throw(util::runtime_error, YAML::ParserException);
+		static std::unique_ptr<config_wrapper> make_config(int argc, char *argv[]);
 
 		config cfg;
 

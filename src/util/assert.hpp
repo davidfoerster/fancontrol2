@@ -32,8 +32,7 @@ namespace util {
 			void assert_printf_fail(
 					const char *expr,
 					const char *function, const char *file, unsigned int line,
-					std::FILE *dst, const char *format, ...)
-				throw() __attribute__ ((__noreturn__));
+					std::FILE *dst, const char *format, ...) __attribute__ ((__noreturn__));
 
 		}
 	}
@@ -55,9 +54,9 @@ namespace util {
 #		error No definition for BOOST_VERIFY_R in this case
 #	endif
 
-#ifndef errno
-#	include <errno.h>
-#endif
+#	ifndef errno
+#		include <errno.h>
+#	endif
 
 #	define BOOST_VERIFY_P(expr) ((expr) ? static_cast<void>(0) : \
 		util::assertion::detail::assert_perror_fail(#expr, BOOST_CURRENT_FUNCTION, __FILE__, __LINE__, BOOST_ASSERT_MSG_FILE, errno))
@@ -69,8 +68,7 @@ namespace util {
 			void assert_perror_fail(
 					const char *expr,
 					const char *function, const char *file, unsigned int line,
-					std::FILE *dst, int errnum)
-				throw() __attribute__ ((__noreturn__));
+					std::FILE *dst, int errnum) __attribute__ ((__noreturn__));
 
 		}
 	}

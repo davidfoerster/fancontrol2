@@ -66,8 +66,7 @@ namespace fancontrol {
 	public:
 		typedef std::ios::failure ios_failure;
 
-		config(istream &source, const shared_ptr<sensor_container> &sensors, bool do_check = false)
-				throw(util::runtime_error, ParserException, ios_failure);
+		config(istream &source, const shared_ptr<sensor_container> &sensors, bool do_check = false);
 
 		~config();
 
@@ -91,29 +90,21 @@ namespace fancontrol {
 		fans_container fans;
 
 	private:
-		shared_ptr<chip> parse_chip(const Node &node)
-				throw(sensor_error, ParserException);
+		shared_ptr<chip> parse_chip(const Node &node);
 
-		shared_ptr<subfeature> parse_subfeature(const Node &node)
-				throw(sensor_error, ParserException);
+		shared_ptr<subfeature> parse_subfeature(const Node &node);
 
-		shared_ptr<pwm> parse_pwm(const Node &node)
-				throw(sensor_error, ParserException, ios_failure);
+		shared_ptr<pwm> parse_pwm(const Node &node);
 
-		shared_ptr<control> parse_simple_control(const Node &node)
-				throw(sensor_error, ParserException);
+		shared_ptr<control> parse_simple_control(const Node &node);
 
-		shared_ptr<control> parse_aggregated_control(const Node &node)
-				throw(sensor_error, ParserException);
+		shared_ptr<control> parse_aggregated_control(const Node &node);
 
-		shared_ptr<control> parse_dependencies(const Node &node)
-				throw(sensor_error, ParserException);
+		shared_ptr<control> parse_dependencies(const Node &node);
 
-		const shared_ptr<fan> &parse_fan(const Node &node)
-				throw(sensor_error, ParserException, ios_failure);
+		const shared_ptr<fan> &parse_fan(const Node &node);
 
-		fans_container::size_type parse_fans(const Node &node)
-				throw(sensor_error, ParserException, ios_failure);
+		fans_container::size_type parse_fans(const Node &node);
 
 		void reset_nothrow();
 

@@ -93,13 +93,11 @@ namespace boost {
 	template <typename Target, typename Iterator>
 	Target lexical_cast(const util::basic_stringpiece<Iterator> &src,
 			std::basic_istream<typename util::basic_stringpiece<Iterator>::value_type> &istream,
-			util::streamstate *streamstate = nullptr)
-		throw (bad_lexical_cast);
+			util::streamstate *streamstate = nullptr);
 
 
 	template <typename Target, typename Iterator>
-	Target lexical_cast(const util::basic_stringpiece<Iterator> &src, util::streamstate *streamstate = nullptr)
-		throw (bad_lexical_cast);
+	Target lexical_cast(const util::basic_stringpiece<Iterator> &src, util::streamstate *streamstate = nullptr);
 
 } // namespace boost
 
@@ -246,7 +244,6 @@ namespace boost {
 	lexical_cast(const util::basic_stringpiece<Iterator> &src,
 			std::basic_istream<typename util::basic_stringpiece<Iterator>::value_type> &istream,
 			util::streamstate *streamstate)
-		throw (boost::bad_lexical_cast)
 	{
 		using std::ios;
 		typedef typename util::basic_stringpiece<Iterator>::value_type char_type;
@@ -287,7 +284,6 @@ namespace boost {
 	inline
 	Target
 	lexical_cast(const util::basic_stringpiece<Iterator> &src, util::streamstate *streamstate)
-		throw (bad_lexical_cast)
 	{
 		std::basic_istream<typename util::basic_stringpiece<Iterator>::value_type> istream(nullptr);
 		return lexical_cast<Target, Iterator>(src, istream, streamstate);

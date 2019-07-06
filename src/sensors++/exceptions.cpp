@@ -33,32 +33,32 @@ namespace sensors {
 	}
 
 
-	sensor_error::sensor_error(const char *message) throw()
+	sensor_error::sensor_error(const char *message)
 		: m_errnum(invalid_error)
 	{
 		*this << what_t(message);
 	}
 
 
-	sensor_error::sensor_error(const string_ref &message) throw()
+	sensor_error::sensor_error(const string_ref &message)
 		: m_errnum(invalid_error)
 	{
 		*this << what_t(message.str());
 	}
 
 
-	sensor_error::sensor_error(const std::string &message) throw()
+	sensor_error::sensor_error(const std::string &message)
 		: m_errnum(invalid_error)
 	{
 		*this << what_t(message);
 	}
 
 
-	sensor_error::~sensor_error() throw()
+	sensor_error::~sensor_error()
 	{ }
 
 
-	const char* sensor_error::what() const throw()
+	const char* sensor_error::what() const noexcept
 	{
 		if (msg.empty()) {
 			exception_base::what();
@@ -118,29 +118,29 @@ namespace sensors {
 	}
 
 
-	pwm_error::pwm_error(const char *message) throw()
+	pwm_error::pwm_error(const char *message)
 		: sensor_error(message)
 	{
 	}
 
 
-	pwm_error::pwm_error(const string_ref &message) throw()
+	pwm_error::pwm_error(const string_ref &message)
 		: sensor_error(message)
 	{
 	}
 
 
-	pwm_error::pwm_error(const std::string &message) throw()
+	pwm_error::pwm_error(const std::string &message)
 		: sensor_error(message)
 	{
 	}
 
 
-	pwm_error::~pwm_error() throw()
+	pwm_error::~pwm_error()
 	{ }
 
 
-	const char* pwm_error::what() const throw()
+	const char* pwm_error::what() const noexcept
 	{
 		if (msg.empty()) {
 			io_error::what();

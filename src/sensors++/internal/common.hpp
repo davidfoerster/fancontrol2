@@ -24,8 +24,15 @@ namespace sensors {
 	struct rebind_ptr;
 
 	template <typename Key, typename T, class Hash, class Equal, class Alloc>
-	struct rebind_ptr< std::unordered_map<Key, util::weak_ptr<T>, Hash, Equal, Alloc> > {
-		typedef std::unordered_map<Key, util::shared_ptr<T>, Hash, Equal, Alloc> other;
+	struct rebind_ptr<
+		std::unordered_map<Key, util::weak_ptr<T>, Hash, Equal, Alloc> >
+	{
+		typedef std::unordered_map<
+			Key, util::shared_ptr<T>, Hash, Equal,
+			typename std::allocator_traits<Alloc>::template rebind_alloc<
+				std::pair< const Key, util::shared_ptr<T> >
+			>
+		> other;
 	};
 
 

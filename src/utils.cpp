@@ -159,8 +159,8 @@ namespace fancontrol {
 
 
 	config_wrapper::config_wrapper(
-		std::ifstream &config_file, const util::shared_ptr<sensor_container> &sens, bool do_check)
-			throw(util::runtime_error, YAML::ParserException, std::ios::failure)
+		std::ifstream &config_file, const util::shared_ptr<sensor_container> &sens,
+		bool do_check)
 		: cfg(config_file, sens, do_check)
 		, do_check(do_check)
 	{
@@ -168,8 +168,8 @@ namespace fancontrol {
 	}
 
 
-	std::unique_ptr<config_wrapper> config_wrapper::make_config(int argc, char *argv[])
-			throw(util::runtime_error, YAML::ParserException)
+	std::unique_ptr<config_wrapper> config_wrapper::make_config(
+		int argc, char *argv[])
 	{
 		int argp = 1;
 		const char *cfg_filename = BOOST_PP_STRINGIZE(FANCONTROL_CONFIGFILE);

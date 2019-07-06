@@ -14,11 +14,11 @@ namespace util {
 	using boost::exception_detail::get_info;
 
 
-	exception_base::~exception_base() throw()
+	exception_base::~exception_base()
 	{ }
 
 
-	const char *exception_base::what() const throw()
+	const char *exception_base::what() const noexcept
 	{
 		if (msg.empty()) {
 			const std::string *const what = get_info<what_t>::get(*this);
@@ -32,7 +32,7 @@ namespace util {
 	}
 
 
-	runtime_error::runtime_error() throw()
+	runtime_error::runtime_error()
 	{ }
 
 
@@ -42,15 +42,15 @@ namespace util {
 	}
 
 
-	runtime_error::~runtime_error() throw()
+	runtime_error::~runtime_error()
 	{ }
 
 
-	io_error::~io_error() throw()
+	io_error::~io_error()
 	{ }
 
 
-	const char *io_error::what() const throw()
+	const char *io_error::what() const noexcept
 	{
 		if (msg.empty()) {
 			{
@@ -74,7 +74,8 @@ namespace util {
 			}
 
 			{
-				const std::string *const filename = get_info<io_error::filename>::get(*this);
+				const std::string *const filename =
+					get_info<io_error::filename>::get(*this);
 				if (filename && !filename->empty()) {
 					((msg += " on `") += *filename) += '\'';
 				}
@@ -86,11 +87,11 @@ namespace util {
 
 	namespace ns_null_pointer_exception {
 
-		null_pointer_exception::~null_pointer_exception() throw()
+		null_pointer_exception::~null_pointer_exception()
 		{ }
 
 
-		void check(const void *p, const char *var_name) throw (null_pointer_exception)
+		void check(const void *p, const char *var_name)
 		{
 			if (!p) {
 				BOOST_THROW_EXCEPTION(null_pointer_exception() << null_pointer_exception::var_name(var_name));

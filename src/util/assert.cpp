@@ -19,7 +19,6 @@ namespace util {
 					const char *expr,
 					const char *function, const char *file, unsigned int line,
 					std::FILE *_dst, const char *format, ...)
-				throw()
 			{
 				using namespace std;
 				FILE *dst = static_cast<FILE*>(_dst);
@@ -47,7 +46,6 @@ namespace util {
 					const char *expr,
 					const char *function, const char *file, unsigned int line,
 					std::FILE *dst, int errnum)
-				throw()
 			{
 				assert_printf_fail(expr, function, file, line, dst, "%s (errno=%i)", std::strerror(errnum), errnum);
 			}

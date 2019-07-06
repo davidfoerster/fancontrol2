@@ -34,18 +34,20 @@ namespace sensors {
 		typedef std::unordered_map<
 				chip_t::basic_type, shared_ptr<chip_t>,
 				boost::hash<chip_t::basic_type>, std::equal_to<chip_t::basic_type>,
-				util::static_allocator< std::pair<const chip_t::basic_type, shared_ptr<chip_t> >, 8 >
+				util::static_allocator<
+					std::pair< const chip_t::basic_type, shared_ptr<chip_t> >, 8
+				>
 			> map_type;
 
-		sensor_container(const char *config = default_config_path) throw (sensor_error, io_error, std::logic_error);
+		sensor_container(const char *config = default_config_path);
 
 		map_type discover_all(const sensors_chip_name *match = 0);
 
-		shared_ptr<chip_t> chip(const chip_t::basic_type &match, bool ignore_duplicate_matches = false) throw (sensor_error);
+		shared_ptr<chip_t> chip(const chip_t::basic_type &match, bool ignore_duplicate_matches = false);
 
 		shared_ptr<chip_t> operator[](const chip_t::basic_type &match) const;
 
-		shared_ptr<chip_t> chip(const string_ref &name, bool ignore_duplicate_matches = false) throw (sensor_error);
+		shared_ptr<chip_t> chip(const string_ref &name, bool ignore_duplicate_matches = false);
 
 		shared_ptr<chip_t> operator[](const string_ref &name) const;
 
@@ -58,7 +60,7 @@ namespace sensors {
 				shared_ptr<chip_t> &chip,
 				const chip_t::basic_type *match,
 				bool ignore_duplicate_matches
-			) throw (sensor_error);
+			);
 
 		map_type m_chips;
 

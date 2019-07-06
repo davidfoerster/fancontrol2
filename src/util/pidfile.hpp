@@ -25,17 +25,16 @@ namespace util {
 	{
 		typedef boost::error_info<struct tag_pid_running, ::pid_t> pid_running;
 
-		explicit pidfile_exception(pidfile &src) throw ();
+		explicit pidfile_exception(pidfile &src);
 
-		virtual const char *what() const throw();
+		virtual const char *what() const noexcept;
 	};
 
 
 	class pidfile
 	{
 	public:
-		explicit pidfile(const stringpiece &filename, bool root_only = false)
-			throw (pidfile_exception, io_error);
+		explicit pidfile(const stringpiece &filename, bool root_only = false);
 
 		~pidfile();
 

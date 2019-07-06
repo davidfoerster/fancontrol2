@@ -25,14 +25,14 @@ namespace sensors {
 
 	namespace helper {
 
-		static void stat(const char *config, struct stat *statbuf) throw (io_error)
+		static void stat(const char *config, struct stat *statbuf)
 		{
 			if (::stat(config, statbuf) != 0)
 				BOOST_THROW_EXCEPTION(io_error() << io_error::errno_code(errno));
 		}
 
 
-		static std::FILE *fopen_stat(const char *config, struct stat *statbuf) throw (io_error)
+		static std::FILE *fopen_stat(const char *config, struct stat *statbuf)
 		{
 			if (config) {
 				std::FILE *const f = std::fopen(config, "r");
@@ -52,7 +52,7 @@ namespace sensors {
 	}
 
 
-	shared_ptr<lock> lock::instance(bool auto_init) throw (sensor_error, io_error)
+	shared_ptr<lock> lock::instance(bool auto_init)
 	{
 		static weak_ptr<lock> &oldlock = *new weak_ptr<lock>();
 		if (!oldlock.expired())
@@ -64,7 +64,7 @@ namespace sensors {
 	}
 
 
-	lock::lock(bool auto_init) throw (sensor_error, io_error)
+	lock::lock(bool auto_init)
 		: m_initialized(false)
 		, m_auto_release(true)
 		, m_config_file_stat({0})
@@ -85,7 +85,7 @@ namespace sensors {
 	}
 
 
-	sensor_error::type_enum lock::init(const char *config) throw (std::logic_error, io_error)
+	sensor_error::type_enum lock::init(const char *config)
 	{
 		if (!m_initialized)
 			return init_internal(config);
@@ -97,7 +97,7 @@ namespace sensors {
 	}
 
 
-	sensor_error::type_enum lock::init_internal(const char *config) throw (io_error)
+	sensor_error::type_enum lock::init_internal(const char *config)
 	{
 		std::FILE *const f = helper::fopen_stat(config, &m_config_file_stat);
 		sensor_error::type_enum r = sensor_error::to_enum(sensors_init(f));
@@ -110,7 +110,7 @@ namespace sensors {
 	}
 
 
-	bool lock::same_config_file(const char *f) const throw (io_error)
+	bool lock::same_config_file(const char *f) const
 	{
 		struct stat statbuf;
 		helper::stat(f, &statbuf);
@@ -127,7 +127,7 @@ namespace sensors {
 	}
 
 
-	lock::auto_lock::auto_lock() throw (sensor_error, io_error)
+	lock::auto_lock::auto_lock()
 		: mLock(lock::instance(true))
 	{ }
 

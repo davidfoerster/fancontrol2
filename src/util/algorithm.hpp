@@ -120,6 +120,11 @@ constexpr DestType convert_flagbit(SourceType src);
 template <typename Integer>
 constexpr Integer divide_ceil( Integer numerator, Integer denominator );
 
+
+template <typename T>
+constexpr inline typename std::remove_reference<T>::type
+deref( T value ) { return value; }
+
 }
 
 

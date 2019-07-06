@@ -47,7 +47,6 @@ namespace fancontrol {
 
 	const shared_ptr<const SF> &
 	simple_bounded_control::check_source_type(const shared_ptr<const SF> &gauge)
-		throw(std::invalid_argument)
 	{
 		if (gauge && !gauge->test_flag(SF::flags::readable))
 			BOOST_THROW_EXCEPTION(std::invalid_argument("Unreadable source type"));
@@ -72,7 +71,6 @@ namespace fancontrol {
 	simple_bounded_control::simple_bounded_control(
 			const shared_ptr<const SF> &source,
 			rate_conversion_fun_t rate_converter)
-	throw(std::invalid_argument)
 		: bounded_control(rate_converter)
 		, m_source(check_source_type(source))
 	{
@@ -82,7 +80,6 @@ namespace fancontrol {
 	simple_bounded_control::simple_bounded_control(
 			const shared_ptr<const SF> &source, value_t lower_bound, value_t upper_bound,
 			rate_conversion_fun_t rate_converter)
-	throw(std::invalid_argument)
 		: bounded_control(lower_bound, upper_bound, rate_converter)
 		, m_source(check_source_type(source))
 	{
@@ -95,7 +92,6 @@ namespace fancontrol {
 
 
 	void simple_bounded_control::source(const shared_ptr<const SF> &source)
-	throw(std::invalid_argument)
 	{
 		m_source = check_source_type(source);
 	}

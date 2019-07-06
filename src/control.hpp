@@ -87,19 +87,17 @@ namespace fancontrol {
 
 		explicit simple_bounded_control(
 				const shared_ptr<const SF> &source,
-				rate_conversion_fun_t rate_converter = &bounded_control::convert_rate)
-			throw(std::invalid_argument);
+				rate_conversion_fun_t rate_converter = &bounded_control::convert_rate);
 
 		simple_bounded_control(
 				const shared_ptr<const SF> &source, value_t lower_bound, value_t upper_bound,
-				rate_conversion_fun_t rate_converter = &bounded_control::convert_rate)
-			throw(std::invalid_argument);
+				rate_conversion_fun_t rate_converter = &bounded_control::convert_rate);
 
 		virtual ~simple_bounded_control();
 
 		const shared_ptr<const SF> &source() const;
 
-		void source(const shared_ptr<const SF> &source) throw(std::invalid_argument);
+		void source(const shared_ptr<const SF> &source);
 
 		struct source_comparator
 			: std::binary_function<const control&, const SF&, bool>
@@ -113,8 +111,7 @@ namespace fancontrol {
 		virtual value_t rate_impl() const;
 
 	private:
-		static const shared_ptr<const SF> &check_source_type(const shared_ptr<const SF> &m_gauge)
-				throw(std::invalid_argument);
+		static const shared_ptr<const SF> &check_source_type(const shared_ptr<const SF> &m_gauge);
 
 		shared_ptr<const SF> m_source;
 
@@ -243,7 +240,8 @@ namespace fancontrol {
 	aggregated_control<S,E>::aggregated_control(const aggregated_control_base &other)
 	{
 		const const_range_type other_sources(other.sources());
-		m_sources.reserve(std::max(boost::size(other_sources), container_type::allocator_type::initial_capacity));
+		m_sources.reserve(std::max(boost::size(other_sources),
+			util::deref(container_type::allocator_type::initial_capacity)));
 		m_sources.assign(other_sources.first, other_sources.second);
 	}
 

@@ -50,9 +50,9 @@ namespace sensors {
 
 		bool test_flag(flags_enum flag) const;
 
-		double value() const throw(sensor_error);
+		double value() const;
 
-		void value(double) const throw(util::null_pointer_exception, sensor_error);
+		void value(double) const;
 
 		bool operator==(const super &o) const;
 	};

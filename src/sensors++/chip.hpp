@@ -70,9 +70,9 @@ namespace sensors {
 			bool operator()(const basic_type &chip, const string_ref &prefix) const;
 		};
 
-		chip(const basic_type *chip) throw (sensor_error, io_error);
+		chip(const basic_type *chip);
 
-		chip(std::unique_ptr<basic_type> &chip) throw (sensor_error, io_error);
+		chip(std::unique_ptr<basic_type> &chip);
 
 		typename rebind_ptr<feature_map_type>::other discover_features();
 
@@ -101,11 +101,11 @@ namespace sensors {
 		static bool is_wildcard(const basic_type &chip);
 
 	protected:
-		void init() throw (sensor_error);
+		void init();
 
 		void guess_quirks();
 
-		void check_wildcard() const throw (sensor_error);
+		void check_wildcard() const;
 
 		feature_map_type m_features;
 

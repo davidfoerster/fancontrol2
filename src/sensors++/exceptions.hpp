@@ -48,13 +48,13 @@ namespace sensors {
 
 		explicit sensor_error(int errnum);
 
-		explicit sensor_error(const char *message) throw();
-		explicit sensor_error(const string_ref &message) throw();
-		explicit sensor_error(const std::string &message) throw();
+		explicit sensor_error(const char *message);
+		explicit sensor_error(const string_ref &message);
+		explicit sensor_error(const std::string &message);
 
-		virtual ~sensor_error() throw();
+		virtual ~sensor_error();
 
-		const char* what() const throw();
+		const char* what() const noexcept;
 
 		std::string::size_type resource_spec(std::string &s,
 				std::string::traits_type::int_type left = std::string::traits_type::eof(),
@@ -74,13 +74,13 @@ namespace sensors {
 		, virtual public util::io_error
 	{
 	public:
-		pwm_error(const char *message) throw();
-		pwm_error(const string_ref &message) throw();
-		pwm_error(const std::string &message) throw();
+		pwm_error(const char *message);
+		pwm_error(const string_ref &message);
+		pwm_error(const std::string &message);
 
-		virtual ~pwm_error() throw();
+		virtual ~pwm_error();
 
-		virtual const char* what() const throw();
+		virtual const char* what() const noexcept;
 	};
 
 

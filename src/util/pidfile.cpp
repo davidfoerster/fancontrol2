@@ -20,7 +20,6 @@
 namespace util {
 
 	pidfile::pidfile(const stringpiece &filename, bool root_only)
-			throw (pidfile_exception, io_error)
 		: m_file()
 		, m_filename(filename)
 	{
@@ -153,7 +152,7 @@ namespace util {
 	}
 
 
-	pidfile_exception::pidfile_exception(pidfile &src) throw()
+	pidfile_exception::pidfile_exception(pidfile &src)
 	{
 		*this << what_t("An instance of fancontrol is running already");
 
@@ -169,7 +168,7 @@ namespace util {
 	}
 
 
-	const char *pidfile_exception::what() const throw()
+	const char *pidfile_exception::what() const noexcept
 	{
 		using boost::exception_detail::get_info;
 

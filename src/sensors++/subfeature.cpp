@@ -21,7 +21,7 @@
 namespace sensors {
 
 
-	double subfeature::value() const throw(sensor_error)
+	double subfeature::value() const
 	{
 		UTIL_CHECK_POINTER(get());
 		UTIL_CHECK_POINTER(parent());
@@ -36,7 +36,6 @@ namespace sensors {
 
 
 	void subfeature::value(double v) const
-		throw(util::null_pointer_exception, sensor_error)
 	{
 		int errnum = sensors_set_value(
 				(UTIL_CHECK_POINTER(parent()), UTIL_CHECK_POINTER(parent()->parent())->get()),

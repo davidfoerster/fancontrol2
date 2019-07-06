@@ -104,7 +104,7 @@ namespace sensors {
 	}
 
 
-	pwm::value_t pwm::raw_value() const throw (io_error)
+	pwm::value_t pwm::raw_value() const
 	{
 		const pwm *p = (m_number == 2 && m_chip && m_chip->quirks()[chip::Quirks::pwm2_alters_pwm1]) ?
 				UTIL_CHECK_POINTER(m_associated) : this;
@@ -113,13 +113,13 @@ namespace sensors {
 	}
 
 
-	pwm::rate_t pwm::value() const throw (io_error)
+	pwm::rate_t pwm::value() const
 	{
 		return static_cast<rate_t>(raw_value()) * pwm_max_inverse();
 	}
 
 
-	pwm::enable_enum pwm::enable(value_t *raw) const throw (io_error)
+	pwm::enable_enum pwm::enable(value_t *raw) const
 	{
 		value_t value = this->value(Item::enable);
 		if (raw)
@@ -128,19 +128,19 @@ namespace sensors {
 	}
 
 
-	pwm::value_t pwm::value(item_enum item) const throw (io_error)
+	pwm::value_t pwm::value(item_enum item) const
 	{
 		return (item != Item::pwm) ? value_read(Item::name(item)) : raw_value();
 	}
 
 
-	pwm::value_t pwm::value(const string_ref &item) const throw (io_error)
+	pwm::value_t pwm::value(const string_ref &item) const
 	{
 		return !item.empty() ? value_read(item) : raw_value();
 	}
 
 
-	pwm::value_t pwm::value_read(const string_ref &item, bool ignore_value) const throw (io_error)
+	pwm::value_t pwm::value_read(const string_ref &item, bool ignore_value) const
 	{
 		std::fstream f;
 		f.exceptions(m_expeption_mask);
@@ -158,7 +158,7 @@ namespace sensors {
 	}
 
 
-	void pwm::raw_value(value_t value) throw (io_error)
+	void pwm::raw_value(value_t value)
 	{
 		const string_ref &item = Item::name(Item::pwm);
 
@@ -170,25 +170,25 @@ namespace sensors {
 	}
 
 
-	void pwm::value(rate_t value) throw (io_error)
+	void pwm::value(rate_t value)
 	{
 		this->raw_value(static_cast<value_t>(std::max<rate_t>(value, 0) * static_cast<rate_t>(pwm_max()) + 0.5f));
 	}
 
 
-	void pwm::value(item_enum item, value_t value) throw (io_error)
+	void pwm::value(item_enum item, value_t value)
 	{
 		return (item != Item::pwm) ? value_write(Item::name(item), value) : raw_value(value);
 	}
 
 
-	void pwm::value(const string_ref &item, value_t value) throw (io_error)
+	void pwm::value(const string_ref &item, value_t value)
 	{
 		return !item.empty() ? value_write(item, value) : raw_value(value);
 	}
 
 
-	void pwm::value_write(const string_ref &item, value_t value) throw (io_error)
+	void pwm::value_write(const string_ref &item, value_t value)
 	{
 		std::fstream f;
 		f.exceptions(m_expeption_mask);

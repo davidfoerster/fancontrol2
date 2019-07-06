@@ -40,7 +40,7 @@ namespace fancontrol {
 	}
 
 
-	double fan::gauge_wrapper::read() const throw (sensor_error)
+	double fan::gauge_wrapper::read() const
 	{
 		return m_value->value();
 	}
@@ -52,13 +52,13 @@ namespace fancontrol {
 	}
 
 
-	value_t fan::valve_wrapper::read() throw(io_error)
+	value_t fan::valve_wrapper::read()
 	{
 		return m_value->value();
 	}
 
 
-	void fan::valve_wrapper::write(value_t value) throw(io_error)
+	void fan::valve_wrapper::write(value_t value)
 	{
 		m_value->value(value);
 	}
