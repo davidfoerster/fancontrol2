@@ -9,7 +9,7 @@
 #ifndef SENSORS_CONDITIONAL_SHARED_PTR_HPP_
 #define SENSORS_CONDITIONAL_SHARED_PTR_HPP_
 
-#if defined(BOOST_DISABLE_THREADS) || defined(BOOST_SP_DISABLE_THREADS)
+#if !(defined(BOOST_DISABLE_THREADS) || defined(BOOST_SP_DISABLE_THREADS))
 #include <atomic>
 #endif
 #include <memory>
